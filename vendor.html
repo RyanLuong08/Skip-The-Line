@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skip the Line · Vendor</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">Skip the Line <small>Vendor dashboard</small></div>
+    <a class="switch" href="index.html">← Student view</a>
+  </header>
+
+  <div class="toolbar">
+    <label>Vendor <select id="vendorSelect"></select></label>
+    <div class="serving">Now serving <strong id="nowServing">–</strong></div>
+  </div>
+
+  <main class="board">
+    <section><h2>New <span id="countWaiting" class="count"></span></h2><div id="colWaiting"></div></section>
+    <section><h2>Cooking <span id="countCooking" class="count"></span></h2><div id="colCooking"></div></section>
+    <section><h2>Ready <span id="countReady" class="count"></span></h2><div id="colReady"></div></section>
+  </main>
+
+  <script type="module" src="js/vendor.js"></script>
+</body>
+</html>

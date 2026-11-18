@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Paste this into Firebase console > Firestore Database > Rules > Publish.
+// Good enough for a class demo: anyone can read orders and create new ones,
+// but an existing order can only have its "status" changed, and nothing can be deleted.
+// For a real launch you would add sign-in so only vendors can change status.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /orders/{orderId} {
+      allow read: if true;
+      allow create: if request.resource.data.status == "waiting"
+                    && request.resource.data.items is list
+                    && request.resource.data.items.size() > 0
+                    && request.resource.data.items.size() <= 20;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status"])
+                    && request.resource.data.status in ["waiting", "cooking", "ready", "done", "cancelled"];
+      allow delete: if false;
+    }
+
+    match /counters/{counterId} {
+      allow read, write: if true;
+    }
+  }
+}

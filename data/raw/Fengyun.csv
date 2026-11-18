@@ -1,0 +1,287 @@
+id,store_name,store_name_english,location,location_english,dish_name,price,calories,protein,carbs,fat,is_vegetarian,is_official,cuisine,is_combo,category,EnglishName,ChineseName
+1,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,鐵路里肌肉飯 Tenderloin Rice,80,565,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Tenderloin Rice,鐵路里肌肉飯
+2,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,醬燒去骨雞腿飯 Soy Sauce Chicken Drumstick Rice,95,557,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Soy Sauce Chicken Drumstick Rice,醬燒去骨雞腿飯
+3,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,沙拉醬雞排飯 Salad Sauce Chicken Chop Rice,85,710,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Salad Sauce Chicken Chop Rice,沙拉醬雞排飯
+4,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,沙拉醬雞腿飯 Salad Sauce Chicken Thigh Rice,110,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Salad Sauce Chicken Thigh Rice,沙拉醬雞腿飯
+5,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,沙拉醬無骨雞排飯 Salad Sauce Boneless Chicken Chop Rice,110,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Salad Sauce Boneless Chicken Chop Rice,沙拉醬無骨雞排飯
+6,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,糖醋無骨雞排飯 Sweet and Sour Chicken Rice,110,730,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Sweet and Sour Chicken Rice,糖醋無骨雞排飯
+7,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,香酥雞腿塊飯 Crispy Chicken Thigh Pieces Rice,75,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Crispy Chicken Thigh Pieces Rice,香酥雞腿塊飯
+8,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,香酥雞排飯 Crispy Chicken Chop Rice,75,701,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Crispy Chicken Chop Rice,香酥雞排飯
+9,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蒜香無骨雞排飯 Garlic Boneless Chicken Chop Rice,95,710,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Garlic Boneless Chicken Chop Rice,蒜香無骨雞排飯
+10,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蒜香無骨雞腿飯 Garlic Boneless Chicken Thigh Rice,100,800,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Garlic Boneless Chicken Thigh Rice,蒜香無骨雞腿飯
+11,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,醬燒無骨炸雞排飯 Soy Sauce Fried Chicken Chop Rice,120,756,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Soy Sauce Fried Chicken Chop Rice,醬燒無骨炸雞排飯
+12,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,醬燒無骨炸雞腿飯 Soy Sauce Fried Chicken Thigh Rice,120,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Soy Sauce Fried Chicken Thigh Rice,醬燒無骨炸雞腿飯
+13,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蔥爆雞肉飯 Scallion Stir-Fried Chicken Rice,95,350,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Scallion Stir-Fried Chicken Rice,蔥爆雞肉飯
+14,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蔥爆豬肉飯 Scallion Stir-Fried Pork Rice,95,350,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Scallion Stir-Fried Pork Rice,蔥爆豬肉飯
+15,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蔥爆孜然雞肉飯 Scallion Cumin Stir-Fried Chicken Rice,110,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Scallion Cumin Stir-Fried Chicken Rice,蔥爆孜然雞肉飯
+16,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蔥爆孜然豬肉飯 Scallion Cumin Stir-Fried Pork Rice,110,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Scallion Cumin Stir-Fried Pork Rice,蔥爆孜然豬肉飯
+17,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,孜然雞肉串飯 Cumin Chicken Skewers Rice,95,310,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Cumin Chicken Skewers Rice,孜然雞肉串飯
+18,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蛋蓋飯 Egg Over Rice,75,,,,,TRUE,FALSE,Taiwanese,FALSE,rice,Egg Over Rice,蛋蓋飯
+19,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蛋蓋飯(雞肉) Egg Over Rice with Chicken,110,380,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Egg Over Rice with Chicken,蛋蓋飯(雞肉)
+20,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蛋蓋飯(豬肉) Egg Over Rice with Pork,110,380,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Egg Over Rice with Pork,蛋蓋飯(豬肉)
+21,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,蛋蓋飯雞排 Egg Over Rice with Chicken Chop,110,380,,,,FALSE,TRUE,Taiwanese,FALSE,rice,Egg Over Rice with Chicken Chop,蛋蓋飯雞排
+22,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,石鍋拌飯雞肉 Bibimbap with Chicken,110,580,,,,FALSE,TRUE,Korean,FALSE,rice,Bibimbap with Chicken,石鍋拌飯雞肉
+23,友記快餐館,You Ji Fast Food,風雲樓,Fengyun Building,石鍋拌飯豬肉 Bibimbap with Pork,110,580,,,,FALSE,TRUE,Korean,FALSE,rice,Bibimbap with Pork,石鍋拌飯豬肉
+24,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,迷迭香雞肉健康多穀飯餐盒 Rosemary Chicken Multigrain Rice Box,130,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Rosemary Chicken Multigrain Rice Box,迷迭香雞肉健康多穀飯餐盒
+25,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,胡麻醬雞肉健康多穀飯餐盒 Sesame Sauce Chicken Multigrain Rice Box,130,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Sesame Sauce Chicken Multigrain Rice Box,胡麻醬雞肉健康多穀飯餐盒
+26,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,日式醬雞肉健康多穀飯餐盒 Japanese Sauce Chicken Multigrain Rice Box,130,,,,,FALSE,FALSE,Japanese,FALSE,rice,Japanese Sauce Chicken Multigrain Rice Box,日式醬雞肉健康多穀飯餐盒
+27,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,泡菜雞肉健康多穀飯餐盒 Kimchi Chicken Multigrain Rice Box,140,,,,,FALSE,FALSE,Korean,FALSE,rice,Kimchi Chicken Multigrain Rice Box,泡菜雞肉健康多穀飯餐盒
+28,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,四川麻辣雞肉健康多穀飯餐盒 Sichuan Mala Chicken Multigrain Rice Box,140,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Sichuan Mala Chicken Multigrain Rice Box,四川麻辣雞肉健康多穀飯餐盒
+29,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,客家桔醬雞肉健康多穀飯餐盒 Hakka Kumquat Sauce Chicken Multigrain Rice Box,145,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Hakka Kumquat Sauce Chicken Multigrain Rice Box,客家桔醬雞肉健康多穀飯餐盒
+30,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,胡麻醬蔬食健康多穀飯餐盒 Sesame Sauce Vegetarian Multigrain Rice Box,110,,,,,TRUE,FALSE,Taiwanese,FALSE,rice,Sesame Sauce Vegetarian Multigrain Rice Box,胡麻醬蔬食健康多穀飯餐盒
+31,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,日式醬蔬食健康多穀飯餐盒 Japanese Sauce Vegetarian Multigrain Rice Box,110,,,,,TRUE,FALSE,Japanese,FALSE,rice,Japanese Sauce Vegetarian Multigrain Rice Box,日式醬蔬食健康多穀飯餐盒
+32,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,客家桔醬蔬食健康多穀飯餐盒 Hakka Kumquat Sauce Vegetarian Multigrain Rice Box,125,,,,,TRUE,FALSE,Taiwanese,FALSE,rice,Hakka Kumquat Sauce Vegetarian Multigrain Rice Box,客家桔醬蔬食健康多穀飯餐盒
+33,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,胡麻醬雞絲低卡蒟蒻麵餐盒 Sesame Sauce Shredded Chicken Konjac Noodle Box,145,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Sesame Sauce Shredded Chicken Konjac Noodle Box,胡麻醬雞絲低卡蒟蒻麵餐盒
+34,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,泡菜雞絲低卡蒟蒻麵餐盒 Kimchi Shredded Chicken Konjac Noodle Box,155,,,,,FALSE,FALSE,Korean,FALSE,noodle,Kimchi Shredded Chicken Konjac Noodle Box,泡菜雞絲低卡蒟蒻麵餐盒
+35,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,四川麻辣雞絲低卡蒟蒻麵餐盒 Sichuan Mala Shredded Chicken Konjac Noodle Box,155,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Sichuan Mala Shredded Chicken Konjac Noodle Box,四川麻辣雞絲低卡蒟蒻麵餐盒
+36,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,胡麻醬蔬食低卡蒟蒻麵餐盒 Sesame Sauce Vegetarian Konjac Noodle Box,125,,,,,TRUE,FALSE,Taiwanese,FALSE,noodle,Sesame Sauce Vegetarian Konjac Noodle Box,胡麻醬蔬食低卡蒟蒻麵餐盒
+37,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,日式醬蔬食低卡蒟蒻麵餐盒 Japanese Sauce Vegetarian Konjac Noodle Box,125,,,,,TRUE,FALSE,Japanese,FALSE,noodle,Japanese Sauce Vegetarian Konjac Noodle Box,日式醬蔬食低卡蒟蒻麵餐盒
+38,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,經典伯爵抹醬貝果 Classic Earl Grey Spread Bagel,65,,,,,TRUE,FALSE,Western,FALSE,bread,Classic Earl Grey Spread Bagel,經典伯爵抹醬貝果
+39,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,原味奶酥抹醬貝果 Original Butter Custard Spread Bagel,60,,,,,TRUE,FALSE,Western,FALSE,bread,Original Butter Custard Spread Bagel,原味奶酥抹醬貝果
+40,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,抹茶奶酥抹醬貝果 Matcha Butter Custard Spread Bagel,60,,,,,TRUE,FALSE,Western,FALSE,bread,Matcha Butter Custard Spread Bagel,抹茶奶酥抹醬貝果
+41,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,伯爵奶酥雙拼抹醬貝果 Earl Grey & Butter Custard Duo Spread Bagel,65,,,,,TRUE,FALSE,Western,FALSE,bread,Earl Grey & Butter Custard Duo Spread Bagel,伯爵奶酥雙拼抹醬貝果
+42,同食角落,Tong Shi Corner,風雲樓,Fengyun Building,穀芝酥鬆抹醬貝果 Multigrain Sesame Floss Spread Bagel,60,,,,,TRUE,FALSE,Western,FALSE,bread,Multigrain Sesame Floss Spread Bagel,穀芝酥鬆抹醬貝果
+43,喜番咖哩,Love Curry,風雲樓,Fengyun Building,咖哩飯 Curry Rice,70,,,,,FALSE,FALSE,Japanese,FALSE,rice,Curry Rice,咖哩飯
+44,喜番咖哩,Love Curry,風雲樓,Fengyun Building,嫩雞咖哩飯 Chicken Curry Rice,95,,,,,FALSE,FALSE,Japanese,FALSE,rice,Chicken Curry Rice,嫩雞咖哩飯
+45,喜番咖哩,Love Curry,風雲樓,Fengyun Building,涮肉咖哩飯(豬) Marinated Pork Curry Rice,90,,,,,FALSE,FALSE,Japanese,FALSE,rice,Marinated Pork Curry Rice,涮肉咖哩飯(豬)
+46,喜番咖哩,Love Curry,風雲樓,Fengyun Building,涮肉咖哩飯(牛) Marinated Beef Curry Rice,95,,,,,FALSE,FALSE,Japanese,FALSE,rice,Marinated Beef Curry Rice,涮肉咖哩飯(牛)
+47,喜番咖哩,Love Curry,風雲樓,Fengyun Building,京都里肌排咖哩飯 Fried Pork Loin Curry Rice,90,,,,,FALSE,FALSE,Japanese,FALSE,rice,Fried Pork Loin Curry Rice,京都里肌排咖哩飯
+48,喜番咖哩,Love Curry,風雲樓,Fengyun Building,炸雞排咖哩飯 Fried Chicken Curry Rice,95,,,,,FALSE,FALSE,Japanese,FALSE,rice,Fried Chicken Curry Rice,炸雞排咖哩飯
+49,喜番咖哩,Love Curry,風雲樓,Fengyun Building,炸豬排咖哩飯 Fried Pork Curry Rice,90,,,,,FALSE,FALSE,Japanese,FALSE,rice,Fried Pork Curry Rice,炸豬排咖哩飯
+50,喜番咖哩,Love Curry,風雲樓,Fengyun Building,炸魚排咖哩飯 Fried Fish Curry Rice,90,,,,,FALSE,FALSE,Japanese,FALSE,rice,Fried Fish Curry Rice,炸魚排咖哩飯
+51,喜番咖哩,Love Curry,風雲樓,Fengyun Building,麻婆豆腐咖哩飯 MaPo Tofu Curry Rice,105,,,,,FALSE,FALSE,Japanese,FALSE,rice,MaPo Tofu Curry Rice,麻婆豆腐咖哩飯
+52,喜番咖哩,Love Curry,風雲樓,Fengyun Building,海陸雙拼咖哩飯 Mixed Meat Curry Rice,120,,,,,FALSE,FALSE,Japanese,TRUE,rice,Mixed Meat Curry Rice,海陸雙拼咖哩飯
+53,喜番咖哩,Love Curry,風雲樓,Fengyun Building,涮肉三拼咖哩飯 Three Meat Curry Rice,140,,,,,FALSE,FALSE,Japanese,TRUE,rice,Three Meat Curry Rice,涮肉三拼咖哩飯
+54,喜番咖哩,Love Curry,風雲樓,Fengyun Building,嫩雞歐姆蛋咖哩飯 Chicken Omelet Curry Rice,115,,,,,FALSE,FALSE,Japanese,FALSE,rice,Chicken Omelet Curry Rice,嫩雞歐姆蛋咖哩飯
+55,喜番咖哩,Love Curry,風雲樓,Fengyun Building,京都里肌排歐姆蛋咖哩飯 Fried Pork Loin Omelet Curry Rice,110,,,,,FALSE,FALSE,Japanese,FALSE,rice,Fried Pork Loin Omelet Curry Rice,京都里肌排歐姆蛋咖哩飯
+56,喜番咖哩,Love Curry,風雲樓,Fengyun Building,海陸雙拼歐姆蛋咖哩飯 Mixed Meat Omelet Curry Rice,140,,,,,FALSE,FALSE,Japanese,TRUE,rice,Mixed Meat Omelet Curry Rice,海陸雙拼歐姆蛋咖哩飯
+57,喜番咖哩,Love Curry,風雲樓,Fengyun Building,激動牛飯 Mixed Rice Bowl (Fried Cutlet + Donburi),130,,,,,FALSE,FALSE,Japanese,TRUE,rice,Mixed Rice Bowl (Fried Cutlet + Donburi),激動牛飯
+58,喜番咖哩,Love Curry,風雲樓,Fengyun Building,牛肉起司丼飯 Beef & Cheese Rice Bowl,95,,,,,FALSE,FALSE,Japanese,FALSE,rice,Beef & Cheese Rice Bowl,牛肉起司丼飯
+59,喜番咖哩,Love Curry,風雲樓,Fengyun Building,豚肉起司丼飯 Pork & Cheese Rice Bowl,95,,,,,FALSE,FALSE,Japanese,FALSE,rice,Pork & Cheese Rice Bowl,豚肉起司丼飯
+60,喜番咖哩,Love Curry,風雲樓,Fengyun Building,親子起司丼飯 Chicken & Cheese Rice Bowl,95,,,,,FALSE,FALSE,Japanese,FALSE,rice,Chicken & Cheese Rice Bowl,親子起司丼飯
+61,喜番咖哩,Love Curry,風雲樓,Fengyun Building,麻婆豆腐丼飯 MaPo Tofu Rice Bowl,90,,,,,FALSE,FALSE,Japanese,FALSE,rice,MaPo Tofu Rice Bowl,麻婆豆腐丼飯
+62,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬鮮蔬直麵 Vegetable Spaghetti with Garlic Sauce,,325.45,11.84,67.36,1.82,TRUE,TRUE,Western,FALSE,noodle,Vegetable Spaghetti with Garlic Sauce,蒜醬鮮蔬直麵
+63,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬培根直麵 Bacon Spaghetti with Garlic Sauce,,415.5,13.68,64.61,11.69,FALSE,TRUE,Western,FALSE,noodle,Bacon Spaghetti with Garlic Sauce,蒜醬培根直麵
+64,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬德腸直麵 German Sausage Spaghetti with Garlic Sauce,,409.5,17.03,65.46,9.19,FALSE,TRUE,Western,FALSE,noodle,German Sausage Spaghetti with Garlic Sauce,蒜醬德腸直麵
+65,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬雞肉直麵 Chicken Spaghetti with Garlic Sauce,,426.5,33.73,64.46,3.59,FALSE,TRUE,Western,FALSE,noodle,Chicken Spaghetti with Garlic Sauce,蒜醬雞肉直麵
+66,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬蛤蜊直麵 Clam Spaghetti with Garlic Sauce,,419.5,29.93,67.61,3.19,FALSE,TRUE,Western,FALSE,noodle,Clam Spaghetti with Garlic Sauce,蒜醬蛤蜊直麵
+67,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬鮮魚直麵 Fish Spaghetti with Garlic Sauce,,344.5,18.43,63.86,1.99,FALSE,TRUE,Western,FALSE,noodle,Fish Spaghetti with Garlic Sauce,蒜醬鮮魚直麵
+68,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬鮮蔬燉飯 Vegetable Risotto with Garlic Sauce,,380.45,9.53,81.76,1.18,TRUE,TRUE,Western,FALSE,rice,Vegetable Risotto with Garlic Sauce,蒜醬鮮蔬燉飯
+69,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬培根燉飯 Bacon Risotto with Garlic Sauce,,470.5,11.37,79.01,11.05,FALSE,TRUE,Western,FALSE,rice,Bacon Risotto with Garlic Sauce,蒜醬培根燉飯
+70,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬德腸燉飯 German Sausage Risotto with Garlic Sauce,,464.5,14.72,79.86,8.55,FALSE,TRUE,Western,FALSE,rice,German Sausage Risotto with Garlic Sauce,蒜醬德腸燉飯
+71,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬雞肉燉飯 Chicken Risotto with Garlic Sauce,,481.5,31.42,78.86,2.95,FALSE,TRUE,Western,FALSE,rice,Chicken Risotto with Garlic Sauce,蒜醬雞肉燉飯
+72,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬蛤蜊燉飯 Clam Risotto with Garlic Sauce,,474.5,27.62,82.01,2.55,FALSE,TRUE,Western,FALSE,rice,Clam Risotto with Garlic Sauce,蒜醬蛤蜊燉飯
+73,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬鮮魚燉飯 Fish Risotto with Garlic Sauce,,399.5,16.12,78.26,1.35,FALSE,TRUE,Western,FALSE,rice,Fish Risotto with Garlic Sauce,蒜醬鮮魚燉飯
+74,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬鮮蔬斜管 Vegetable Penne with Garlic Sauce,,304.45,12.64,62.16,1.5,TRUE,TRUE,Western,FALSE,noodle,Vegetable Penne with Garlic Sauce,蒜醬鮮蔬斜管
+75,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬培根斜管 Bacon Penne with Garlic Sauce,,394.5,14.48,59.41,11.37,FALSE,TRUE,Western,FALSE,noodle,Bacon Penne with Garlic Sauce,蒜醬培根斜管
+76,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬德腸斜管 German Sausage Penne with Garlic Sauce,,388.5,17.83,60.26,8.87,FALSE,TRUE,Western,FALSE,noodle,German Sausage Penne with Garlic Sauce,蒜醬德腸斜管
+77,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬雞肉斜管 Chicken Penne with Garlic Sauce,,405.5,34.53,59.26,3.27,FALSE,TRUE,Western,FALSE,noodle,Chicken Penne with Garlic Sauce,蒜醬雞肉斜管
+78,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬蛤蜊斜管 Clam Penne with Garlic Sauce,,398.5,30.73,62.41,2.87,FALSE,TRUE,Western,FALSE,noodle,Clam Penne with Garlic Sauce,蒜醬蛤蜊斜管
+79,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,蒜醬鮮魚斜管 Fish Penne with Garlic Sauce,,323.5,19.23,58.66,1.67,FALSE,TRUE,Western,FALSE,noodle,Fish Penne with Garlic Sauce,蒜醬鮮魚斜管
+80,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬鮮蔬直麵 Vegetable Spaghetti with Cream Sauce,,421.55,12.84,68.66,11.53,TRUE,TRUE,Western,FALSE,noodle,Vegetable Spaghetti with Cream Sauce,白醬鮮蔬直麵
+81,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬培根直麵 Bacon Spaghetti with Cream Sauce,,511.6,14.68,65.91,21.4,FALSE,TRUE,Western,FALSE,noodle,Bacon Spaghetti with Cream Sauce,白醬培根直麵
+82,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬德腸直麵 German Sausage Spaghetti with Cream Sauce,,505.6,18.03,66.76,18.9,FALSE,TRUE,Western,FALSE,noodle,German Sausage Spaghetti with Cream Sauce,白醬德腸直麵
+83,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬雞肉直麵 Chicken Spaghetti with Cream Sauce,,522.6,34.73,65.76,13.3,FALSE,TRUE,Western,FALSE,noodle,Chicken Spaghetti with Cream Sauce,白醬雞肉直麵
+84,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬蛤蜊直麵 Clam Spaghetti with Cream Sauce,,515.6,30.93,68.91,12.9,FALSE,TRUE,Western,FALSE,noodle,Clam Spaghetti with Cream Sauce,白醬蛤蜊直麵
+85,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬鮮魚直麵 Fish Spaghetti with Cream Sauce,,440.6,19.43,65.16,11.7,FALSE,TRUE,Western,FALSE,noodle,Fish Spaghetti with Cream Sauce,白醬鮮魚直麵
+86,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬鮮蔬燉飯 Vegetable Risotto with Cream Sauce,,476.55,10.53,83.06,10.89,TRUE,TRUE,Western,FALSE,rice,Vegetable Risotto with Cream Sauce,白醬鮮蔬燉飯
+87,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬培根燉飯 Bacon Risotto with Cream Sauce,,566.6,12.37,80.31,20.76,FALSE,TRUE,Western,FALSE,rice,Bacon Risotto with Cream Sauce,白醬培根燉飯
+88,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬德腸燉飯 German Sausage Risotto with Cream Sauce,,560.6,15.72,81.16,18.26,FALSE,TRUE,Western,FALSE,rice,German Sausage Risotto with Cream Sauce,白醬德腸燉飯
+89,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬雞肉燉飯 Chicken Risotto with Cream Sauce,,577.6,32.42,80.16,12.66,FALSE,TRUE,Western,FALSE,rice,Chicken Risotto with Cream Sauce,白醬雞肉燉飯
+90,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬蛤蜊燉飯 Clam Risotto with Cream Sauce,,570.6,28.62,83.31,12.26,FALSE,TRUE,Western,FALSE,rice,Clam Risotto with Cream Sauce,白醬蛤蜊燉飯
+91,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬鮮魚燉飯 Fish Risotto with Cream Sauce,,495.6,17.12,79.56,11.06,FALSE,TRUE,Western,FALSE,rice,Fish Risotto with Cream Sauce,白醬鮮魚燉飯
+92,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬鮮蔬斜管 Vegetable Penne with Cream Sauce,,400.55,13.64,63.46,11.21,TRUE,TRUE,Western,FALSE,noodle,Vegetable Penne with Cream Sauce,白醬鮮蔬斜管
+93,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬培根斜管 Bacon Penne with Cream Sauce,,490.6,15.48,60.71,21.08,FALSE,TRUE,Western,FALSE,noodle,Bacon Penne with Cream Sauce,白醬培根斜管
+94,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬德腸斜管 German Sausage Penne with Cream Sauce,,484.6,18.83,61.56,18.58,FALSE,TRUE,Western,FALSE,noodle,German Sausage Penne with Cream Sauce,白醬德腸斜管
+95,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬雞肉斜管 Chicken Penne with Cream Sauce,,501.6,35.53,60.56,12.98,FALSE,TRUE,Western,FALSE,noodle,Chicken Penne with Cream Sauce,白醬雞肉斜管
+96,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬蛤蜊斜管 Clam Penne with Cream Sauce,,494.6,31.73,63.71,12.58,FALSE,TRUE,Western,FALSE,noodle,Clam Penne with Cream Sauce,白醬蛤蜊斜管
+97,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,白醬鮮魚斜管 Fish Penne with Cream Sauce,,419.6,20.23,59.96,11.38,FALSE,TRUE,Western,FALSE,noodle,Fish Penne with Cream Sauce,白醬鮮魚斜管
+98,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬鮮蔬直麵 Vegetable Spaghetti with Tomato Sauce,,356.75,13.74,72.16,2.23,TRUE,TRUE,Western,FALSE,noodle,Vegetable Spaghetti with Tomato Sauce,紅醬鮮蔬直麵
+99,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬培根直麵 Bacon Spaghetti with Tomato Sauce,,446.8,15.58,69.41,11.78,FALSE,TRUE,Western,FALSE,noodle,Bacon Spaghetti with Tomato Sauce,紅醬培根直麵
+100,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬德腸直麵 German Sausage Spaghetti with Tomato Sauce,,440.8,18.93,70.26,9.28,FALSE,TRUE,Western,FALSE,noodle,German Sausage Spaghetti with Tomato Sauce,紅醬德腸直麵
+101,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬雞肉直麵 Chicken Spaghetti with Tomato Sauce,,457.8,35.63,69.26,3.68,FALSE,TRUE,Western,FALSE,noodle,Chicken Spaghetti with Tomato Sauce,紅醬雞肉直麵
+102,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬蛤蜊直麵 Clam Spaghetti with Tomato Sauce,,450.8,31.83,72.41,3.28,FALSE,TRUE,Western,FALSE,noodle,Clam Spaghetti with Tomato Sauce,紅醬蛤蜊直麵
+103,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬鮮魚直麵 Fish Spaghetti with Tomato Sauce,,375.8,20.33,68.66,2.08,FALSE,TRUE,Western,FALSE,noodle,Fish Spaghetti with Tomato Sauce,紅醬鮮魚直麵
+104,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬鮮蔬燉飯 Vegetable Risotto with Tomato Sauce,,418.35,11.43,86.56,1.59,TRUE,TRUE,Western,FALSE,rice,Vegetable Risotto with Tomato Sauce,紅醬鮮蔬燉飯
+105,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬培根燉飯 Bacon Risotto with Tomato Sauce,,501.8,13.27,83.81,11.46,FALSE,TRUE,Western,FALSE,rice,Bacon Risotto with Tomato Sauce,紅醬培根燉飯
+106,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬德腸燉飯 German Sausage Risotto with Tomato Sauce,,495.8,16.62,84.66,8.96,FALSE,TRUE,Western,FALSE,rice,German Sausage Risotto with Tomato Sauce,紅醬德腸燉飯
+107,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬雞肉燉飯 Chicken Risotto with Tomato Sauce,,512.8,33.32,83.66,3.36,FALSE,TRUE,Western,FALSE,rice,Chicken Risotto with Tomato Sauce,紅醬雞肉燉飯
+108,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬蛤蜊燉飯 Clam Risotto with Tomato Sauce,,505.8,29.52,86.81,2.96,FALSE,TRUE,Western,FALSE,rice,Clam Risotto with Tomato Sauce,紅醬蛤蜊燉飯
+109,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬鮮魚燉飯 Fish Risotto with Tomato Sauce,,430.8,18.02,83.06,1.76,FALSE,TRUE,Western,FALSE,rice,Fish Risotto with Tomato Sauce,紅醬鮮魚燉飯
+110,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬鮮蔬斜管 Vegetable Penne with Tomato Sauce,,335.75,14.54,66.96,1.91,TRUE,TRUE,Western,FALSE,noodle,Vegetable Penne with Tomato Sauce,紅醬鮮蔬斜管
+111,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬培根斜管 Bacon Penne with Tomato Sauce,,425.8,16.38,64.21,12.1,FALSE,TRUE,Western,FALSE,noodle,Bacon Penne with Tomato Sauce,紅醬培根斜管
+112,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬德腸斜管 German Sausage Penne with Tomato Sauce,,419.8,19.73,65.06,9.6,FALSE,TRUE,Western,FALSE,noodle,German Sausage Penne with Tomato Sauce,紅醬德腸斜管
+113,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬雞肉斜管 Chicken Penne with Tomato Sauce,,436.8,36.43,64.06,4.0,FALSE,TRUE,Western,FALSE,noodle,Chicken Penne with Tomato Sauce,紅醬雞肉斜管
+114,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬蛤蜊斜管 Clam Penne with Tomato Sauce,,429.8,32.63,67.21,3.6,FALSE,TRUE,Western,FALSE,noodle,Clam Penne with Tomato Sauce,紅醬蛤蜊斜管
+115,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,紅醬鮮魚斜管 Fish Penne with Tomato Sauce,,354.8,21.13,63.46,2.4,FALSE,TRUE,Western,FALSE,noodle,Fish Penne with Tomato Sauce,紅醬鮮魚斜管
+116,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬鮮蔬直麵 Vegetable Spaghetti with Pesto Sauce,,444.25,13.31,70.02,12.33,TRUE,TRUE,Western,FALSE,noodle,Vegetable Spaghetti with Pesto Sauce,青醬鮮蔬直麵
+117,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬培根直麵 Bacon Spaghetti with Pesto Sauce,,534.3,15.15,67.27,22.2,FALSE,TRUE,Western,FALSE,noodle,Bacon Spaghetti with Pesto Sauce,青醬培根直麵
+118,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬德腸直麵 German Sausage Spaghetti with Pesto Sauce,,528.3,18.5,68.12,19.7,FALSE,TRUE,Western,FALSE,noodle,German Sausage Spaghetti with Pesto Sauce,青醬德腸直麵
+119,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬雞肉直麵 Chicken Spaghetti with Pesto Sauce,,545.3,35.2,67.12,14.1,FALSE,TRUE,Western,FALSE,noodle,Chicken Spaghetti with Pesto Sauce,青醬雞肉直麵
+120,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬蛤蜊直麵 Clam Spaghetti with Pesto Sauce,,538.3,31.4,70.27,13.7,FALSE,TRUE,Western,FALSE,noodle,Clam Spaghetti with Pesto Sauce,青醬蛤蜊直麵
+121,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬鮮魚直麵 Fish Spaghetti with Pesto Sauce,,463.3,19.9,66.52,12.5,FALSE,TRUE,Western,FALSE,noodle,Fish Spaghetti with Pesto Sauce,青醬鮮魚直麵
+122,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬鮮蔬燉飯 Vegetable Risotto with Pesto Sauce,,499.25,11.0,84.42,11.69,TRUE,TRUE,Western,FALSE,rice,Vegetable Risotto with Pesto Sauce,青醬鮮蔬燉飯
+123,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬培根燉飯 Bacon Risotto with Pesto Sauce,,589.3,12.84,81.67,21.56,FALSE,TRUE,Western,FALSE,rice,Bacon Risotto with Pesto Sauce,青醬培根燉飯
+124,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬德腸燉飯 German Sausage Risotto with Pesto Sauce,,583.3,16.19,82.52,19.06,FALSE,TRUE,Western,FALSE,rice,German Sausage Risotto with Pesto Sauce,青醬德腸燉飯
+125,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬雞肉燉飯 Chicken Risotto with Pesto Sauce,,600.3,32.89,81.52,13.46,FALSE,TRUE,Western,FALSE,rice,Chicken Risotto with Pesto Sauce,青醬雞肉燉飯
+126,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬蛤蜊燉飯 Clam Risotto with Pesto Sauce,,593.3,29.09,84.67,13.06,FALSE,TRUE,Western,FALSE,rice,Clam Risotto with Pesto Sauce,青醬蛤蜊燉飯
+127,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬鮮魚燉飯 Fish Risotto with Pesto Sauce,,518.3,17.59,80.92,11.86,FALSE,TRUE,Western,FALSE,rice,Fish Risotto with Pesto Sauce,青醬鮮魚燉飯
+128,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬鮮蔬斜管 Vegetable Penne with Pesto Sauce,,423.25,14.11,64.82,12.01,TRUE,TRUE,Western,FALSE,noodle,Vegetable Penne with Pesto Sauce,青醬鮮蔬斜管
+129,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬培根斜管 Bacon Penne with Pesto Sauce,,513.3,15.95,62.07,21.88,FALSE,TRUE,Western,FALSE,noodle,Bacon Penne with Pesto Sauce,青醬培根斜管
+130,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬德腸斜管 German Sausage Penne with Pesto Sauce,,507.3,19.3,62.92,19.38,FALSE,TRUE,Western,FALSE,noodle,German Sausage Penne with Pesto Sauce,青醬德腸斜管
+131,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬雞肉斜管 Chicken Penne with Pesto Sauce,,524.3,36.0,61.92,13.78,FALSE,TRUE,Western,FALSE,noodle,Chicken Penne with Pesto Sauce,青醬雞肉斜管
+132,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬蛤蜊斜管 Clam Penne with Pesto Sauce,,517.3,32.2,65.07,13.38,FALSE,TRUE,Western,FALSE,noodle,Clam Penne with Pesto Sauce,青醬蛤蜊斜管
+133,帕森義大利麵,Parson Pasta,風雲樓,Fengyun Building,青醬鮮魚斜管 Fish Penne with Pesto Sauce,,442.3,20.7,61.32,12.18,FALSE,TRUE,Western,FALSE,noodle,Fish Penne with Pesto Sauce,青醬鮮魚斜管
+134,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,奶油蟹肉粥 Creamy Crab Meat Congee,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Creamy Crab Meat Congee,奶油蟹肉粥
+135,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,生滾牛肉粥 Fresh Beef Congee,90,,,,,FALSE,FALSE,Cantonese,FALSE,rice,Fresh Beef Congee,生滾牛肉粥
+136,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,招牌粥 Signature Congee,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Signature Congee,招牌粥
+137,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,鮑魚粥 Abalone Congee,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Abalone Congee,鮑魚粥
+138,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,魚片粥 Fish Slices Congee,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Fish Slices Congee,魚片粥
+139,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,廣東粥 Cantonese Congee,80,,,,,FALSE,FALSE,Cantonese,FALSE,rice,Cantonese Congee,廣東粥
+140,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,海鮮粥 Seafood Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Seafood Congee,海鮮粥
+141,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,花枝瘦肉粥 Squid and Lean Pork Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Squid and Lean Pork Congee,花枝瘦肉粥
+142,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,蝦仁瘦肉粥 Shrimp and Lean Pork Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Shrimp and Lean Pork Congee,蝦仁瘦肉粥
+143,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,吻仔魚瘦肉粥 Whitebait and Lean Pork Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Whitebait and Lean Pork Congee,吻仔魚瘦肉粥
+144,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,豬肝瘦肉粥 Pork Liver and Lean Pork Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Pork Liver and Lean Pork Congee,豬肝瘦肉粥
+145,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,皮蛋瘦肉粥 Preserved Egg and Lean Pork Congee,80,,,,,FALSE,FALSE,Cantonese,FALSE,rice,Preserved Egg and Lean Pork Congee,皮蛋瘦肉粥
+146,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,玉米瘦肉粥 Sweet Corn and Lean Pork Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Sweet Corn and Lean Pork Congee,玉米瘦肉粥
+147,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,香菇瘦肉粥 Mushroom and Lean Pork Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Mushroom and Lean Pork Congee,香菇瘦肉粥
+148,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,蔬菜瘦肉粥 Vegetable and Lean Pork Congee,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Vegetable and Lean Pork Congee,蔬菜瘦肉粥
+149,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,牛肉鍋燒麵 Beef Pot-au-feu Noodle Soup,90,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Beef Pot-au-feu Noodle Soup,牛肉鍋燒麵
+150,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,海鮮鍋燒麵 Seafood Pot-au-feu Noodle Soup,90,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Seafood Pot-au-feu Noodle Soup,海鮮鍋燒麵
+151,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,豬肉鍋燒麵 Pork Pot-au-feu Noodle Soup,90,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Pork Pot-au-feu Noodle Soup,豬肉鍋燒麵
+152,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,泡菜鍋燒麵 Kimchi Pot-au-feu Noodle Soup,90,,,,,FALSE,FALSE,Korean,FALSE,noodle,Kimchi Pot-au-feu Noodle Soup,泡菜鍋燒麵
+153,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,豬肝鍋燒麵 Pork Liver Pot-au-feu Noodle Soup,90,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Pork Liver Pot-au-feu Noodle Soup,豬肝鍋燒麵
+154,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,沙茶/蒜味 牛肉炒麵 Shacha / Garlic Fried Beef Noodles,85,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Shacha / Garlic Fried Beef Noodles,沙茶/蒜味 牛肉炒麵
+155,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,沙茶/蒜味 豬肉炒麵 Shacha / Garlic Fried Pork Noodles,85,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Shacha / Garlic Fried Pork Noodles,沙茶/蒜味 豬肉炒麵
+156,珍御品粥麵館,Zhen Yu Pin Congee & Noodle,風雲樓,Fengyun Building,沙茶/蒜味 豬肝炒麵 Shacha / Garlic Fried Pork Liver Noodles,85,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Shacha / Garlic Fried Pork Liver Noodles,沙茶/蒜味 豬肝炒麵
+157,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,乾意麵加蛋 yimian with stewed egg,,575,26,93,11,FALSE,TRUE,Taiwanese,FALSE,noodle,yimian with stewed egg,乾意麵加蛋
+158,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,湯意麵加蛋 yimian soup with stewed egg,,575,26,93,11,FALSE,TRUE,Taiwanese,FALSE,noodle,yimian soup with stewed egg,湯意麵加蛋
+159,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,乾黃拉麵加蛋 Q noodle with stewed egg,,580,27,91,12,FALSE,TRUE,Taiwanese,FALSE,noodle,Q noodle with stewed egg,乾黃拉麵加蛋
+160,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,湯黃拉麵加蛋 Q noodle soup with stewed egg,,580,27,91,12,FALSE,TRUE,Taiwanese,FALSE,noodle,Q noodle soup with stewed egg,湯黃拉麵加蛋
+161,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,餛飩乾意麵 wonton yimian,,617,23,102,13,FALSE,TRUE,Taiwanese,FALSE,noodle,wonton yimian,餛飩乾意麵
+162,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,餛飩湯意麵 wonton yimian soup,,617,23,102,13,FALSE,TRUE,Taiwanese,FALSE,noodle,wonton yimian soup,餛飩湯意麵
+163,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,餛飩乾黃拉麵 wonton Q noodle,,622,24,100,14,FALSE,TRUE,Taiwanese,FALSE,noodle,wonton Q noodle,餛飩乾黃拉麵
+164,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,餛飩湯黃拉麵 wonton Q noodle soup,,622,24,100,14,FALSE,TRUE,Taiwanese,FALSE,noodle,wonton Q noodle soup,餛飩湯黃拉麵
+165,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,梅花肉乾意麵 pork yimian,,602,35,93,10,FALSE,TRUE,Taiwanese,FALSE,noodle,pork yimian,梅花肉乾意麵
+166,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,梅花肉湯意麵 pork yimian soup,,602,35,93,10,FALSE,TRUE,Taiwanese,FALSE,noodle,pork yimian soup,梅花肉湯意麵
+167,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,梅花肉乾黃拉麵 pork Q noodle,,607,36,91,11,FALSE,TRUE,Taiwanese,FALSE,noodle,pork Q noodle,梅花肉乾黃拉麵
+168,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,梅花肉湯黃拉麵 pork Q noodle soup,,607,36,91,11,FALSE,TRUE,Taiwanese,FALSE,noodle,pork Q noodle soup,梅花肉湯黃拉麵
+169,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,魯肉飯加蛋 braised pork rice with stewed egg,,522,26,73,14,FALSE,TRUE,Taiwanese,FALSE,rice,braised pork rice with stewed egg,魯肉飯加蛋
+170,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,滷排骨鐵路飯包 traditional braised pork ribs rice,,635,45,80,15,FALSE,TRUE,Taiwanese,FALSE,rice,traditional braised pork ribs rice,滷排骨鐵路飯包
+171,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,白飯(一等米) rice,,288,2,70,0,TRUE,TRUE,Taiwanese,FALSE,rice,rice,白飯(一等米)
+172,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,魯豆腐 braised tofu,,138,27,3,2,TRUE,TRUE,Taiwanese,FALSE,snack,braised tofu,魯豆腐
+173,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,豆芽菜 bean sprouts,,72,6,3,4,TRUE,TRUE,Taiwanese,FALSE,snack,bean sprouts,豆芽菜
+174,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,紅油抄手 red oil wontons,,267,21,30,7,FALSE,TRUE,Taiwanese,FALSE,dumpling,red oil wontons,紅油抄手
+175,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,麻醬抄手 sesame paste wontons,,266,22,31,6,FALSE,TRUE,Taiwanese,FALSE,dumpling,sesame paste wontons,麻醬抄手
+176,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,餛飩湯 wonton soup,,222,21,30,2,FALSE,TRUE,Taiwanese,FALSE,soup,wonton soup,餛飩湯
+177,瑪尼卡巴,Manikaba,風雲樓,Fengyun Building,蛋花湯 egg soup,,74,12,2,2,TRUE,TRUE,Taiwanese,FALSE,soup,egg soup,蛋花湯
+178,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,碳烤雞排便當 Charcoal Grilled Chicken Cutlet Bento,95,870,50,101,24,FALSE,TRUE,Taiwanese,FALSE,rice,Charcoal Grilled Chicken Cutlet Bento,碳烤雞排便當
+179,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,碳烤雞腿便當 Charcoal Grilled Chicken Leg Bento,110,906,76.1,105.7,26.4,FALSE,TRUE,Taiwanese,FALSE,rice,Charcoal Grilled Chicken Leg Bento,碳烤雞腿便當
+180,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,碳烤排骨便當 Charcoal Grilled Pork Rib Bento,90,755,54,105.2,20.2,FALSE,TRUE,Taiwanese,FALSE,rice,Charcoal Grilled Pork Rib Bento,碳烤排骨便當
+181,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,烤雞柳便當 Grilled Chicken Tender Bento,100,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Grilled Chicken Tender Bento,烤雞柳便當
+182,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,烤五花肉便當 Grilled Pork Belly Bento,95,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Grilled Pork Belly Bento,烤五花肉便當
+183,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,烤古早味手工香腸便當 Grilled Traditional Handmade Sausage Bento,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Grilled Traditional Handmade Sausage Bento,烤古早味手工香腸便當
+184,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,烤鯖魚便當 Grilled Mackerel Bento,95,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Grilled Mackerel Bento,烤鯖魚便當
+185,碳烤小姐,Miss Charcoal Grill,風雲樓,Fengyun Building,雞絲飯 Shredded Chicken Rice,,653,55,101,6.7,FALSE,TRUE,Taiwanese,FALSE,rice,Shredded Chicken Rice,雞絲飯
+186,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,松阪豬肉飯 Pork Neck Rice,80,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Pork Neck Rice,松阪豬肉飯
+187,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,蔥燒豬肉飯 Grilled Scallion Pork Rice,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Grilled Scallion Pork Rice,蔥燒豬肉飯
+188,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,打拋豬肉飯 Basil Chili Pork Rice,90,,,,,FALSE,FALSE,Thai,FALSE,rice,Basil Chili Pork Rice,打拋豬肉飯
+189,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,沙茶洋蔥豬肉飯 Shacha Onion Pork Rice,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Shacha Onion Pork Rice,沙茶洋蔥豬肉飯
+190,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,紅糟赤肉飯 Braised Pork Rice,100,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Braised Pork Rice,紅糟赤肉飯
+191,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,虱目魚蓋飯 Milkfish over Rice,75,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Milkfish over Rice,虱目魚蓋飯
+192,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,嫩煎鮭魚飯 Sauteed Salmon Rice,100,,,,,FALSE,FALSE,Japanese,FALSE,rice,Sauteed Salmon Rice,嫩煎鮭魚飯
+193,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,照燒鮭魚飯 Teriyaki Salmon Rice,100,,,,,FALSE,FALSE,Japanese,FALSE,rice,Teriyaki Salmon Rice,照燒鮭魚飯
+194,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,蒜燒鮭魚飯 Garlic Grilled Salmon Rice,100,,,,,FALSE,FALSE,Japanese,FALSE,rice,Garlic Grilled Salmon Rice,蒜燒鮭魚飯
+195,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,招牌飯(豬肉、雞肉、鴨肉) Signature Rice (Pork / Chicken / Duck),130,,,,,FALSE,FALSE,Taiwanese,TRUE,rice,Signature Rice (Pork / Chicken / Duck),招牌飯(豬肉、雞肉、鴨肉)
+196,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,滷雞腿飯 Braised Chicken Thigh Rice,95,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Braised Chicken Thigh Rice,滷雞腿飯
+197,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,海南雞腿飯 Hainanese Chicken Thigh Rice,95,,,,,FALSE,FALSE,Singaporean,FALSE,rice,Hainanese Chicken Thigh Rice,海南雞腿飯
+198,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,椒麻雞腿飯 Chicken Thigh with Chili Sauce Rice,95,,,,,FALSE,FALSE,Thai,FALSE,rice,Chicken Thigh with Chili Sauce Rice,椒麻雞腿飯
+199,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,烤雞腿飯 Roasted Chicken Thigh Rice,95,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Roasted Chicken Thigh Rice,烤雞腿飯
+200,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,檸檬嫩雞飯 Lemon Chicken Rice,95,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Lemon Chicken Rice,檸檬嫩雞飯
+201,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,糖醋雞柳飯 Sweet and Sour Chicken Fillet Rice,85,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Sweet and Sour Chicken Fillet Rice,糖醋雞柳飯
+202,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,洋蔥炒雞丁飯 Onion Chicken Rice,100,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Onion Chicken Rice,洋蔥炒雞丁飯
+203,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,紐奧良腿排飯 New Orleans Chicken Thigh Rice,90,,,,,FALSE,FALSE,Western,FALSE,rice,New Orleans Chicken Thigh Rice,紐奧良腿排飯
+204,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,古早味油雞胸飯 Oil-Poached Chicken Breast Rice,90,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Oil-Poached Chicken Breast Rice,古早味油雞胸飯
+205,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,泰式酸辣雞排飯 Thai Hot & Sour Chicken Chop Rice,90,,,,,FALSE,FALSE,Thai,FALSE,rice,Thai Hot & Sour Chicken Chop Rice,泰式酸辣雞排飯
+206,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,脆皮雞排飯 Crispy Chicken Cutlet with Rice,100,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Crispy Chicken Cutlet with Rice,脆皮雞排飯
+207,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,蔥燒牛肉飯 Grilled Scallion Beef Rice,100,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Grilled Scallion Beef Rice,蔥燒牛肉飯
+208,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,沙茶洋蔥牛肉飯 Shacha Onion Beef Rice,100,,,,,FALSE,FALSE,Taiwanese,FALSE,rice,Shacha Onion Beef Rice,沙茶洋蔥牛肉飯
+209,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,牛肉炒麵/河粉 Beef Chow Mein / Pho,100,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Beef Chow Mein / Pho,牛肉炒麵/河粉
+210,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,虱目魚湯麵/河粉 Milkfish Noodle / Pho,70,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Milkfish Noodle / Pho,虱目魚湯麵/河粉
+211,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,牛肉湯河粉 Beef Pho,100,,,,,FALSE,FALSE,Southeast Asian,FALSE,noodle,Beef Pho,牛肉湯河粉
+212,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,豬肉湯河粉 Pork Pho,90,,,,,FALSE,FALSE,Southeast Asian,FALSE,noodle,Pork Pho,豬肉湯河粉
+213,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,牛肉鍋燒意麵 Hot Pot Noodles with Beef,90,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Hot Pot Noodles with Beef,牛肉鍋燒意麵
+214,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,豬肉鍋燒意麵 Hot Pot Noodles with Pork,90,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Hot Pot Noodles with Pork,豬肉鍋燒意麵
+215,紅燒如意坊,Braised Ruyi Fang,風雲樓,Fengyun Building,蛋鍋燒意麵 Hot Pot Noodles with Egg,60,,,,,FALSE,FALSE,Taiwanese,FALSE,noodle,Hot Pot Noodles with Egg,蛋鍋燒意麵
+216,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,大麥茶 Barley tea,25,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Barley tea,大麥茶
+217,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,拾光紅茶(甜度固定) Classic old time black tea(sugar half),25,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Classic old time black tea(sugar half),拾光紅茶(甜度固定)
+218,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,伯爵紅茶 Earl grey tea,30,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Earl grey tea,伯爵紅茶
+219,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,錫蘭紅茶 Ceylon black tea,30,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Ceylon black tea,錫蘭紅茶
+220,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,高山綠茶 Jasmine green tea,30,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Jasmine green tea,高山綠茶
+221,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,四季青茶 Mountain Green tea,30,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Mountain Green tea,四季青茶
+222,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,凍頂烏龍 Oolong tea,30,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Oolong tea,凍頂烏龍
+223,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,冬瓜茶 sweetened white gourd drink,30,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,sweetened white gourd drink,冬瓜茶
+224,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,冬瓜仙草茶 white gourd herbal tea,40,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,white gourd herbal tea,冬瓜仙草茶
+225,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,冬瓜青茶 white gourd Paochong tea,40,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,white gourd Paochong tea,冬瓜青茶
+226,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,冬瓜檸檬 white gourd lemon,45,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,white gourd lemon,冬瓜檸檬
+227,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,小紫蘇愛玉 aiyu jelly white gourd lemon,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,aiyu jelly white gourd lemon,小紫蘇愛玉
+228,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,茗釀奶蓋紅茶 Black tea Milk Cap,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Black tea Milk Cap,茗釀奶蓋紅茶
+229,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,仙草甘茶 Herbal tea,40,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Herbal tea,仙草甘茶
+230,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,脆梅冰釀 Plum Jasmine Green tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Plum Jasmine Green tea,脆梅冰釀
+231,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,蜂蜜綠茶 Honey Green tea,40,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Honey Green tea,蜂蜜綠茶
+232,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,蜂蜜檸檬 Honey lemon water,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Honey lemon water,蜂蜜檸檬
+233,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,蜂蜜檸檬蘆薈 Honey Aloe Vera lemon water,55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Honey Aloe Vera lemon water,蜂蜜檸檬蘆薈
+234,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,百香雙Q綠 Passion fruit coconut jelly&pearl green tea,60,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Passion fruit coconut jelly&pearl green tea,百香雙Q綠
+235,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,柳丁青/綠茶 Orange Green tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Orange Green tea,柳丁青/綠茶
+236,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,葡萄柚綠/紅茶 Pink Grapefruit Green/Black tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Pink Grapefruit Green/Black tea,葡萄柚綠/紅茶
+237,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,百香綠/紅茶 Passion fruit Green/Black tea,55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Passion fruit Green/Black tea,百香綠/紅茶
+238,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,檸檬綠/紅茶 Lemon Green /Black tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Lemon Green /Black tea,檸檬綠/紅茶
+239,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,檸檬愛玉 Aiyu jelly Lemon water,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Aiyu jelly Lemon water,檸檬愛玉
+240,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,茗釀水果茶 Ming's Fruit green tea,,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Ming's Fruit green tea,茗釀水果茶
+241,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,百香柳丁青茶 Orange Passion fruit Green tea,60,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Orange Passion fruit Green tea,百香柳丁青茶
+242,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,多多綠茶 Yakult Green tea,45,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Yakult Green tea,多多綠茶
+243,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,檸檬/葡萄柚/百香多多 Yakult Lemon/Pink Grapefruit juice/Passion fruit juice,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Yakult Lemon/Pink Grapefruit juice/Passion fruit juice,檸檬/葡萄柚/百香多多
+244,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,百香/柳丁/葡萄柚可爾必思 Calpis Passion fruit juice/orange juice/ Pink Grape juice,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Calpis Passion fruit juice/orange juice/ Pink Grape juice,百香/柳丁/葡萄柚可爾必思
+245,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,綠茶可爾必思 Calpis green tea,45,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Calpis green tea,綠茶可爾必思
+246,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,紫蘇點點 Yakult Aloe Vera Grape juice,60,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Yakult Aloe Vera Grape juice,紫蘇點點
+247,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,皇家奶茶 Milk tea,45,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Milk tea,皇家奶茶
+248,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,波霸奶茶 Boba/Pearl milk tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Boba/Pearl milk tea,波霸奶茶
+249,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,雙Q奶茶 Coconut jelly & Pearl milk tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Coconut jelly & Pearl milk tea,雙Q奶茶
+250,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,珍珠布丁奶茶 Pudding & Pearl milk tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Pudding & Pearl milk tea,珍珠布丁奶茶
+251,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,巧克力奶茶[糖度限定] Chocolate milk tea (sweetness level is fixed),55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Chocolate milk tea (sweetness level is fixed),巧克力奶茶[糖度限定]
+252,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,濃濃巧克力[糖度限定] Pure Chocolate drink (sweetness level is fixed),55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Pure Chocolate drink (sweetness level is fixed),濃濃巧克力[糖度限定]
+253,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,甘蔗青茶 Sugarcane Paochong tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Sugarcane Paochong tea,甘蔗青茶
+254,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,甘蔗檸檬 Sugarcane lemon,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Sugarcane lemon,甘蔗檸檬
+255,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,甘蔗百香 Sugarcane passion fruit juice,55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Sugarcane passion fruit juice,甘蔗百香
+256,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,甘蔗柳丁 Sugarcane orange juice,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Sugarcane orange juice,甘蔗柳丁
+257,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,甘蔗拿鐵 Sugarcane milk,55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Sugarcane milk,甘蔗拿鐵
+258,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,紅茶拿鐵 Fresh milk Black tea,50,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Fresh milk Black tea,紅茶拿鐵
+259,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,冬瓜鮮奶 White gourd Fresh milk,55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,White gourd Fresh milk,冬瓜鮮奶
+260,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,巧克力拿鐵[糖度限定] Chocolate Fresh milk,60,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Chocolate Fresh milk,巧克力拿鐵[糖度限定]
+261,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,仙草凍拿鐵 Herbal jelly Fresh milk,55,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Herbal jelly Fresh milk,仙草凍拿鐵
+262,茗釀茶品,MN Tea Time & Tea Lounge,風雲樓,Fengyun Building,波霸鮮奶茶 Boba Fresh milk Black tea,60,,,,,TRUE,FALSE,Taiwanese,FALSE,drinks,Boba Fresh milk Black tea,波霸鮮奶茶
+263,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,牛丼 Beef rice,,604,34,75,30,FALSE,TRUE,Japanese,FALSE,rice,Beef rice,牛丼
+264,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,三種起司牛丼 Cheese beef rice,,761,37,79,33,FALSE,TRUE,Japanese,FALSE,rice,Cheese beef rice,三種起司牛丼
+265,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,炸雞牛丼 Beef and chicken rice,,892,59,83,36,FALSE,TRUE,Japanese,FALSE,rice,Beef and chicken rice,炸雞牛丼
+266,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,雙倍牛丼 Double beef rice,,923,68,75,39,FALSE,TRUE,Japanese,FALSE,rice,Double beef rice,雙倍牛丼
+267,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,咖哩牛丼 Curry beef rice,,748,37,78,32,FALSE,TRUE,Japanese,FALSE,rice,Curry beef rice,咖哩牛丼
+268,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,炸雞咖哩飯 Fried chicken curry rice,,875,32,99,36,FALSE,TRUE,Japanese,FALSE,rice,Fried chicken curry rice,炸雞咖哩飯
+269,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,德式香腸咖哩飯 Sausage curry rice,,682,28,75,30,FALSE,TRUE,Japanese,FALSE,rice,Sausage curry rice,德式香腸咖哩飯
+270,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,魚排咖哩飯 Fish curry rice,,720,27,81,32,FALSE,TRUE,Japanese,FALSE,rice,Fish curry rice,魚排咖哩飯
+271,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,蔬服咖哩飯 Vegetable curry rice,,567,15,75,23,TRUE,TRUE,Japanese,FALSE,rice,Vegetable curry rice,蔬服咖哩飯
+272,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,雞牛咖哩飯 Curry rice with beef and chicken,,902,59,99,30,FALSE,TRUE,Japanese,TRUE,rice,Curry rice with beef and chicken,雞牛咖哩飯
+273,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,"三寶咖哩飯 Curry rice with beef,chicken and sausage",,1091,82,103,39,FALSE,TRUE,Japanese,TRUE,rice,"Curry rice with beef,chicken and sausage",三寶咖哩飯
+274,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,起司肉醬飯 Meat sauce rice,,684,26,82,28,FALSE,TRUE,Western,FALSE,rice,Meat sauce rice,起司肉醬飯
+275,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,馬鈴薯燉肉飯 Pork stew with potato rice,,691,28,75,31,FALSE,TRUE,Japanese,FALSE,rice,Pork stew with potato rice,馬鈴薯燉肉飯
+276,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,雞肉捲餅 Fried chicken burritos,,571,32,59,23,FALSE,TRUE,Western,FALSE,wrap,Fried chicken burritos,雞肉捲餅
+277,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,牛肉捲餅 Beef burritos,,541,34,54,21,FALSE,TRUE,Western,FALSE,wrap,Beef burritos,牛肉捲餅
+278,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,德式香腸捲餅 Sausage burritos,,524,29,57,20,FALSE,TRUE,Western,FALSE,wrap,Sausage burritos,德式香腸捲餅
+279,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,雞肉起司薄餅 Fried chicken quesadillos,,585,32,58,25,FALSE,TRUE,Western,FALSE,wrap,Fried chicken quesadillos,雞肉起司薄餅
+280,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,牛肉起司薄餅 Beef quesadillos,,559,34,54,23,FALSE,TRUE,Western,FALSE,wrap,Beef quesadillos,牛肉起司薄餅
+281,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,德式香腸起司薄餅 Sausage quesadillos,,546,31,56,22,FALSE,TRUE,Western,FALSE,wrap,Sausage quesadillos,德式香腸起司薄餅
+282,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,特調紅茶 Black tea,,80,0,20,0,TRUE,TRUE,Taiwanese,FALSE,drinks,Black tea,特調紅茶
+283,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,可口可樂 Coca Cola,,104,0,26,0,TRUE,TRUE,Western,FALSE,drinks,Coca Cola,可口可樂
+284,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,印度拉茶 Milk tea,,127,2,23,3,TRUE,TRUE,Southeast Asian,FALSE,drinks,Milk tea,印度拉茶
+285,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,加拿大脆薯 French fries,,477,6,93,9,TRUE,TRUE,Western,FALSE,snack,French fries,加拿大脆薯
+286,莫尼捲餅,Moni Burritos,風雲樓,Fengyun Building,甘梅地瓜薯條 Sweet potato fries,,465,7,89,9,TRUE,TRUE,Taiwanese,FALSE,snack,Sweet potato fries,甘梅地瓜薯條
