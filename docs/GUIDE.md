@@ -1,207 +1,192 @@
 # Skip the Line: step-by-step guide
 
-For the two coders on the team. Follow the steps in order. Steps 1–6 take about an hour the first time.
+For the two coders on the team (called **A** and **B** below, like in our I2P project).
+It is set up the same way as the I2P geocaching project: Flask + Flask-SQLAlchemy + SQLite, one Blueprint per `*_api.py` file,
+plain-Python rule files that are easy to test, Jinja templates, and `unittest` tests.
 
 **Project folder:** `D:\NTHU\First Year Seminar\First-Year-Seminar\Skip-The-Line`
 **GitHub repo:** https://github.com/RyanLuong08/Skip-The-Line
 
 ---
 
-## How the app works (read this first)
+## How the app works
 
 ```
- Student phone                         Vendor tablet
- index.html                            vendor.html
-   pick vendor, order, get #12           see #12 → Start cooking → Mark ready
-          \                              /
-           \                            /
-            js/store.js  (one place that saves and loads orders)
-              ├── store-local.js     → this browser only (for building and demos)
-              └── store-firebase.js  → cloud database, shared by every device (Step 10)
-
- data/raw/Fengyun.csv ──(scripts/build_menu.py)──► data/menu.json ──► both pages read the menu
+ Student phone (/)                                   Vendor tablet (/vendor)
+   pick vendor, add dishes, Place order                sees #12 → Start cooking → Mark ready
+          │  POST /api/orders                                 │  POST /api/orders/12/status
+          │  GET  /api/my-orders  (every 4 s)                 │  GET  /api/vendors/<slug>/orders (every 3 s)
+          ▼                                                   ▼
+   order_api.py ──── queue_rules.py / order_input.py ──── vendor_api.py      menu_api.py
+          └───────────────────── models.py (SQLAlchemy) ─────────────────────────┘
+                                     instance/skipline.db (SQLite)
+                                            ▲
+                    data/Fengyun.csv ── menu_import.py (loaded on the first run)
 ```
 
-It is plain HTML, CSS and JavaScript: no frameworks and no build step. That means GitHub Pages can host it for free,
-and you can read every file without learning a framework first.
+The pages never decide anything important. They ask Python, and Python checks the prices, hands out ticket numbers and
+refuses impossible moves (like *ready → cooking*). One server holds one database, so every phone sees the same queue.
 
 ---
 
 ## Step 1. Install the tools (both coders)
 
-1. **Git**: https://git-scm.com/download/win. Accept the defaults. Keep "Git Credential Manager" ticked, since it lets you sign in to GitHub through the browser.
-2. **VS Code**: https://code.visualstudio.com. Then open Extensions (Ctrl+Shift+X) and install **Live Server** (by Ritwick Dey).
-3. **Python 3**: https://www.python.org/downloads/. On the first installer screen, tick **"Add python.exe to PATH"**.
-4. **GitHub account**: https://github.com/signup (use your school email if you want GitHub Education perks later).
+You already have these from I2P. If not:
+1. **Python 3.12 or newer**: https://www.python.org/downloads/ (tick **"Add python.exe to PATH"**).
+2. **Git**: https://git-scm.com/download/win (keep the defaults).
+3. **VS Code** with the **Python** extension (by Microsoft).
 
-Check that everything installed. Open **PowerShell** and run:
-```powershell
-git --version
-python --version
-```
-Both should print a version number. If `python` opens the Microsoft Store instead, reinstall Python with the PATH box ticked.
+## Step 2. Get the code
 
-## Step 2. Tell Git who you are (both coders, once per computer)
-
-```powershell
-git config --global user.name "Your Name"
-git config --global user.email "the-email-on-your-github-account@example.com"
-git config --global init.defaultBranch main
-```
-
-## Step 3. Get access to the repo
-
-The repo `Skip-The-Line` is under the GitHub account **RyanLuong08**.
-
-- **If that's you:** go to the repo on GitHub → **Settings → Collaborators → Add people**, and invite your teammate's GitHub username. They accept the invite from their email or https://github.com/notifications.
-- **If that's your teammate:** ask them to invite you as above.
-- **If the repo doesn't exist on GitHub yet:** sign in as RyanLuong08 → **+ (top right) → New repository** → name it `Skip-The-Line`, set it to **Public**, and **don't** tick "Add a README" (the project already has one). Click **Create repository**.
-
-## Step 4. Open and run the project
-
-1. Open VS Code → **File → Open Folder** → choose `D:\NTHU\First Year Seminar\First-Year-Seminar\Skip-The-Line`.
-2. Right-click `index.html` → **Open with Live Server**. The browser opens at something like `http://127.0.0.1:5500/index.html`.
-   - No Live Server? In VS Code's terminal (Ctrl+`) run `python -m http.server 8000` and open http://localhost:8000.
-   - Don't double-click `index.html`. Browsers block the menu file when a page is opened that way, and you'll see an empty page.
-3. Try it:
-   - Click **Love Curry**, add two dishes, click **Place order**. A ticket **#1** appears under "My tickets".
-   - Click **Vendor view →** (or open `vendor.html` in a second tab), choose *Fengyun · Love Curry*, and click **Start cooking**, then **Mark ready**.
-   - Switch back to the student tab. The ticket now says **Ready for pickup**.
-
-While `BACKEND = "local"`, orders live only in that one browser. To clear them: press F12 → **Application** tab → **Local Storage** → right-click → **Clear**.
-
-## Step 5. Learn your way around the code (30 minutes, worth it)
-
-Read the files in this order. Each one is short and commented.
-
-| File | What to look for |
-|---|---|
-| `js/config.js` | The settings you'll change: backend, Firebase keys, peak hours, pickup slot spacing |
-| `js/util.js` | `estimateWaitMin()` is the wait-time formula; `pickupSlots()` builds the time list |
-| `js/store.js` | The 3 functions everything else uses: `subscribeOrders`, `placeOrder`, `setStatus` |
-| `js/app.js` | Student page. Pattern: **state → render() → events change state → render() again** |
-| `js/vendor.js` | Vendor page, same pattern |
-| `scripts/build_menu.py` | How CSV rows become `data/menu.json`; `PREP_MIN` sets each vendor's minutes per order |
-
-Practice change: in `config.js`, change `SLOT_STEP_MIN` to `15`, save, and watch the pickup times change in the browser.
-
-## Step 6. First commit and push to GitHub (whoever owns the repo)
-
-The folder is already a Git repo connected to GitHub, so you only need to commit and push. In VS Code's terminal:
-
+**Coder A (Ryan), who already has the folder:** first merge the pull request on GitHub (I'll send the link), then:
 ```powershell
 cd "D:\NTHU\First Year Seminar\First-Year-Seminar\Skip-The-Line"
-git status                      # lists the new files (red = not yet staged)
-git add .
-git commit -m "Starter app: student ordering page, vendor dashboard, Fengyun menu"
-git branch -M main
-git push -u origin main
+git checkout main
+git pull
 ```
+`git pull` deletes the old JavaScript files and brings in the Python ones, so the folder is cleaned up for you.
 
-The first push opens a browser window to sign in to GitHub. Refresh the repo page on GitHub and your files are there.
-
-> **If you see** `fatal: not a git repository`: run `git init` then `git remote add origin https://github.com/RyanLuong08/Skip-The-Line.git` and try again.
-> **If you see** `rejected ... fetch first`: the GitHub repo already has a commit (e.g. a README made on the website). Run `git pull origin main --allow-unrelated-histories`, then push again.
-
-## Step 7. Your teammate gets a copy
-
-On the teammate's computer (after accepting the invite):
+**Coder B:** accept the collaborator invite (GitHub email or https://github.com/notifications), then:
 ```powershell
-cd D:\           # or anywhere they like
+cd D:\NTHU
 git clone https://github.com/RyanLuong08/Skip-The-Line.git
 cd Skip-The-Line
-code .           # opens it in VS Code
 ```
 
-## Step 8. Daily team workflow (both coders)
+## Step 3. Make the virtual environment (once per computer)
 
-Use one **branch per task** so you never overwrite each other.
+Same as I2P: the packages live in a `venv` folder inside the project (git ignores it).
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+Your prompt now starts with `(venv)`. **Run `.\venv\Scripts\Activate.ps1` every time you open a new terminal.**
+
+> PowerShell says *"running scripts is disabled"*? Run this once, then try again:
+> `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+>
+> In VS Code: Ctrl+Shift+P → **Python: Select Interpreter** → pick the one in `.\venv`. New terminals then activate it for you.
+
+## Step 4. Run it
 
 ```powershell
-git checkout main
-git pull                                  # 1. get the latest version
-git checkout -b vendor-sound-alert        # 2. new branch named after the task
-# ... edit, test in the browser ...
-git add .
-git commit -m "Vendor page: play a sound when a new order arrives"
-git push -u origin vendor-sound-alert     # 3. upload the branch
+python app.py
 ```
+- Student page: http://localhost:5000
+- Vendor page: http://localhost:5000/vendor
 
-Then on GitHub: click **Compare & pull request** → **Create pull request**. The other coder reads it, clicks **Merge**, and you both `git checkout main` and `git pull`.
+The first run creates `instance/skipline.db` and loads the 286 Fengyun dishes from `data/Fengyun.csv`.
 
-**Splitting the work** so you rarely edit the same file:
+Try it: order two dishes at **Love Curry**, open `/vendor` in another tab, choose *fengyun · Love Curry*, and click
+**Start cooking** then **Mark ready**. Within 4 seconds the student tab says **Ready for pickup**.
 
-| Coder A | Coder B |
-|---|---|
-| Student page (`index.html`, `js/app.js`) | Vendor page (`vendor.html`, `js/vendor.js`) |
-| Wait-time formula (`js/util.js`) | Menu data and script (`data/`, `scripts/`) |
-| Firebase setup (Step 10) | GitHub Pages and testing on phones (Step 9) |
+Stop the server with **Ctrl+C**.
+To wipe all orders, stop the server, delete `instance\skipline.db`, and start it again.
+To see the error details while coding, run `$env:FLASK_DEBUG = "1"; python app.py`.
 
-**Merge conflict?** VS Code highlights the clashing lines with *Accept Current / Accept Incoming / Accept Both*. Pick the right one, save, then `git add .` and `git commit`.
+## Step 5. Run the tests
 
-## Step 9. Publish it on GitHub Pages (free website)
+```powershell
+python -m unittest
+```
+You should see `Ran 61 tests ... OK`. **Run them before every push.** If you change a rule, change or add its test too.
+Run one file with `python -m unittest tests.test_queue_rules`.
 
-1. On GitHub: repo → **Settings → Pages**.
-2. **Source:** *Deploy from a branch*. **Branch:** `main`, folder `/ (root)` → **Save**.
-3. Wait 1–2 minutes and refresh. The address appears at the top: **https://ryanluong08.github.io/Skip-The-Line/**
-4. Every push to `main` updates the site automatically within a minute or two.
+## Step 6. Learn your way around (30 minutes, worth it)
 
-Put this link on slide 7 of the presentation. The repo needs to be **Public** for free Pages.
+Read in this order. Each file starts with a comment saying what it does.
 
-## Step 10. Make orders shared across phones (Firebase)
+| Read | Look for |
+| --- | --- |
+| `queue_rules.py` | `estimate_wait_min`, `pickup_slots`, `ALLOWED_MOVES`, `PEAK_HOURS` |
+| `order_input.py` | How every value from the browser is checked before it's used |
+| `models.py` | The four tables and how `Order` keeps its own copy of each dish (`OrderLine`) |
+| `order_api.py` | `_create_order`: how ticket numbers are handed out safely |
+| `menu_api.py`, `vendor_api.py` | Small Blueprints, same pattern as `coin_api.py` in I2P |
+| `templates/index.html` | The inline script: fetch `/api/...`, then draw with `el(...)` |
+| `tests/helpers.py` | The tiny test menu every API test starts with |
 
-With `BACKEND = "local"`, a student's phone and the vendor's tablet can't see each other's orders. Firebase's free plan fixes that.
+Practice change: in `queue_rules.py` set `SLOT_STEP_MIN = 15`, run the tests (one will fail, so fix its expected times),
+then restart the app and look at the pickup list.
 
-1. Go to https://console.firebase.google.com → **Create a project** → name it `skip-the-line` → Google Analytics can be off → **Create**.
-2. Left menu **Build → Firestore Database → Create database**. Location: **asia-east1 (Taiwan)**. Start in **production mode**.
-3. Open the **Rules** tab, replace everything with the contents of `firestore.rules` from this project, and click **Publish**.
-4. Click the **gear icon → Project settings → General**. Under "Your apps", click the **web icon `</>`**, name it `web`, and **don't** tick Firebase Hosting → **Register app**.
-5. Firebase shows a `firebaseConfig = { ... }` block. Copy the values into `js/config.js` → `firebaseConfig`.
-6. In `js/config.js` set `export const BACKEND = "firebase";`
-7. Test: open the site on your phone and on your laptop. Order on the phone and the order appears on the laptop's vendor page within a second.
-8. Commit and push. The Firebase web config is safe to publish, because the security rules (step 3) are what protect the database.
+## Step 7. Daily team workflow
 
-If orders don't appear, press F12 → **Console**. `Missing or insufficient permissions` means the rules from step 3 weren't published.
+One branch per task, then a pull request, just like I2P:
+```powershell
+git checkout main
+git pull
+git checkout -b vendor-sound-alert
+# ... edit, run the app, run the tests ...
+git add .
+git commit -m "Vendor page: beep when a new order arrives"
+git push -u origin vendor-sound-alert
+```
+On GitHub: **Compare & pull request** → **Create pull request**. The other coder reviews and clicks **Merge**.
+Afterwards both run `git checkout main` and `git pull`.
 
-## Step 11. Add Shuimu and XCB when the data arrives
+The **Owner** column in the README says who usually edits which file, so you rarely touch the same file at once.
 
-1. Teammates fill a sheet with **exactly the same columns** as `data/raw/Fengyun.csv`. Copy the header row so the columns match.
-   In `location_english`, write `Shuimu ...` or `XCB ...` so the script knows which dining area each row is in.
-2. Export it as CSV: Google Sheets → **File → Download → .csv**. In Excel, use **Save As → CSV UTF-8** (plain "CSV" garbles Chinese text).
-3. Save it as `data/raw/Shuimu.csv` (or `XCB.csv`) and run:
+## Step 8. Try it on real phones
+
+The server already listens on the whole network (`host="0.0.0.0"`).
+1. Run `ipconfig` and find your laptop's **IPv4 Address**, e.g. `192.168.1.23`.
+2. On a phone on the **same Wi-Fi**, open `http://192.168.1.23:5000`.
+3. If Windows asks whether to allow Python through the firewall, click **Allow** (Private networks).
+
+Campus Wi-Fi often blocks phones from reaching laptops. If the page doesn't load, turn on your phone's **hotspot** and
+connect the laptop and the other phones to it. Or use **ngrok**, as in I2P: `ngrok http 5000` gives you a public link.
+
+For the demo: one laptop runs the server and shows `/vendor`, and classmates order from their phones.
+
+## Step 9. Add Shuimu and XCB when the data arrives
+
+1. The sheet must have **exactly the same columns** as `data/Fengyun.csv` (copy its header row).
+   Put `Shuimu ...` or `XCB ...` in the `location_english` column.
+2. Export it as **CSV UTF-8**: in Google Sheets, File → Download → .csv; in Excel, Save As → *CSV UTF-8*.
+3. Save it as `data/Shuimu.csv` or `data/XCB.csv`, then run:
    ```powershell
-   python scripts/build_menu.py
+   python import_menu.py
    ```
-   It prints how many vendors and dishes each area has. Refresh the browser and the new tab is filled in.
-4. Commit both the CSV and `data/menu.json`, then push.
+   It prints how many vendors and dishes each hall has. Existing orders are kept.
+4. Commit the CSV and push.
 
-Fengyun still has **119 dishes without prices** (mostly Parson Pasta, Manikaba and Moni Burritos). The app shows "Ask at counter" for those until the CSV is filled in.
+Fengyun still has **119 dishes without a price** (mostly Parson Pasta, Manikaba, Moni Burritos). The app shows
+*Ask at counter* for those. Fill the prices in the CSV and run `python import_menu.py` again.
 
-## Step 12. Make the wait estimate real (helps the presentation)
+## Step 10. Make the wait estimate real
 
-The estimate is `orders ahead × avgPrepMin`, and every vendor currently uses a guess of 2–5 minutes.
-During a peak hour, time 10 orders at each vendor (from paying to receiving food) and put the averages into `PREP_MIN`
-in `scripts/build_menu.py`, then re-run it. This also gives you real numbers for the "Why" and "Solution" slides.
+The estimate is *orders being made × `avg_prep_min`*, and each vendor's minutes are a guess (`PREP_MIN` in
+`menu_import.py`). At peak hour, time about 10 orders per vendor (from paying to getting the food), put the averages in
+`PREP_MIN`, and run `python import_menu.py`. Those timings are also good evidence for the presentation.
+
+## Step 11. Putting it online (optional)
+
+GitHub only stores the code. **GitHub Pages can't run Python**, so if you turned Pages on for the old version, turn it
+off (Settings → Pages → Unpublish). For a link that works without your laptop, a free Python host such as
+**PythonAnywhere** or **Render** can run a Flask app from this repo. For the class demo, Step 8 is enough.
 
 ---
 
 ## Ideas for after the basics work
 
-- [ ] Sound or vibration on the vendor page when a new order arrives
-- [ ] A "Now serving" screen for a TV at the counter (`board.html`)
-- [ ] Hide vendors that are closed right now (add opening hours to the data)
-- [ ] Vendor sign-in (Firebase Authentication) so only vendors can change order status
-- [ ] No-show rule: decide on 2 or 3 strikes. The demo and the slides disagree, so the team should pick one.
-- [ ] 中文/English language switch
-- [ ] Live crowd chart per hour, built from past orders
+- [ ] Vendor PIN or login, so only the stall can change its orders (right now anyone who opens `/vendor` can)
+- [ ] Beep or vibrate on the vendor page when a new order arrives
+- [ ] A "Now serving" screen for a TV at each counter
+- [ ] Opening hours, so closed vendors are hidden
+- [ ] No-show rule: decide on 2 or 3 strikes as a team (the demo and the slides disagree)
+- [ ] Busiest-hours chart per vendor, built from past orders (good for the "Why" slides)
+- [ ] 中文 / English switch
 
 ## Troubleshooting
 
 | Problem | Fix |
-|---|---|
-| Blank page, Console says `Failed to fetch data/menu.json` | You opened the file directly. Use Live Server or `python -m http.server` (Step 4). |
-| Changes don't show up | Hard refresh: **Ctrl+F5**. GitHub Pages can take ~1 min after a push. |
-| `git push` asks for a password | Passwords don't work anymore. Close the prompt and let the browser sign-in window appear, or reinstall Git with Credential Manager. |
-| `Permission denied` on push | You haven't accepted the collaborator invite (Step 3). |
-| Chinese text shows as `ç¾...` | Save the CSV as **CSV UTF-8**. |
-| Firebase `Missing or insufficient permissions` | Publish `firestore.rules` (Step 10.3). |
+| --- | --- |
+| `ModuleNotFoundError: No module named 'flask'` | The venv isn't active: `.\venv\Scripts\Activate.ps1` |
+| `running scripts is disabled on this system` | `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (Step 3) |
+| `Address already in use` / port 5000 busy | Another `python app.py` is still running. Close that terminal or press Ctrl+C in it |
+| Menu is empty | Check `data/Fengyun.csv` exists, then delete `instance\skipline.db` and restart |
+| Changed `models.py` and now get `no such column` | `db.create_all()` never changes old tables. Delete `instance\skipline.db` and restart |
+| Chinese text shows as `ç¾...` | Save the CSV as **CSV UTF-8** |
+| Phone can't open the page | Same Wi-Fi? Firewall allowed? Try a phone hotspot (Step 8) |
+| `git push` rejected | `git pull` first, fix any conflicts, run the tests, push again |

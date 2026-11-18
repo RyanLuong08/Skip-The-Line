@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>Vendor dashboard · Skip the Line</title>
+</head>
+<body>
+  {% set active = "vendor" %}
+  {% include "_topbar.html" %}
+
+  <div class="toolbar">
+    <label>Vendor <select id="vendorSelect"></select></label>
+    <div class="serving">Now serving <strong id="nowServing">–</strong></div>
+  </div>
+  <p id="message" class="message bad" role="status"></p>
+
+  <main class="board">
+    <section><h2>New <span id="count-waiting" class="count"></span></h2><div id="col-waiting"></div></section>
+    <section><h2>Cooking <span id="count-cooking" class="count"></span></h2><div id="col-cooking"></div></section>
+    <section><h2>Ready <span id="count-ready" class="count"></span></h2><div id="col-ready"></div></section>
+  </main>
+
+  <script>
+    // New -> Cooking -> Ready -> Picked up. Python checks every move (queue_rules.can_move).
+    const $ = id => document.getElementById(id);
+    const NEXT = { waiting: ["cooking", "Start cooking"], cooking: ["ready", "Mark ready"], ready: ["done", "Picked up"] };
+
+    function el(tag, props = {}, ...children) {
+      const node = Object.assign(document.createElement(tag), props);
+      node.append(...children);
+      return node;
+    }
+
+    async function api(url, options) {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Something went wrong.");
+      return data;
+    }
+
+    // Remember the chosen vendor in the address, e.g. /vendor?v=fengyun-love-curry,
+    // so each stall can bookmark its own dashboard.
+    const params = new URLSearchParams(location.search);
+
+    async function loadVendors() {
+      const vendors = await api("/api/vendor-list");
+      const chosen = params.get("v") || vendors[0]?.slug;
+      $("vendorSelect").replaceChildren(...vendors.map(v =>
+        el("option", { value: v.slug, selected: v.slug === chosen }, `${v.hall} · ${v.name}`)));
+    }
+
+    async function move(orderId, status) {
+      try {
+        await api(`/api/orders/${orderId}/status`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        });
+        $("message").textContent = "";
+      } catch (error) {
+        $("message").textContent = error.message;
+      }
+      loadOrders();
+    }
+
+    function card(o) {
+      const [next, label] = NEXT[o.status];
+      const go = el("button", { className: "primary" }, label);
+      go.onclick = () => move(o.id, next);
+      const foot = el("div", { className: "order-foot" },
+        el("span", {}, `NT$${o.total}` + (o.unpriced ? "+" : "")), go);
+      if (o.status === "waiting") {
+        const cancel = el("button", { className: "link" }, "Cancel");
+        cancel.onclick = () => confirm(`Cancel ticket #${o.ticket}?`) && move(o.id, "cancelled");
+        foot.append(cancel);
+      }
+      return el("div", { className: "order" },
+        el("div", { className: "order-head" },
+           el("span", { className: "num" }, `#${o.ticket}`),
+           el("span", { className: "muted" }, `ordered ${o.created_at} · pickup ${o.pickup}`)),
+        el("ul", {}, ...o.lines.map(l => el("li", {}, `${l.qty} × ${l.name}`))),
+        foot);
+    }
+
+    async function loadOrders() {
+      const slug = $("vendorSelect").value;
+      if (!slug) return;
+      const { orders } = await api(`/api/vendors/${slug}/orders`);
+      for (const status of ["waiting", "cooking", "ready"]) {
+        const mine = orders.filter(o => o.status === status);
+        $(`col-${status}`).replaceChildren(...(mine.length ? mine.map(card) : [el("p", { className: "muted" }, "Nothing here.")]));
+        $(`count-${status}`).textContent = mine.length;
+      }
+      const ready = orders.filter(o => o.status === "ready").map(o => `#${o.ticket}`);
+      $("nowServing").textContent = ready.length ? ready.join(", ") : "–";
+    }
+
+    $("vendorSelect").onchange = () => {
+      history.replaceState(null, "", `?v=${$("vendorSelect").value}`);
+      loadOrders();
+    };
+
+    loadVendors().then(loadOrders).catch(error => { $("message").textContent = error.message; });
+    setInterval(() => loadOrders().catch(() => {}), 3000);  // new orders show up within 3 seconds
+  </script>
+</body>
+</html>

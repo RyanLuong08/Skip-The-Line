@@ -22,9 +22,13 @@ button { font: inherit; cursor: pointer; }
   display: flex; justify-content: space-between; align-items: center;
   padding: .9rem 1.25rem; background: var(--green); color: #fff;
 }
-.brand { font-weight: 700; font-size: 1.2rem; }
+.brand { font-weight: 700; font-size: 1.2rem; color: #fff; text-decoration: none; }
 .brand small { color: #dfe8d0; margin-left: .4rem; font-size: .85rem; }
-.switch { color: #fff; font-size: .9rem; }
+.topnav { display: flex; gap: 1rem; }
+.topnav a { color: #dfe8d0; text-decoration: none; font-size: .95rem; padding-bottom: 2px; }
+.topnav a.is-active { color: #fff; border-bottom: 2px solid #fff; }
+.message { margin: .5rem 0 0; font-size: .9rem; }
+.message.bad { color: var(--high); }
 
 .tabs { display: flex; gap: .5rem; padding: .9rem 1.25rem 0; flex-wrap: wrap; }
 .tabs button, .chips button {

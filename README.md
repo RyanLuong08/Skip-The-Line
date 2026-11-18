@@ -1,55 +1,64 @@
-# Skip the Line 🍱
+# 🍱 Skip the Line
 
-Order ahead at NTHU campus dining areas (Fengyun, Shuimu, XCB) and skip the peak-hour queue.
+**Order ahead. Skip the queue. Eat on time.**
+
+Skip the Line is a web app built with Python and Flask that lets NTHU students order ahead at the campus
+dining halls (Fengyun, Shuimu, XCB) so they don't waste their lunch break standing in a peak-hour queue.
 First Year Seminar group project.
 
-**Live site:** https://ryanluong08.github.io/Skip-The-Line/ (after GitHub Pages is turned on)
+---
 
-## What it does
+## Features
 
-- **Student page** (`index.html`): pick a dining area and vendor, see the live queue and estimated wait,
-  add dishes, choose a pickup time, and get a ticket number that updates as the order is cooked.
-- **Vendor page** (`vendor.html`): incoming orders in three columns (New → Cooking → Ready),
-  plus a "Now serving" number.
+| Feature | Description |
+| --- | --- |
+| **Dining halls and vendors** | Tabs for Fengyun, Shuimu and XCB. Each vendor shows its live queue and estimated wait. |
+| **Menu** | Every dish with its Chinese name, price and calories, a search box and category filters. |
+| **Order ahead** | Add dishes, choose *ASAP* or a pickup time, and get a ticket number. Python looks up the prices, so they can't be faked. |
+| **My tickets** | Your tickets update by themselves: *In queue (2 ahead) → Cooking → Ready for pickup*. |
+| **Vendor dashboard** | `/vendor`: orders in three columns (New → Cooking → Ready) and a big "Now serving" number. |
+| **Wait estimate** | Orders still being made × the vendor's average minutes per order. |
 
-Wait estimate = orders ahead × the vendor's average minutes per order (`avgPrepMin` in `scripts/build_menu.py`).
+## Run it
 
-## Run it on your computer
-
-```bash
-python -m http.server 8000
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python app.py
 ```
-Then open http://localhost:8000. (Or use the VS Code **Live Server** extension.)
-Opening `index.html` by double-clicking will not work, because browsers block loading `data/menu.json` from `file://`.
+Open http://localhost:5000 for students and http://localhost:5000/vendor for vendors.
+The first run creates `instance/skipline.db` and loads the menu from `data/`.
+
+Run the tests with `python -m unittest`.
+
+The full step-by-step setup and team workflow is in **[docs/GUIDE.md](docs/GUIDE.md)**.
 
 ## Project structure
 
-```
-index.html, vendor.html   the two pages
-css/style.css             all styling
-js/config.js              settings: BACKEND ("local" or "firebase"), Firebase keys, peak hours
-js/app.js                 student page logic
-js/vendor.js              vendor page logic
-js/store.js               saves/loads orders (picks local or Firebase)
-js/util.js                shared helpers: wait estimate, time slots, menu loading
-data/raw/*.csv            menu data collected by the team (one CSV per dining area)
-data/menu.json            generated from the CSVs; this is what the app reads
-scripts/build_menu.py     CSV -> menu.json
-firestore.rules           database security rules (for the Firebase step)
-docs/GUIDE.md             step-by-step setup and team workflow
-```
+| File | What it does | Owner |
+| --- | --- | --- |
+| `app.py` | Builds the Flask app, registers the blueprints, serves the student page | A |
+| `queue_rules.py` | Plain Python: tickets, wait estimate, pickup times, allowed status changes | A |
+| `order_input.py` | Plain Python: checks what the browser sends when ordering | A |
+| `order_api.py` | `POST /api/orders`, `GET /api/my-orders` | A |
+| `templates/index.html` | The student page | A |
+| `models.py` | Database tables: Vendor, MenuItem, Order, OrderLine | B |
+| `menu_import.py` | Plain Python: reads the menu CSV files | B |
+| `import_menu.py` | `python import_menu.py` reloads the menu from `data/` | B |
+| `menu_api.py` | `GET /api/halls`, `/api/vendors?hall=`, `/api/vendors/<slug>/menu`, `/api/now` | B |
+| `vendor_api.py` | The vendor dashboard and `POST /api/orders/<id>/status` | B |
+| `templates/vendor.html` | The vendor page | B |
+| `secret_key.py` | Signs the session cookie that remembers "my tickets" | B |
+| `tests/` | `unittest` tests for all of the above | both |
 
-## Update the menu
+## Menu data
 
-Put a CSV with the same columns as `data/raw/Fengyun.csv` in `data/raw/`, then run:
-```bash
-python scripts/build_menu.py
-```
-
-## Data status
-
-| Dining area | Vendors | Dishes | Status |
-|---|---|---|---|
+| Dining hall | Vendors | Dishes | Status |
+| --- | --- | --- | --- |
 | Fengyun 風雲樓 | 10 | 286 | Done (119 dishes still need prices) |
 | Shuimu 水木 | – | – | Being collected |
 | XCB 小吃部 | – | – | Being collected |
+
+To add a hall: save its sheet as a CSV with the same columns as `data/Fengyun.csv`, put it in `data/`,
+and run `python import_menu.py`.

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>Skip the Line · NTHU</title>
+</head>
+<body>
+  {% set active = "student" %}
+  {% include "_topbar.html" %}
+
+  <nav id="halls" class="tabs" aria-label="Dining areas"></nav>
+  <p id="peak" class="banner" hidden>It's peak hour. Order ahead and pick a pickup time to skip the queue.</p>
+
+  <main class="layout">
+    <section>
+      <!-- Step 1: choose a vendor -->
+      <div id="vendorView">
+        <h2>Vendors <small id="hallNote"></small></h2>
+        <div id="vendors" class="grid"></div>
+      </div>
+
+      <!-- Step 2: choose dishes -->
+      <div id="menuView" hidden>
+        <button id="back" class="link">← All vendors</button>
+        <h2 id="vendorTitle"></h2>
+        <p class="muted">Current wait: <span id="vendorWait" class="wait"></span></p>
+        <input id="search" type="search" placeholder="Search dishes 搜尋餐點">
+        <div id="categories" class="chips"></div>
+        <ul id="items" class="items"></ul>
+      </div>
+    </section>
+
+    <aside>
+      <!-- Step 3: place the order -->
+      <div class="card">
+        <h2>Your order</h2>
+        <ul id="cart" class="cart"></ul>
+        <p class="total">Total: <strong id="total">NT$0</strong></p>
+        <label>Pickup time <select id="pickup"></select></label>
+        <button id="placeOrder" class="primary" disabled>Place order</button>
+        <p id="message" class="message" role="status"></p>
+      </div>
+
+      <!-- Step 4: follow your tickets -->
+      <div class="card">
+        <h2>My tickets</h2>
+        <div id="tickets"><p class="muted">No orders yet today.</p></div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // Python does the real work (prices, ticket numbers, wait times); this script only
+    // asks the /api/... addresses and draws the answers. It uses textContent (never
+    // innerHTML) for anything that comes from data, so a dish name can't break the page.
+    const $ = id => document.getElementById(id);
+    const STATUS = { waiting: "In queue", cooking: "Cooking", ready: "Ready for pickup",
+                     done: "Picked up", cancelled: "Cancelled" };
+    const state = { hall: "fengyun", vendor: null, items: [], category: "all", search: "", cart: [] };
+
+    // el("div", {className: "x"}, "text", child) -> a new element
+    function el(tag, props = {}, ...children) {
+      const node = Object.assign(document.createElement(tag), props);
+      node.append(...children);
+      return node;
+    }
+    const money = n => n == null ? "Ask at counter" : `NT$${n}`;
+
+    async function api(url, options) {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Something went wrong.");
+      return data;
+    }
+
+    function showError(error) {
+      $("message").textContent = error.message;
+      $("message").className = "message bad";
+    }
+
+    // ---------- Step 1: halls and vendors ----------
+
+    async function loadHalls() {
+      const halls = await api("/api/halls");
+      $("halls").replaceChildren(...halls.map(h => {
+        const button = el("button", { className: h.id === state.hall ? "active" : "" },
+                          h.name + " ", el("small", {}, h.name_zh));
+        button.onclick = () => { state.hall = h.id; state.vendor = null; loadHalls(); showVendors(); };
+        return button;
+      }));
+    }
+
+    async function showVendors() {
+      $("vendorView").hidden = false;
+      $("menuView").hidden = true;
+      const vendors = await api(`/api/vendors?hall=${state.hall}`);
+      $("hallNote").textContent = vendors.length ? `${vendors.length} vendors` : "";
+      if (!vendors.length) {
+        $("vendors").replaceChildren(el("p", { className: "muted" }, "This dining hall's menu is still being collected."));
+        return;
+      }
+      $("vendors").replaceChildren(...vendors.map(v => {
+        const card = el("button", { className: "vendor" },
+          el("strong", {}, v.name),
+          el("span", { className: "muted" }, `${v.name_zh} · ${v.cuisine} · ${v.dish_count} dishes`),
+          el("span", { className: `wait ${v.wait_level}` }, `~${v.wait_min} min · ${v.queue} in queue`));
+        card.onclick = () => openVendor(v.slug);
+        return card;
+      }));
+    }
+
+    // ---------- Step 2: one vendor's menu ----------
+
+    async function openVendor(slug) {
+      if (state.cart.length && state.vendor?.slug !== slug &&
+          !confirm("One order is for one vendor. Clear your current order?")) return;
+      if (state.vendor?.slug !== slug) state.cart = [];
+      const data = await api(`/api/vendors/${slug}/menu`);
+      Object.assign(state, { vendor: data.vendor, items: data.items, category: "all", search: "" });
+      $("search").value = "";
+      $("vendorView").hidden = true;
+      $("menuView").hidden = false;
+      $("vendorTitle").textContent = `${data.vendor.name} ${data.vendor.name_zh}`;
+      $("vendorWait").textContent = `~${data.vendor.wait_min} min`;
+      $("vendorWait").className = `wait ${data.vendor.wait_level}`;
+      drawMenu();
+      drawCart();
+    }
+
+    function drawMenu() {
+      const categories = ["all", ...new Set(state.items.map(i => i.category))];
+      $("categories").replaceChildren(...categories.map(c => {
+        const chip = el("button", { className: c === state.category ? "active" : "" }, c);
+        chip.onclick = () => { state.category = c; drawMenu(); };
+        return chip;
+      }));
+
+      const q = state.search.toLowerCase();
+      const shown = state.items.filter(i =>
+        (state.category === "all" || i.category === state.category) &&
+        (!q || i.name.toLowerCase().includes(q) || i.name_zh.includes(state.search)));
+      if (!shown.length) {
+        $("items").replaceChildren(el("li", { className: "muted" }, "No dishes match."));
+        return;
+      }
+      $("items").replaceChildren(...shown.map(i => {
+        const info = el("div", {}, el("strong", {}, i.name));
+        if (i.vegetarian) info.append(" ", el("span", { className: "tag" }, "veg"));
+        info.append(el("div", { className: "muted" }, i.name_zh + (i.calories ? ` · ${Math.round(i.calories)} kcal` : "")));
+        const add = el("button", { ariaLabel: `Add ${i.name}` }, "+");
+        add.onclick = () => addToCart(i);
+        return el("li", {}, info, el("div", { className: "price" }, money(i.price)), add);
+      }));
+    }
+
+    // ---------- Step 3: the cart ----------
+
+    function addToCart(item) {
+      const line = state.cart.find(c => c.id === item.id);
+      if (line) line.qty++;
+      else state.cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
+      drawCart();
+    }
+
+    function removeFromCart(id) {
+      const line = state.cart.find(c => c.id === id);
+      line.qty--;
+      if (line.qty === 0) state.cart = state.cart.filter(c => c !== line);
+      drawCart();
+    }
+
+    function drawCart() {
+      if (!state.cart.length) {
+        $("cart").replaceChildren(el("li", { className: "muted" }, "Pick a vendor and add dishes."));
+      } else {
+        $("cart").replaceChildren(...state.cart.map(c => {
+          const minus = el("button", { ariaLabel: "Remove one" }, "−");
+          minus.onclick = () => removeFromCart(c.id);
+          return el("li", {}, el("span", {}, `${c.qty} × ${c.name}`),
+                    el("span", {}, money(c.price == null ? null : c.price * c.qty)), minus);
+        }));
+      }
+      const total = state.cart.reduce((sum, c) => sum + (c.price ?? 0) * c.qty, 0);
+      const unpriced = state.cart.some(c => c.price == null);
+      $("total").textContent = `NT$${total}` + (unpriced ? " + dishes priced at the counter" : "");
+      $("placeOrder").disabled = !state.cart.length;
+    }
+
+    async function loadNow() {
+      const now = await api("/api/now");
+      $("peak").hidden = !now.peak;
+      const chosen = $("pickup").value;
+      $("pickup").replaceChildren(...now.pickup_slots.map(s => el("option", { selected: s === chosen }, s)));
+    }
+
+    $("placeOrder").onclick = async () => {
+      $("placeOrder").disabled = true;
+      $("message").textContent = "";
+      try {
+        const order = await api("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vendor: state.vendor.slug, pickup: $("pickup").value,
+                                 items: state.cart.map(c => ({ id: c.id, qty: c.qty })) }),
+        });
+        state.cart = [];
+        drawCart();
+        $("message").textContent = `Ordered! Your ticket is #${order.ticket}.`;
+        $("message").className = "message";
+        loadTickets();
+      } catch (error) {
+        showError(error);
+        drawCart();
+      }
+    };
+
+    // ---------- Step 4: my tickets ----------
+
+    async function loadTickets() {
+      const orders = await api("/api/my-orders");
+      if (!orders.length) {
+        $("tickets").replaceChildren(el("p", { className: "muted" }, "No orders yet today."));
+        return;
+      }
+      $("tickets").replaceChildren(...orders.map(o => {
+        const detail = o.status === "waiting" ? `${o.ahead} order${o.ahead === 1 ? "" : "s"} ahead of you`
+                     : o.status === "ready" ? "Show this number at the counter" : "";
+        return el("div", { className: `ticket ${o.status}` },
+          el("div", { className: "num" }, `#${o.ticket}`),
+          el("div", {}, el("strong", {}, o.vendor.name),
+             el("div", {}, `${STATUS[o.status]} · pickup ${o.pickup}`),
+             el("div", { className: "muted" }, detail)));
+      }));
+    }
+
+    $("back").onclick = () => { state.vendor = null; showVendors(); };
+    $("search").oninput = e => { state.search = e.target.value.trim(); drawMenu(); };
+
+    // ---------- Start, then refresh every few seconds ----------
+    Promise.all([loadHalls(), showVendors(), loadNow(), loadTickets()]).catch(showError);
+    drawCart();
+    setInterval(() => {
+      loadTickets().catch(() => {});
+      if (!state.vendor) showVendors().catch(() => {});
+    }, 4000);
+    setInterval(() => loadNow().catch(() => {}), 60000);
+  </script>
+</body>
+</html>
