@@ -1,0 +1,8 @@
+{# Shared top bar. A page picks its highlighted link with: {% set active = "student" %} #}
+<header class="top">
+  <a class="brand" href="/">Skip the Line <small>NTHU campus dining</small></a>
+  <nav class="topnav">
+    <a href="/" class="{{ 'is-active' if active == 'student' }}">Order</a>
+    <a href="/vendor" class="{{ 'is-active' if active == 'vendor' }}">Vendor</a>
+  </nav>
+</header>

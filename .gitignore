@@ -1,6 +1,9 @@
-.vscode/
+venv/
+.venv/
 __pycache__/
 *.pyc
+instance/
+*.db
+.vscode/
 .DS_Store
 Thumbs.db
-desktop.ini
