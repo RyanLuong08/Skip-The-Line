@@ -32,10 +32,11 @@ class AppTestCase(unittest.TestCase):
         db.engine.dispose()
         self.context.pop()
 
-    def order(self, items, vendor="fengyun-love-curry", pickup="ASAP", client=None):
+    def order(self, items, vendor="fengyun-love-curry", pickup="ASAP", client=None,
+              payment="counter", transfer_ref=None):
         """Place an order; items is a list of (MenuItem, qty). Returns the response."""
         return (client or self.client).post("/api/orders", json={
-            "vendor": vendor, "pickup": pickup,
+            "vendor": vendor, "pickup": pickup, "payment": payment, "transfer_ref": transfer_ref,
             "items": [{"id": item.id, "qty": qty} for item, qty in items]})
 
     def move(self, order_id, status):

@@ -6,7 +6,8 @@ New -> Cooking -> Ready -> Picked up. The allowed moves live in queue_rules.py.
 from flask import Blueprint, jsonify, render_template, request
 
 from models import Order, Vendor, db
-from queue_rules import COOKING, READY, WAITING, can_move, today
+from payment_rules import COUNTER, TRANSFER, can_start_cooking
+from queue_rules import CANCELLED, COOKING, DONE, READY, WAITING, can_move, today
 
 vendor_api = Blueprint("vendor_api", __name__)
 
@@ -48,6 +49,25 @@ def set_status(order_id):
     new = data.get("status") if isinstance(data, dict) else None
     if not can_move(order.status, new):
         return jsonify(error=f"An order that is {order.status} cannot become {new}"), 409
+    if new == COOKING and not can_start_cooking(order.payment, order.paid):
+        return jsonify(error=f"Ticket #{order.ticket} pays by transfer: confirm the money arrived first"), 409
     order.status = new
+    if new == DONE and order.payment == COUNTER:
+        order.paid = True  # the student paid at the counter when they picked it up
+    db.session.commit()
+    return jsonify(order.to_dict())
+
+
+@vendor_api.route("/api/orders/<int:order_id>/paid", methods=["POST"])
+def confirm_paid(order_id):
+    """The vendor found the transfer in their bank app (matching the last 5 digits)."""
+    order = db.session.get(Order, order_id)
+    if order is None:
+        return jsonify(error="No such order"), 404
+    if order.payment != TRANSFER:
+        return jsonify(error="This order is paid at the counter"), 409
+    if order.status == CANCELLED:
+        return jsonify(error="This order was cancelled"), 409
+    order.paid = True
     db.session.commit()
     return jsonify(order.to_dict())

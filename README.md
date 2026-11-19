@@ -15,6 +15,7 @@ First Year Seminar group project.
 | **Dining halls and vendors** | Tabs for Fengyun, Shuimu and XCB. Each vendor shows its live queue and estimated wait. |
 | **Menu** | Every dish with its Chinese name, price and calories, a search box and category filters. |
 | **Order ahead** | Add dishes, choose *ASAP* or a pickup time, and get a ticket number. Python looks up the prices, so they can't be faked. |
+| **Payment** | After choosing dishes, pick *Bank transfer* (type the last 5 digits of your account) or *Pay at pickup* (only for orders under NT$200). Transfer orders are cooked once the vendor confirms the money arrived. |
 | **My tickets** | Your tickets update by themselves: *In queue (2 ahead) → Cooking → Ready for pickup*. |
 | **Vendor dashboard** | `/vendor`: orders in three columns (New → Cooking → Ready) and a big "Now serving" number. |
 | **Wait estimate** | Orders still being made × the vendor's average minutes per order. |
@@ -41,6 +42,7 @@ The full step-by-step setup and team workflow is in **[docs/GUIDE.md](docs/GUIDE
 | `app.py` | Builds the Flask app, registers the blueprints, serves the student page | A |
 | `queue_rules.py` | Plain Python: tickets, wait estimate, pickup times, allowed status changes | A |
 | `order_input.py` | Plain Python: checks what the browser sends when ordering | A |
+| `payment_rules.py` | Plain Python: transfer or pay at pickup, the NT$200 limit, vendors' bank accounts | A |
 | `order_api.py` | `POST /api/orders`, `GET /api/my-orders` | A |
 | `templates/index.html` | The student page | A |
 | `models.py` | Database tables: Vendor, MenuItem, Order, OrderLine | B |

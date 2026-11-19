@@ -10,6 +10,7 @@ from flask import Blueprint, jsonify, request
 
 from menu_import import HALLS
 from models import Vendor, db, queue_lengths
+from payment_rules import COUNTER_LIMIT, bank_account
 from queue_rules import estimate_wait_min, is_peak, pickup_slots, today, wait_level
 
 menu_api = Blueprint("menu_api", __name__)
@@ -19,7 +20,7 @@ def vendor_summary(vendor, queue):
     """A vendor plus how busy it is right now."""
     wait = estimate_wait_min(queue, vendor.avg_prep_min)
     return {**vendor.to_dict(), "queue": queue, "wait_min": wait, "wait_level": wait_level(wait),
-            "dish_count": len(vendor.items)}
+            "dish_count": len(vendor.items), "bank": bank_account(vendor.slug)}
 
 
 @menu_api.route("/api/halls")
@@ -55,5 +56,5 @@ def menu(slug):
 
 @menu_api.route("/api/now")
 def right_now():
-    """Is it peak hour, and which pickup times can a student choose?"""
-    return jsonify(peak=is_peak(), pickup_slots=pickup_slots())
+    """Is it peak hour, which pickup times can a student choose, and the pay-at-pickup limit?"""
+    return jsonify(peak=is_peak(), pickup_slots=pickup_slots(), counter_limit=COUNTER_LIMIT)

@@ -1,7 +1,8 @@
 """Students place orders and follow their tickets (owner: A).
 
-The browser only sends which dishes and how many: Python looks up the prices,
-gives out the ticket number and works out how many orders are ahead.
+The browser only sends which dishes, how many and how the student wants to pay: Python
+looks up the prices, checks the payment choice (payment_rules.py), gives out the ticket
+number and works out how many orders are ahead.
 
 There are no student accounts. The ids of a student's orders are kept in their
 (signed) session cookie, so "My tickets" shows only their own orders.
@@ -12,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 
 from models import MenuItem, Order, OrderLine, Vendor, active_order_ids, db
 from order_input import parse_items, parse_pickup
+from payment_rules import bank_account, check_payment
 from queue_rules import next_ticket, today
 
 order_api = Blueprint("order_api", __name__)
@@ -26,7 +28,7 @@ def orders_ahead(order):
     return ids.index(order.id) if order.id in ids else 0
 
 
-def _create_order(vendor, items, pickup):
+def _create_order(vendor, items, pickup, payment, transfer_ref):
     """Save the order with the next ticket number. Returns the Order."""
     day = today()
     # Two students ordering at the same moment could both get the same number; the database
@@ -35,7 +37,8 @@ def _create_order(vendor, items, pickup):
         last = db.session.execute(
             db.select(db.func.max(Order.ticket)).where(Order.vendor_id == vendor.id, Order.day == day)
         ).scalar()
-        order = Order(vendor=vendor, day=day, ticket=next_ticket(last), pickup=pickup)
+        order = Order(vendor=vendor, day=day, ticket=next_ticket(last), pickup=pickup,
+                      payment=payment, transfer_ref=transfer_ref)
         for item, qty in items:
             order.lines.append(OrderLine(menu_item_id=item.id, name=item.name, price=item.price, qty=qty))
         order.total = sum((item.price or 0) * qty for item, qty in items)
@@ -51,7 +54,8 @@ def _create_order(vendor, items, pickup):
 @order_api.route("/api/orders", methods=["POST"])
 def place_order():
     """Place an order. Send JSON: {"vendor": "fengyun-love-curry",
-    "items": [{"id": 12, "qty": 2}], "pickup": "ASAP" or "12:30"}."""
+    "items": [{"id": 12, "qty": 2}], "pickup": "ASAP" or "12:30",
+    "payment": "transfer" or "counter", "transfer_ref": "12345" (only for transfer)}."""
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         return jsonify(error="Send the order as JSON"), 400
@@ -72,8 +76,17 @@ def place_order():
     if any(item_id not in dishes for item_id in wanted):
         return jsonify(error="One of those dishes is not on this vendor's menu"), 400
 
+    items = [(dishes[i], qty) for i, qty in wanted.items()]
+    total = sum((item.price or 0) * qty for item, qty in items)
+    unpriced = any(item.price is None for item, _qty in items)
     try:
-        order = _create_order(vendor, [(dishes[i], qty) for i, qty in wanted.items()], pickup)
+        transfer_ref = check_payment(data.get("payment"), total, unpriced,
+                                     bank_account(vendor.slug) is not None, data.get("transfer_ref"))
+    except ValueError as err:
+        return jsonify(error=str(err)), 400
+
+    try:
+        order = _create_order(vendor, items, pickup, data["payment"], transfer_ref)
     except RuntimeError:
         return jsonify(error="The vendor is very busy. Please try again."), 503
 
