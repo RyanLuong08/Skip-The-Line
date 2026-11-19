@@ -12,6 +12,8 @@ import csv
 import re
 from pathlib import Path
 
+from opening_hours import parse_hours
+
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
 # The three dining areas, in the order the tabs show them.
@@ -29,6 +31,12 @@ PREP_MIN = {
     "MN Tea Time & Tea Lounge": 2,
     "Miss Charcoal Grill": 5,
     "Parson Pasta": 5,
+}
+
+# Opening hours per vendor, e.g. "10:30-14:00, 16:30-19:30". These win over the CSV's
+# opening_hours column. A vendor with no hours anywhere is treated as open all day.
+# Go and check the real hours (they differ per stall and change in the holidays).
+OPENING_HOURS = {
 }
 
 
@@ -72,6 +80,13 @@ def read_menu_csv(lines):
             continue
 
         key = (hall_id, name)
+        hours = OPENING_HOURS.get(name, (row.get("opening_hours") or "").strip())
+        try:
+            parse_hours(hours)
+        except ValueError as err:
+            raise ValueError(f"{name}: {err}") from None
+        if key in vendors and hours and not vendors[key]["hours"]:
+            vendors[key]["hours"] = hours  # the hours only need to be on one row of the vendor
         if key not in vendors:
             vendors[key] = {
                 "slug": f"{hall_id}-{slug(name)}",
@@ -80,6 +95,7 @@ def read_menu_csv(lines):
                 "name_zh": (row.get("store_name") or "").strip(),
                 "cuisine": (row.get("cuisine") or "").strip(),
                 "avg_prep_min": PREP_MIN.get(name, DEFAULT_PREP_MIN),
+                "hours": hours,
                 "items": [],
             }
         vendors[key]["items"].append({

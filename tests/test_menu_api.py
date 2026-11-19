@@ -44,6 +44,21 @@ class TestMenuApi(AppTestCase):
         self.assertIn(data["peak"], (True, False))
         self.assertEqual(data["pickup_slots"][0], "ASAP")
 
+    def test_open_and_hours(self):
+        curry = self.client.get("/api/vendors?hall=fengyun").get_json()[0]
+        self.assertEqual((curry["open"], curry["hours"], curry["opens_at"]), (True, "", None))
+        self.assertEqual(curry["pickup_slots"][0], "ASAP")
+
+    def test_closed_vendor(self):
+        self.curry_rice.vendor.hours = "03:00-03:01"
+        db.session.commit()
+        curry = self.client.get("/api/vendors/fengyun-love-curry/menu").get_json()["vendor"]
+        self.assertFalse(curry["open"])
+        self.assertNotIn("ASAP", curry["pickup_slots"])
+        now = self.client.get("/api/now?vendor=fengyun-love-curry").get_json()
+        self.assertNotIn("ASAP", now["pickup_slots"])
+        self.assertEqual(self.client.get("/api/now?vendor=nope").status_code, 404)
+
     def test_reimporting_keeps_the_vendor_and_its_orders(self):
         order_id = self.order([(self.curry_rice, 1)]).get_json()["id"]
         save_menu([{"slug": "fengyun-love-curry", "hall": "fengyun", "name": "Love Curry",
