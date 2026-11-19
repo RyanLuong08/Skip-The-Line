@@ -90,7 +90,7 @@ To see the error details while coding, run `$env:FLASK_DEBUG = "1"; python app.p
 ```powershell
 python -m unittest
 ```
-You should see `Ran 61 tests ... OK`. **Run them before every push.** If you change a rule, change or add its test too.
+You should see `Ran 77 tests ... OK`. **Run them before every push.** If you change a rule, change or add its test too.
 Run one file with `python -m unittest tests.test_queue_rules`.
 
 ## Step 6. Learn your way around (30 minutes, worth it)
@@ -159,6 +159,18 @@ Fengyun still has **119 dishes without a price** (mostly Parson Pasta, Manikaba,
 The estimate is *orders being made × `avg_prep_min`*, and each vendor's minutes are a guess (`PREP_MIN` in
 `menu_import.py`). At peak hour, time about 10 orders per vendor (from paying to getting the food), put the averages in
 `PREP_MIN`, and run `python import_menu.py`. Those timings are also good evidence for the presentation.
+
+## Step 10b. Payment (transfer or pay at pickup)
+
+The rules are in `payment_rules.py`: pay at pickup only when the total is **under** `COUNTER_LIMIT` (NT$200),
+otherwise bank transfer. For a transfer the student types the last 5 digits of their account (後五碼); the vendor
+finds the payment in their bank app, presses **Confirm paid**, and only then can press **Start cooking**.
+
+Transfer stays switched off until a vendor has a bank account in `BANK_ACCOUNTS` (or `DEFAULT_ACCOUNT` for all
+vendors). Never put a made-up account number there. For the demo, use one teammate's real account.
+
+The payment added three columns to the `orders` table. After you `git pull` this change, **stop the server, delete
+`instance\skipline.db`, and start again** (otherwise you get `no such column: orders.payment`).
 
 ## Step 11. Putting it online (optional)
 

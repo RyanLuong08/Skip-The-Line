@@ -80,6 +80,22 @@ label select { margin-top: .25rem; }
 .primary { width: 100%; padding: .7rem; border: none; border-radius: 8px; background: var(--green); color: #fff; font-weight: 600; }
 .primary:disabled { opacity: .45; cursor: default; }
 
+/* Payment choice (student) and payment line (both pages) */
+.pay { border: 1px solid var(--line); border-radius: 10px; padding: .6rem .8rem; margin: 0 0 .75rem; }
+.pay legend { font-size: .9rem; padding: 0 .3rem; }
+.pay .choice { margin: .35rem 0; }
+.pay .choice input { margin: 0 .4rem 0 0; }
+.pay .choice:has(input:disabled) { color: var(--muted); }
+.pay p { font-size: .85rem; margin: .4rem 0; }
+.transfer { background: var(--green-soft); border-radius: 8px; padding: .5rem .7rem; margin-top: .4rem; }
+.transfer input { width: 100%; padding: .5rem .7rem; border: 1px solid var(--line); border-radius: 8px;
+                  font: inherit; letter-spacing: .2em; margin-top: .25rem; }
+.paid-line, .pay-tag { font-size: .85rem; }
+.paid-line.is-paid, .pay-tag.is-paid { color: var(--low); }
+.pay-tag { margin: .2rem 0 .5rem; }
+.pay-tag.is-due { color: var(--mid); font-weight: 600; }
+.pay-tag .link { margin: 0; font-weight: 600; text-decoration: underline; }
+
 .ticket { display: flex; gap: .8rem; align-items: center; padding: .6rem; border-radius: 10px; border: 1px solid var(--line); margin-bottom: .5rem; }
 .ticket .num, .order .num { font-size: 1.6rem; font-weight: 800; color: var(--green); }
 .ticket.ready { background: #e8f5e9; border-color: var(--low); }

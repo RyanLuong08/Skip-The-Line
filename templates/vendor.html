@@ -63,15 +63,41 @@
       loadOrders();
     }
 
+    async function confirmPaid(orderId) {
+      try {
+        await api(`/api/orders/${orderId}/paid`, { method: "POST" });
+        $("message").textContent = "";
+      } catch (error) {
+        $("message").textContent = error.message;
+      }
+      loadOrders();
+    }
+
+    // What the vendor needs to know about the money for one order.
+    function payment(o) {
+      const amount = `NT$${o.total}` + (o.unpriced ? " + counter-priced dishes" : "");
+      if (o.paid) return el("div", { className: "pay-tag is-paid" }, `Paid ✓ ${amount}`);
+      if (o.payment === "counter") return el("div", { className: "pay-tag" }, `Collect ${amount} at pickup`);
+      const ok = el("button", { className: "link" }, "Confirm paid");
+      ok.onclick = () => confirmPaid(o.id);
+      return el("div", { className: "pay-tag is-due" },
+        `Transfer ${amount} · from account …${o.transfer_ref} · `, ok);
+    }
+
     function card(o) {
       const [next, label] = NEXT[o.status];
       const go = el("button", { className: "primary" }, label);
       go.onclick = () => move(o.id, next);
-      const foot = el("div", { className: "order-foot" },
-        el("span", {}, `NT$${o.total}` + (o.unpriced ? "+" : "")), go);
+      // A transfer order is cooked only after the money arrived (Python checks this too).
+      if (o.status === "waiting" && o.payment === "transfer" && !o.paid) {
+        go.disabled = true;
+        go.title = "Confirm the transfer first";
+      }
+      const foot = el("div", { className: "order-foot" }, go);
       if (o.status === "waiting") {
         const cancel = el("button", { className: "link" }, "Cancel");
-        cancel.onclick = () => confirm(`Cancel ticket #${o.ticket}?`) && move(o.id, "cancelled");
+        const warning = o.paid ? " They already paid, so remember to refund them." : "";
+        cancel.onclick = () => confirm(`Cancel ticket #${o.ticket}?${warning}`) && move(o.id, "cancelled");
         foot.append(cancel);
       }
       return el("div", { className: "order" },
@@ -79,6 +105,7 @@
            el("span", { className: "num" }, `#${o.ticket}`),
            el("span", { className: "muted" }, `ordered ${o.created_at} · pickup ${o.pickup}`)),
         el("ul", {}, ...o.lines.map(l => el("li", {}, `${l.qty} × ${l.name}`))),
+        payment(o),
         foot);
     }
 

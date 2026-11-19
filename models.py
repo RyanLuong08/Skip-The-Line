@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 
 from menu_import import read_all_csv
+from payment_rules import COUNTER
 from queue_rules import ACTIVE, WAITING, now
 
 db = SQLAlchemy()
@@ -69,6 +70,9 @@ class Order(db.Model):
     pickup = db.Column(db.String(5), nullable=False, default="ASAP")  # "ASAP" or "12:30"
     status = db.Column(db.String(10), nullable=False, default=WAITING)
     total = db.Column(db.Integer, nullable=False, default=0)  # dishes without a price count as 0
+    payment = db.Column(db.String(10), nullable=False, default=COUNTER)  # "transfer" or "counter"
+    transfer_ref = db.Column(db.String(5), nullable=False, default="")  # last 5 digits of the payer's account
+    paid = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, nullable=False, default=now)
 
     vendor = db.relationship("Vendor")
@@ -79,6 +83,7 @@ class Order(db.Model):
         data = {
             "id": self.id, "ticket": self.ticket, "status": self.status, "pickup": self.pickup,
             "total": self.total, "created_at": self.created_at.strftime("%H:%M"),
+            "payment": self.payment, "transfer_ref": self.transfer_ref, "paid": self.paid,
             "vendor": {"slug": self.vendor.slug, "name": self.vendor.name},
             "lines": [line.to_dict() for line in self.lines],
             "unpriced": any(line.price is None for line in self.lines),
