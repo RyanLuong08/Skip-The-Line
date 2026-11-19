@@ -7,6 +7,7 @@ from flask import Blueprint, jsonify, render_template, request
 
 from models import Order, Vendor, db
 from payment_rules import COUNTER, TRANSFER, can_start_cooking
+from push_api import notify_ready
 from queue_rules import CANCELLED, COOKING, DONE, READY, WAITING, can_move, today
 
 vendor_api = Blueprint("vendor_api", __name__)
@@ -55,6 +56,8 @@ def set_status(order_id):
     if new == DONE and order.payment == COUNTER:
         order.paid = True  # the student paid at the counter when they picked it up
     db.session.commit()
+    if new == READY:
+        notify_ready(order)  # the student's phone buzzes, if they turned notifications on
     return jsonify(order.to_dict())
 
 

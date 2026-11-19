@@ -116,3 +116,37 @@ label select { margin-top: .25rem; }
 .order-foot { display: flex; align-items: center; gap: .6rem; }
 .order-foot .primary { width: auto; flex: 1; }
 .order-foot .link { margin: 0; }
+
+/* Opening hours and wait wording */
+.hint { font-size: .85rem; margin: -.4rem 0 .75rem; }
+.small { font-size: .85rem; }
+.vendor.closed { background: #f1f2ee; }
+.vendor.closed strong { color: var(--muted); }
+.wait.closed { color: var(--muted); }
+
+/* My tickets: cancel and notifications */
+.ticket .cancel { margin: .3rem 0 0; font-size: .85rem; color: var(--high); }
+#pushButton { margin: .5rem 0 0; font-weight: 600; }
+
+/* Phones: bar at the bottom of the screen + the order as a sheet that slides up */
+.cart-bar, .sheet-close, .sheet-backdrop { display: none; }
+@media (max-width: 800px) {
+  .cart-bar:not([hidden]) {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    position: fixed; left: .75rem; right: .75rem; bottom: calc(.75rem + env(safe-area-inset-bottom));
+    z-index: 20; padding: .9rem 1.1rem; border: none; border-radius: 12px;
+    background: var(--green); color: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+  }
+  body.has-cart .layout { padding-bottom: 5.5rem; }  /* so the bar never hides the last dish */
+  #orderCard.open {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; margin: 0;
+    max-height: 88vh; overflow-y: auto; border-radius: 16px 16px 0 0;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, .25); animation: sheet-up .2s ease-out;
+  }
+  #orderCard.open .sheet-close {
+    display: block; float: right; border: none; background: none; font-size: 1.2rem; color: var(--muted);
+  }
+  .sheet-backdrop.open { display: block; position: fixed; inset: 0; z-index: 25; background: rgba(0, 0, 0, .35); }
+}
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }

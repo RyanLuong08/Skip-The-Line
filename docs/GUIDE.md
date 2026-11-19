@@ -90,7 +90,7 @@ To see the error details while coding, run `$env:FLASK_DEBUG = "1"; python app.p
 ```powershell
 python -m unittest
 ```
-You should see `Ran 77 tests ... OK`. **Run them before every push.** If you change a rule, change or add its test too.
+You should see `Ran 110 tests ... OK`. **Run them before every push.** If you change a rule, change or add its test too.
 Run one file with `python -m unittest tests.test_queue_rules`.
 
 ## Step 6. Learn your way around (30 minutes, worth it)
@@ -169,8 +169,31 @@ finds the payment in their bank app, presses **Confirm paid**, and only then can
 Transfer stays switched off until a vendor has a bank account in `BANK_ACCOUNTS` (or `DEFAULT_ACCOUNT` for all
 vendors). Never put a made-up account number there. For the demo, use one teammate's real account.
 
-The payment added three columns to the `orders` table. After you `git pull` this change, **stop the server, delete
-`instance\skipline.db`, and start again** (otherwise you get `no such column: orders.payment`).
+The payment, opening hours and push notifications added new columns and a table. After you `git pull` these changes,
+**stop the server, delete `instance\skipline.db`, and start again** (otherwise you get `no such column: ...`).
+Also run `pip install -r requirements.txt` again (for `pywebpush`).
+
+## Step 10c. Opening hours
+
+Write each vendor's hours like `10:30-14:00, 16:30-19:30`, either in a new `opening_hours` column of the CSV (one row
+per vendor is enough) or in `OPENING_HOURS` in `menu_import.py` (that one wins). Then run `python import_menu.py`.
+A vendor without hours is treated as **open all day**, so go and check the real hours at each stall.
+Closed vendors are greyed out, `ASAP` is only offered while a vendor is open, and Python refuses orders for a time
+when the vendor is closed.
+
+## Step 10d. "Your food is ready" on the phone
+
+- **Page open:** the phone vibrates (no sound) and the tab title becomes `✅ #12 READY`. Vibration works on Android;
+  iPhones don't let web pages vibrate.
+- **Page closed or screen off:** the student taps **🔔 Notify me when my food is ready** under *My tickets*. When the
+  vendor presses *Mark ready*, `push_api.py` sends a push notification that vibrates the phone.
+  - Browsers only allow this on **https://** pages (or `localhost`). `http://192.168.x.x:5000` is not enough, so for
+    the demo use **ngrok** (`ngrok http 5000`) and give classmates the https link.
+  - **iPhone** (iOS 16.4 or newer): open the https link in Safari → Share → **Add to Home Screen**, then open Skip
+    the Line from the home screen and tap *Notify me*.
+  - The laptop running the server needs internet: the message goes through Google/Apple/Mozilla's push service.
+  - The server's key is made on the first run and kept in `instance\vapid_private.pem`. If you delete it, every
+    student has to tap *Notify me* again.
 
 ## Step 11. Putting it online (optional)
 
@@ -201,4 +224,5 @@ off (Settings → Pages → Unpublish). For a link that works without your lapto
 | Changed `models.py` and now get `no such column` | `db.create_all()` never changes old tables. Delete `instance\skipline.db` and restart |
 | Chinese text shows as `ç¾...` | Save the CSV as **CSV UTF-8** |
 | Phone can't open the page | Same Wi-Fi? Firewall allowed? Try a phone hotspot (Step 8) |
+| No *Notify me* button | `pip install -r requirements.txt` (pywebpush), then restart. On the phone, use the https:// (ngrok) link |
 | `git push` rejected | `git pull` first, fix any conflicts, run the tests, push again |
