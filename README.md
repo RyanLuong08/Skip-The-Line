@@ -58,7 +58,7 @@ The full step-by-step setup and team workflow is in **[docs/GUIDE.md](docs/GUIDE
 | --- | --- | --- | --- |
 | Fengyun 風雲樓 | 10 | 286 | Done (119 dishes still need prices) |
 | Shuimu 水木 | – | – | Being collected |
-| XCB 小吃部 | – | – | Being collected |
+| XCB 小吃部 | 6 | 162 | Done (all priced; calories are estimates; Chinese names still missing) |
 
 To add a hall: save its sheet as a CSV with the same columns as `data/Fengyun.csv`, put it in `data/`,
 and run `python import_menu.py`.
