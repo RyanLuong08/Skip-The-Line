@@ -11,16 +11,23 @@ from flask import Blueprint, jsonify, request
 from menu_import import HALLS
 from models import Vendor, db, queue_lengths
 from payment_rules import COUNTER_LIMIT, bank_account
+from opening_hours import is_open, next_opening, parse_hours, vendor_pickup_slots
 from queue_rules import estimate_wait_min, is_peak, pickup_slots, today, wait_level
 
 menu_api = Blueprint("menu_api", __name__)
 
 
 def vendor_summary(vendor, queue):
-    """A vendor plus how busy it is right now."""
+    """A vendor plus how busy it is right now and whether it is open.
+
+    queue and wait_min only count orders placed in the app, not the line at the counter.
+    """
     wait = estimate_wait_min(queue, vendor.avg_prep_min)
+    windows = parse_hours(vendor.hours)
     return {**vendor.to_dict(), "queue": queue, "wait_min": wait, "wait_level": wait_level(wait),
-            "dish_count": len(vendor.items), "bank": bank_account(vendor.slug)}
+            "dish_count": len(vendor.items), "bank": bank_account(vendor.slug),
+            "open": is_open(windows), "opens_at": next_opening(windows),
+            "pickup_slots": vendor_pickup_slots(windows)}
 
 
 @menu_api.route("/api/halls")
@@ -56,5 +63,15 @@ def menu(slug):
 
 @menu_api.route("/api/now")
 def right_now():
-    """Is it peak hour, which pickup times can a student choose, and the pay-at-pickup limit?"""
-    return jsonify(peak=is_peak(), pickup_slots=pickup_slots(), counter_limit=COUNTER_LIMIT)
+    """Is it peak hour, which pickup times can a student choose, and the pay-at-pickup limit?
+
+    With ?vendor=<slug> the pickup times are only those when that vendor is open.
+    """
+    slots = pickup_slots()
+    slug = request.args.get("vendor")
+    if slug:
+        vendor = db.session.execute(db.select(Vendor).filter_by(slug=slug)).scalar_one_or_none()
+        if vendor is None:
+            return jsonify(error="No such vendor"), 404
+        slots = vendor_pickup_slots(parse_hours(vendor.hours))
+    return jsonify(peak=is_peak(), pickup_slots=slots, counter_limit=COUNTER_LIMIT)

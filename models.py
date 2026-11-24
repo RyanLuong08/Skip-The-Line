@@ -26,13 +26,14 @@ class Vendor(db.Model):
     name_zh = db.Column(db.String(100), nullable=False, default="")
     cuisine = db.Column(db.String(50), nullable=False, default="")
     avg_prep_min = db.Column(db.Integer, nullable=False, default=3)  # minutes to make one order
+    hours = db.Column(db.String(80), nullable=False, default="")  # "10:30-14:00, 16:30-19:30"; "" = unknown
 
     items = db.relationship("MenuItem", back_populates="vendor", order_by="MenuItem.id",
                             cascade="all, delete-orphan")
 
     def to_dict(self):
         return {"slug": self.slug, "hall": self.hall, "name": self.name, "name_zh": self.name_zh,
-                "cuisine": self.cuisine, "avg_prep_min": self.avg_prep_min}
+                "cuisine": self.cuisine, "avg_prep_min": self.avg_prep_min, "hours": self.hours}
 
 
 class MenuItem(db.Model):
@@ -73,6 +74,7 @@ class Order(db.Model):
     payment = db.Column(db.String(10), nullable=False, default=COUNTER)  # "transfer" or "counter"
     transfer_ref = db.Column(db.String(5), nullable=False, default="")  # last 5 digits of the payer's account
     paid = db.Column(db.Boolean, nullable=False, default=False)
+    push_sub_id = db.Column(db.Integer, nullable=True)  # PushSubscription to notify when ready, if any
     created_at = db.Column(db.DateTime, nullable=False, default=now)
 
     vendor = db.relationship("Vendor")
@@ -112,6 +114,22 @@ class OrderLine(db.Model):
         return {"name": self.name, "price": self.price, "qty": self.qty}
 
 
+class PushSubscription(db.Model):
+    """A phone browser that said yes to "Notify me when my food is ready" (see push_api.py)."""
+
+    __tablename__ = "push_subscriptions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    endpoint = db.Column(db.String(500), unique=True, nullable=False)  # the push service's address for it
+    p256dh = db.Column(db.String(200), nullable=False)  # keys the browser gave us to encrypt the message
+    auth = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=now)
+
+    def info(self):
+        """In the shape pywebpush wants."""
+        return {"endpoint": self.endpoint, "keys": {"p256dh": self.p256dh, "auth": self.auth}}
+
+
 # ---------- Helpers that several blueprints use ----------
 
 def active_order_ids(vendor_id, day):
@@ -140,6 +158,7 @@ def save_menu(vendors):
             db.session.add(vendor)
         for field in ("hall", "name", "name_zh", "cuisine", "avg_prep_min"):
             setattr(vendor, field, data[field])
+        vendor.hours = data.get("hours", "")
         vendor.items = [MenuItem(**item) for item in data["items"]]
     db.session.commit()
 

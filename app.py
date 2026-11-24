@@ -5,11 +5,12 @@ Then open http://localhost:5000 (student page) and http://localhost:5000/vendor 
 
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
 from menu_api import menu_api
 from models import db, seed_menu_if_empty
 from order_api import order_api
+from push_api import push_api, setup_push
 from secret_key import KEY_FILE, choose_secret_key, new_key
 from vendor_api import vendor_api
 
@@ -43,11 +44,14 @@ def create_app(database_uri="sqlite:///skipline.db", load_menu=True):
     app.register_blueprint(menu_api)
     app.register_blueprint(order_api)
     app.register_blueprint(vendor_api)
+    app.register_blueprint(push_api)
     app.config["SECRET_KEY"] = _secret_key(app, database_uri)
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
     app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
     app.json.ensure_ascii = False  # send Chinese dish names as they are, not as \u codes
     db.init_app(app)
+    # Push notifications: off in tests (no key file is written), on if pywebpush is installed.
+    setup_push(app, enabled=not database_uri.startswith("sqlite:///:memory:"))
 
     # Create the tables (if missing) and load the menu from data/ on the first run.
     with app.app_context():
@@ -59,6 +63,14 @@ def create_app(database_uri="sqlite:///skipline.db", load_menu=True):
     def home():
         """The student page."""
         return render_template("index.html")
+
+    @app.route("/sw.js")
+    def service_worker():
+        """The service worker that shows push notifications. It has to be served from "/"
+        (not /static/) so that it may work for the whole site."""
+        response = send_from_directory(app.static_folder, "sw.js", mimetype="text/javascript")
+        response.headers["Cache-Control"] = "no-cache"
+        return response
 
     return app
 
