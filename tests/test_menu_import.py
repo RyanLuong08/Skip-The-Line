@@ -59,6 +59,14 @@ class TestReadMenu(unittest.TestCase):
         self.assertEqual(sum(len(v["items"]) for v in fengyun), 286)
         self.assertEqual(skipped, 0)
 
+    def test_the_real_xcb_file(self):
+        vendors, _ = read_all_csv(DATA_DIR)
+        xcb = [v for v in vendors if v["hall"] == "xcb"]
+        self.assertEqual([v["name"] for v in xcb],
+                         ["Haofu Curry", "Ichi-Ban", "Han Cheng Cuisine", "Su Beef Noodles", "Bao So Hard", "Bistro"])
+        self.assertEqual(sum(len(v["items"]) for v in xcb), 162)
+        self.assertTrue(all(item["price"] is not None for v in xcb for item in v["items"]))
+
 
 class TestOpeningHours(unittest.TestCase):
     ROW = "1,喜番咖哩,Love Curry,風雲樓,Fengyun Building,咖哩飯,70,,,,,FALSE,TRUE,Japanese,FALSE,rice,Curry Rice,咖哩飯"
