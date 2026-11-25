@@ -10,6 +10,7 @@
 
   <div class="toolbar">
     <label>Vendor <select id="vendorSelect"></select></label>
+    <button id="sound" class="sound" type="button" aria-pressed="false">🔕 Sound off</button>
     <div class="serving">Now serving <strong id="nowServing">–</strong></div>
   </div>
   <p id="message" class="message bad" role="status"></p>
@@ -33,9 +34,58 @@
 
     async function api(url, options) {
       const res = await fetch(url, options);
+      if (res.status === 401) {  // logged out (e.g. the server restarted with a new secret key)
+        location.href = `/vendor/login?next=${encodeURIComponent(location.pathname + location.search)}`;
+        throw new Error("Please log in again.");
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Something went wrong.");
       return data;
+    }
+
+    // ---------- New-order alert: a beep, a highlight and a count in the tab title ----------
+    // Browsers only allow sound after a click on the page, hence the Sound button.
+    let audio = null;
+    let seen = null;          // ids of orders already shown for this vendor (null = first load)
+    const fresh = new Set();  // new orders nobody has touched yet
+
+    $("sound").onclick = () => {
+      if (audio) { audio.close(); audio = null; }
+      else { audio = new AudioContext(); beep(); }
+      $("sound").textContent = audio ? "🔔 Sound on" : "🔕 Sound off";
+      $("sound").classList.toggle("on", !!audio);
+      $("sound").setAttribute("aria-pressed", String(!!audio));
+    };
+
+    function beep() {
+      if (!audio) return;
+      [0, 0.18].forEach((delay, i) => {  // two short notes: ding-dong
+        const osc = audio.createOscillator(), gain = audio.createGain();
+        osc.frequency.value = i ? 660 : 880;
+        gain.gain.setValueAtTime(0.25, audio.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + delay + 0.25);
+        osc.connect(gain).connect(audio.destination);
+        osc.start(audio.currentTime + delay);
+        osc.stop(audio.currentTime + delay + 0.3);
+      });
+    }
+
+    function noticeNewOrders(orders) {
+      const ids = new Set(orders.map(o => o.id));
+      if (seen) {
+        const arrived = orders.filter(o => o.status === "waiting" && !seen.has(o.id));
+        arrived.forEach(o => fresh.add(o.id));
+        if (arrived.length) {
+          beep();
+          if (navigator.vibrate) navigator.vibrate(200);
+        }
+      }
+      // an order stops being "new" once it is no longer waiting (moved or cancelled)
+      for (const id of fresh) {
+        if (!orders.some(o => o.id === id && o.status === "waiting")) fresh.delete(id);
+      }
+      seen = new Set([...(seen || []), ...ids]);
+      document.title = (fresh.size ? `(${fresh.size}) New order · ` : "") + "Vendor dashboard · Skip the Line";
     }
 
     // Remember the chosen vendor in the address, e.g. /vendor?v=fengyun-love-curry,
@@ -100,19 +150,25 @@
         cancel.onclick = () => confirm(`Cancel ticket #${o.ticket}?${warning}`) && move(o.id, "cancelled");
         foot.append(cancel);
       }
-      return el("div", { className: "order" },
+      const box = el("div", { className: fresh.has(o.id) ? "order is-new" : "order" },
         el("div", { className: "order-head" },
            el("span", { className: "num" }, `#${o.ticket}`),
            el("span", { className: "muted" }, `ordered ${o.created_at} · pickup ${o.pickup}`)),
         el("ul", {}, ...o.lines.map(l => el("li", {}, `${l.qty} × ${l.name}`))),
         payment(o),
         foot);
+      box.onclick = () => { if (fresh.delete(o.id)) { box.classList.remove("is-new"); noticeNewOrders(lastOrders); } };
+      return box;
     }
+
+    let lastOrders = [];
 
     async function loadOrders() {
       const slug = $("vendorSelect").value;
       if (!slug) return;
       const { orders } = await api(`/api/vendors/${slug}/orders`);
+      lastOrders = orders;
+      noticeNewOrders(orders);
       for (const status of ["waiting", "cooking", "ready"]) {
         const mine = orders.filter(o => o.status === status);
         $(`col-${status}`).replaceChildren(...(mine.length ? mine.map(card) : [el("p", { className: "muted" }, "Nothing here.")]));
@@ -123,6 +179,8 @@
     }
 
     $("vendorSelect").onchange = () => {
+      seen = null;  // a different stall: don't beep for all of its existing orders
+      fresh.clear();
       history.replaceState(null, "", `?v=${$("vendorSelect").value}`);
       loadOrders();
     };

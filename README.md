@@ -20,7 +20,8 @@ First Year Seminar group project.
 | **My tickets** | Your tickets update by themselves: *In queue (2 ahead) → Cooking → Ready for pickup*. You can cancel an order until the vendor starts cooking it. |
 | **Ready alert** | The phone vibrates when an order is ready. Tap *Notify me* to also get a push notification with the page closed (needs the https:// link). |
 | **Phone layout** | A bar at the bottom ("🛒 2 items · NT$140 · View order") opens the order as a sheet, so there's no scrolling past the whole menu. |
-| **Vendor dashboard** | `/vendor`: orders in three columns (New → Cooking → Ready) and a big "Now serving" number. |
+| **Vendor dashboard** | `/vendor` (needs the vendor PIN): orders in three columns (New → Cooking → Ready), a big "Now serving" number, and a ring + green outline when a new order arrives. |
+| **Stats** | `/stats` (same PIN): orders per hour, minutes from order to ready, and each vendor's real cooking time, for tuning the wait estimate and for the presentation. |
 | **Wait estimate** | Orders placed in the app that are still being made × the vendor's average minutes per order. The page says it doesn't count the line at the counter. |
 
 ## Run it
@@ -28,10 +29,10 @@ First Year Seminar group project.
 ```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 python app.py
 ```
-Open http://localhost:5000 for students and http://localhost:5000/vendor for vendors.
+Open http://localhost:5000 for students and http://localhost:5000/vendor for vendors (the terminal prints the vendor PIN).
 The first run creates `instance/skipline.db` and loads the menu from `data/`.
 
 Run the tests with `python -m unittest`.
@@ -45,7 +46,8 @@ The full step-by-step setup and team workflow is in **[docs/GUIDE.md](docs/GUIDE
 | `app.py` | Builds the Flask app, registers the blueprints, serves the student page | A |
 | `queue_rules.py` | Plain Python: tickets, wait estimate, pickup times, allowed status changes | A |
 | `order_input.py` | Plain Python: checks what the browser sends when ordering | A |
-| `payment_rules.py` | Plain Python: transfer or pay at pickup, the NT$200 limit, vendors' bank accounts | A |
+| `payment_rules.py` | Plain Python: transfer or pay at pickup, the NT$200 limit, reading `instance/bank_accounts.json` | A |
+| `stats.py`, `stats_api.py`, `templates/stats.html` | The `/stats` page: orders per hour, wait and cooking minutes | A |
 | `order_api.py` | `POST /api/orders`, `GET /api/my-orders` | A |
 | `templates/index.html` | The student page | A |
 | `models.py` | Database tables: Vendor, MenuItem, Order, OrderLine | B |
@@ -56,6 +58,7 @@ The full step-by-step setup and team workflow is in **[docs/GUIDE.md](docs/GUIDE
 | `menu_api.py` | `GET /api/halls`, `/api/vendors?hall=`, `/api/vendors/<slug>/menu`, `/api/now` | B |
 | `vendor_api.py` | The vendor dashboard and `POST /api/orders/<id>/status` | B |
 | `templates/vendor.html` | The vendor page | B |
+| `staff_auth.py`, `templates/login.html` | The vendor PIN that protects `/vendor`, `/stats` and the vendor APIs | B |
 | `secret_key.py` | Signs the session cookie that remembers "my tickets" | B |
 | `tests/` | `unittest` tests for all of the above | both |
 

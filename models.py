@@ -76,6 +76,8 @@ class Order(db.Model):
     paid = db.Column(db.Boolean, nullable=False, default=False)
     push_sub_id = db.Column(db.Integer, nullable=True)  # PushSubscription to notify when ready, if any
     created_at = db.Column(db.DateTime, nullable=False, default=now)
+    cooking_at = db.Column(db.DateTime, nullable=True)  # when the vendor pressed "Start cooking"
+    ready_at = db.Column(db.DateTime, nullable=True)  # when the vendor pressed "Mark ready"
 
     vendor = db.relationship("Vendor")
     lines = db.relationship("OrderLine", back_populates="order", order_by="OrderLine.id",

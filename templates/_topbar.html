@@ -1,8 +1,13 @@
-{# Shared top bar. A page picks its highlighted link with: {% set active = "student" %} #}
+{# Shared top bar. A page picks its highlighted link with: {% set active = "student" %}
+   Staff pages (vendor, stats) also show Stats and Log out. #}
 <header class="top">
   <a class="brand" href="/">Skip the Line <small>NTHU campus dining</small></a>
   <nav class="topnav">
     <a href="/" class="{{ 'is-active' if active == 'student' }}">Order</a>
     <a href="/vendor" class="{{ 'is-active' if active == 'vendor' }}">Vendor</a>
+    {% if session.get("staff") %}
+      <a href="/stats" class="{{ 'is-active' if active == 'stats' }}">Stats</a>
+      <form method="post" action="/vendor/logout" class="inline"><button class="topnav-button">Log out</button></form>
+    {% endif %}
   </nav>
 </header>
