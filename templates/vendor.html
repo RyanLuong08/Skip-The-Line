@@ -9,22 +9,30 @@
   {% include "_topbar.html" %}
 
   <div class="toolbar">
-    <label>Vendor <select id="vendorSelect"></select></label>
-    <button id="sound" class="sound" type="button" aria-pressed="false">🔕 Sound off</button>
-    <div class="serving">Now serving <strong id="nowServing">–</strong></div>
+    <label><span data-i18n="vendor_label">Vendor</span> <select id="vendorSelect"></select></label>
+    <button id="pause" class="sound" type="button"></button>
+    <button id="sound" class="sound" type="button" aria-pressed="false" data-i18n="sound_off">🔕 Sound off</button>
+    <div class="serving"><span data-i18n="now_serving">Now serving</span> <strong id="nowServing">–</strong></div>
   </div>
+  <p id="pausedBanner" class="banner" hidden data-i18n="paused_banner">App orders are paused for today.</p>
   <p id="message" class="message bad" role="status"></p>
 
   <main class="board">
-    <section><h2>New <span id="count-waiting" class="count"></span></h2><div id="col-waiting"></div></section>
-    <section><h2>Cooking <span id="count-cooking" class="count"></span></h2><div id="col-cooking"></div></section>
-    <section><h2>Ready <span id="count-ready" class="count"></span></h2><div id="col-ready"></div></section>
+    <section><h2><span data-i18n="col_new">New</span> <span id="count-waiting" class="count"></span></h2><div id="col-waiting"></div></section>
+    <section><h2><span data-i18n="col_cooking">Cooking</span> <span id="count-cooking" class="count"></span></h2><div id="col-cooking"></div></section>
+    <section><h2><span data-i18n="col_ready">Ready</span> <span id="count-ready" class="count"></span></h2><div id="col-ready"></div></section>
   </main>
 
+  <details id="menuPanel" class="card menu-panel">
+    <summary data-i18n="menu_panel">Menu: mark dishes sold out</summary>
+    <ul id="menuItems" class="sold-list"></ul>
+  </details>
+
   <script>
-    // New -> Cooking -> Ready -> Picked up. Python checks every move (queue_rules.can_move).
+    // New -> Cooking -> Ready -> Picked up (or No-show). Python checks every move
+    // (queue_rules.can_move, noshow_rules.can_mark_no_show).
     const $ = id => document.getElementById(id);
-    const NEXT = { waiting: ["cooking", "Start cooking"], cooking: ["ready", "Mark ready"], ready: ["done", "Picked up"] };
+    const NEXT = { waiting: ["cooking", "start_cooking"], cooking: ["ready", "mark_ready"], ready: ["done", "picked_up"] };
 
     function el(tag, props = {}, ...children) {
       const node = Object.assign(document.createElement(tag), props);
@@ -42,6 +50,14 @@
       if (!res.ok) throw new Error(data.error || "Something went wrong.");
       return data;
     }
+    const post = (url, body) => api(url, { method: "POST", headers: { "Content-Type": "application/json" },
+                                           body: JSON.stringify(body ?? {}) });
+
+    async function act(promise) {
+      try { await promise; $("message").textContent = ""; }
+      catch (error) { $("message").textContent = error.message; }
+      loadOrders();
+    }
 
     // ---------- New-order alert: a beep, a highlight and a count in the tab title ----------
     // Browsers only allow sound after a click on the page, hence the Sound button.
@@ -52,7 +68,7 @@
     $("sound").onclick = () => {
       if (audio) { audio.close(); audio = null; }
       else { audio = new AudioContext(); beep(); }
-      $("sound").textContent = audio ? "🔔 Sound on" : "🔕 Sound off";
+      $("sound").textContent = t(audio ? "sound_on" : "sound_off");
       $("sound").classList.toggle("on", !!audio);
       $("sound").setAttribute("aria-pressed", String(!!audio));
     };
@@ -85,7 +101,7 @@
         if (!orders.some(o => o.id === id && o.status === "waiting")) fresh.delete(id);
       }
       seen = new Set([...(seen || []), ...ids]);
-      document.title = (fresh.size ? `(${fresh.size}) New order · ` : "") + "Vendor dashboard · Skip the Line";
+      document.title = (fresh.size ? t("new_order_title", { n: fresh.size }) : "") + "Vendor dashboard · Skip the Line";
     }
 
     // Remember the chosen vendor in the address, e.g. /vendor?v=fengyun-love-curry,
@@ -96,65 +112,79 @@
       const vendors = await api("/api/vendor-list");
       const chosen = params.get("v") || vendors[0]?.slug;
       $("vendorSelect").replaceChildren(...vendors.map(v =>
-        el("option", { value: v.slug, selected: v.slug === chosen }, `${v.hall} · ${v.name}`)));
+        el("option", { value: v.slug, selected: v.slug === chosen }, `${LANG === "zh" ? v.hall_name_zh : v.hall_name} · ${pick(v)}`)));
     }
 
-    async function move(orderId, status) {
-      try {
-        await api(`/api/orders/${orderId}/status`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status }),
-        });
-        $("message").textContent = "";
-      } catch (error) {
-        $("message").textContent = error.message;
-      }
-      loadOrders();
-    }
+    // ---------- Pause app orders and sold-out dishes (both reset the next morning) ----------
 
-    async function confirmPaid(orderId) {
-      try {
-        await api(`/api/orders/${orderId}/paid`, { method: "POST" });
-        $("message").textContent = "";
-      } catch (error) {
-        $("message").textContent = error.message;
-      }
-      loadOrders();
+    let paused = false;
+    function drawPause() {
+      $("pause").textContent = t(paused ? "resume" : "pause");
+      $("pause").classList.toggle("on", paused);
+      $("pausedBanner").hidden = !paused;
     }
+    $("pause").onclick = () => act(post(`/api/vendors/${$("vendorSelect").value}/pause`, { paused: !paused }));
+
+    async function loadMenu() {
+      const { items } = await api(`/api/vendors/${$("vendorSelect").value}/menu`);
+      $("menuItems").replaceChildren(...items.map(i => {
+        const box = el("input", { type: "checkbox", checked: i.sold_out });
+        box.onchange = async () => {
+          try { await post(`/api/items/${i.id}/sold-out`, { sold_out: box.checked }); }
+          catch (error) { $("message").textContent = error.message; box.checked = !box.checked; }
+          label.lastChild.textContent = t(box.checked ? "sold_out_today" : "available");
+          row.classList.toggle("unavailable", box.checked);
+        };
+        const label = el("label", {}, box, " ", el("span", {}, t(i.sold_out ? "sold_out_today" : "available")));
+        const row = el("li", { className: i.sold_out ? "unavailable" : "" },
+                       el("span", {}, [pick(i), otherName(i)].filter(Boolean).join(" · ")), label);
+        return row;
+      }));
+    }
+    $("menuPanel").ontoggle = () => { if ($("menuPanel").open) loadMenu().catch(e => { $("message").textContent = e.message; }); };
+
+    // ---------- Orders ----------
 
     // What the vendor needs to know about the money for one order.
     function payment(o) {
-      const amount = `NT$${o.total}` + (o.unpriced ? " + counter-priced dishes" : "");
-      if (o.paid) return el("div", { className: "pay-tag is-paid" }, `Paid ✓ ${amount}`);
-      if (o.payment === "counter") return el("div", { className: "pay-tag" }, `Collect ${amount} at pickup`);
-      const ok = el("button", { className: "link" }, "Confirm paid");
-      ok.onclick = () => confirmPaid(o.id);
-      return el("div", { className: "pay-tag is-due" },
-        `Transfer ${amount} · from account …${o.transfer_ref} · `, ok);
+      const amount = `NT$${o.total}` + (o.unpriced ? t("plus_counter_short") : "");
+      if (o.paid) return el("div", { className: "pay-tag is-paid" }, t("paid_amount", { amount }));
+      if (o.payment === "counter") return el("div", { className: "pay-tag" }, t("collect", { amount }));
+      const ok = el("button", { className: "link" }, t("confirm_paid"));
+      ok.onclick = () => act(post(`/api/orders/${o.id}/paid`));
+      return el("div", { className: "pay-tag is-due" }, t("transfer_from", { amount, ref: o.transfer_ref }), ok);
     }
 
     function card(o) {
       const [next, label] = NEXT[o.status];
-      const go = el("button", { className: "primary" }, label);
-      go.onclick = () => move(o.id, next);
+      const go = el("button", { className: "primary" }, t(label));
+      go.onclick = () => act(post(`/api/orders/${o.id}/status`, { status: next }));
       // A transfer order is cooked only after the money arrived (Python checks this too).
       if (o.status === "waiting" && o.payment === "transfer" && !o.paid) {
         go.disabled = true;
-        go.title = "Confirm the transfer first";
+        go.title = t("confirm_first");
       }
       const foot = el("div", { className: "order-foot" }, go);
       if (o.status === "waiting") {
-        const cancel = el("button", { className: "link" }, "Cancel");
-        const warning = o.paid ? " They already paid, so remember to refund them." : "";
-        cancel.onclick = () => confirm(`Cancel ticket #${o.ticket}?${warning}`) && move(o.id, "cancelled");
+        const cancel = el("button", { className: "link" }, t("cancel"));
+        const warning = o.paid ? t("refund_warning") : "";
+        cancel.onclick = () => confirm(t("cancel_vendor_q", { ticket: o.ticket }) + warning) &&
+                               act(post(`/api/orders/${o.id}/status`, { status: "cancelled" }));
         foot.append(cancel);
+      }
+      if (o.status === "ready") {
+        // Only after the student had NO_SHOW_AFTER_MIN minutes to come (noshow_rules.py).
+        const noShow = el("button", { className: "link", disabled: o.no_show_in > 0 },
+                          o.no_show_in > 0 ? t("no_show_in", { n: o.no_show_in }) : t("no_show"));
+        noShow.onclick = () => confirm(t("no_show_q", { ticket: o.ticket })) &&
+                               act(post(`/api/orders/${o.id}/status`, { status: "no_show" }));
+        foot.append(noShow);
       }
       const box = el("div", { className: fresh.has(o.id) ? "order is-new" : "order" },
         el("div", { className: "order-head" },
            el("span", { className: "num" }, `#${o.ticket}`),
-           el("span", { className: "muted" }, `ordered ${o.created_at} · pickup ${o.pickup}`)),
-        el("ul", {}, ...o.lines.map(l => el("li", {}, `${l.qty} × ${l.name}`))),
+           el("span", { className: "muted" }, t("ordered_at", { time: o.created_at, pickup: o.pickup }))),
+        el("ul", {}, ...o.lines.map(l => el("li", {}, `${l.qty} × ${pick(l)}`))),
         payment(o),
         foot);
       box.onclick = () => { if (fresh.delete(o.id)) { box.classList.remove("is-new"); noticeNewOrders(lastOrders); } };
@@ -166,12 +196,14 @@
     async function loadOrders() {
       const slug = $("vendorSelect").value;
       if (!slug) return;
-      const { orders } = await api(`/api/vendors/${slug}/orders`);
+      const { vendor, orders } = await api(`/api/vendors/${slug}/orders`);
       lastOrders = orders;
+      paused = vendor.paused;
+      drawPause();
       noticeNewOrders(orders);
       for (const status of ["waiting", "cooking", "ready"]) {
         const mine = orders.filter(o => o.status === status);
-        $(`col-${status}`).replaceChildren(...(mine.length ? mine.map(card) : [el("p", { className: "muted" }, "Nothing here.")]));
+        $(`col-${status}`).replaceChildren(...(mine.length ? mine.map(card) : [el("p", { className: "muted" }, t("nothing"))]));
         $(`count-${status}`).textContent = mine.length;
       }
       const ready = orders.filter(o => o.status === "ready").map(o => `#${o.ticket}`);
@@ -183,10 +215,13 @@
       fresh.clear();
       history.replaceState(null, "", `?v=${$("vendorSelect").value}`);
       loadOrders();
+      if ($("menuPanel").open) loadMenu();
     };
 
-    loadVendors().then(loadOrders).catch(error => { $("message").textContent = error.message; });
-    setInterval(() => loadOrders().catch(() => {}), 3000);  // new orders show up within 3 seconds
+    document.addEventListener("DOMContentLoaded", () => {
+      loadVendors().then(loadOrders).catch(error => { $("message").textContent = error.message; });
+      setInterval(() => loadOrders().catch(() => {}), 3000);  // new orders show up within 3 seconds
+    });
   </script>
 </body>
 </html>

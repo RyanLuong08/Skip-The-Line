@@ -22,6 +22,13 @@ First Year Seminar group project.
 | **Phone layout** | A bar at the bottom ("🛒 2 items · NT$140 · View order") opens the order as a sheet, so there's no scrolling past the whole menu. |
 | **Vendor dashboard** | `/vendor` (needs the vendor PIN): orders in three columns (New → Cooking → Ready), a big "Now serving" number, and a ring + green outline when a new order arrives. |
 | **Stats** | `/stats` (same PIN): orders per hour, minutes from order to ready, and each vendor's real cooking time, for tuning the wait estimate and for the presentation. |
+| **Search everything** | One box searches every dish in every hall (English or Chinese), with *Vegetarian* and *Under NT$100* filters. |
+| **Order again** | Your last few orders, one tap to put the same dishes in the cart again. |
+| **中文 / English** | Follows the phone's language; the button in the top bar switches it. |
+| **Sold out and pause** | Vendors tick dishes sold out, or pause app orders when they're swamped. Both reset the next morning. |
+| **No-show rule** | A vendor can mark food that waited 15 minutes as *No-show*. After 3, that browser must pay by transfer instead of at pickup. |
+| **Now serving board** | `/board`: big ready numbers per vendor for a screen at the counter, with a QR code to order. |
+| **QR page** | `/qr`: the site's address as a QR code for the projector. |
 | **Wait estimate** | Orders placed in the app that are still being made × the vendor's average minutes per order. The page says it doesn't count the line at the counter. |
 
 ## Run it
@@ -58,6 +65,9 @@ The full step-by-step setup and team workflow is in **[docs/GUIDE.md](docs/GUIDE
 | `menu_api.py` | `GET /api/halls`, `/api/vendors?hall=`, `/api/vendors/<slug>/menu`, `/api/now` | B |
 | `vendor_api.py` | The vendor dashboard and `POST /api/orders/<id>/status` | B |
 | `templates/vendor.html` | The vendor page | B |
+| `noshow_rules.py` | Plain Python: when "No-show" is allowed and when pay at pickup is switched off | A |
+| `static/js/i18n.js` | Every word on screen in English and 中文 | A |
+| `screens_api.py`, `templates/board.html`, `templates/qr.html` | The now-serving board and the QR page | B |
 | `staff_auth.py`, `templates/login.html` | The vendor PIN that protects `/vendor`, `/stats` and the vendor APIs | B |
 | `secret_key.py` | Signs the session cookie that remembers "my tickets" | B |
 | `tests/` | `unittest` tests for all of the above | both |

@@ -18,17 +18,19 @@ COOKING = "cooking"
 READY = "ready"
 DONE = "done"
 CANCELLED = "cancelled"
+NO_SHOW = "no_show"                  # ready, but the student never came (see noshow_rules.py)
 
 ACTIVE = (WAITING, COOKING)          # still being made: these count towards the wait
-STATUSES = (WAITING, COOKING, READY, DONE, CANCELLED)
+STATUSES = (WAITING, COOKING, READY, DONE, CANCELLED, NO_SHOW)
 
 # Which status an order may move to from each status.
 ALLOWED_MOVES = {
     WAITING: {COOKING, CANCELLED},
     COOKING: {READY},
-    READY: {DONE},
+    READY: {DONE, NO_SHOW},
     DONE: set(),
     CANCELLED: set(),
+    NO_SHOW: set(),
 }
 
 ASAP = "ASAP"

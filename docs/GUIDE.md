@@ -226,6 +226,36 @@ These numbers (busiest hour, minutes saved) are good evidence for the presentati
 This change added two columns (`cooking_at`, `ready_at`), so after pulling it: stop the server, delete
 `instance\skipline.db`, start again.
 
+## Step 10f. Sold out, pause, no-shows, board, QR, search, 中文
+
+**On the vendor dashboard** (all reset by themselves the next morning):
+- **⏸ Pause app orders**: for when the stall is swamped. Students see *Not taking app orders right now. Order at
+  the counter.* Press it again to resume.
+- **Menu: mark dishes sold out** (at the bottom): tick a dish. Students see it greyed out with *Sold out*, and
+  Python refuses orders for it.
+- **No-show**: on a *Ready* card, once the food has waited 15 minutes. Each no-show counts against that student's
+  browser; after **3** in 30 days they can't choose *Pay at pickup* any more and must transfer first.
+  The numbers are in `noshow_rules.py` (`NO_SHOW_LIMIT`, `NO_SHOW_AFTER_MIN`). **Agree on 2 or 3 as a team and make
+  the slides match.** Limitation: with no student login, clearing the browser's cookies resets the count.
+
+**Screens:**
+- `/board?hall=fengyun`: a *Now serving* screen for a TV or a second laptop at the counter. Big ready numbers per
+  vendor, refreshes every 5 seconds, with a QR code in the corner. No PIN needed (it only shows ticket numbers).
+- `/qr`: the site's address as a big QR code for the projector. **Open it through the ngrok link** so the QR is the
+  https link. Opened on the laptop itself, it shows the laptop's Wi-Fi address instead.
+  Needs the `qrcode` package (`python -m pip install -r requirements.txt`).
+
+**For students:**
+- The search box above the vendors searches **every dish in every hall**, in English or Chinese, plus *Vegetarian*
+  and *Under NT$100* filters. Pressing **+** on a result opens that vendor with the dish in the cart.
+- **Order again** shows their last few orders (the browser remembers them for 60 days).
+- **中文 / EN** in the top bar. The page starts in the phone's language. Every word is in `static/js/i18n.js`: to add a
+  sentence, add the same key to both the `en` and `zh` lists (a test checks they match). Error messages that come
+  from Python are still English only.
+
+New columns again (`paused_day`, `sold_out_day`, `device`, `name_zh` on order lines): after pulling, delete
+`instance\skipline.db` and start again.
+
 ## Step 11. Putting it online (optional)
 
 GitHub only stores the code. **GitHub Pages can't run Python**, so if you turned Pages on for the old version, turn it
@@ -238,9 +268,11 @@ off (Settings → Pages → Unpublish). For a link that works without your lapto
 
 - [x] Vendor PIN, so only the stall can change its orders (Step 10e)
 - [x] Beep on the vendor page when a new order arrives (Step 10e)
-- [ ] A "Now serving" screen for a TV at each counter
+- [x] A "Now serving" screen for a TV at each counter (`/board`, Step 10f)
 - [x] Opening hours, so closed vendors are greyed out (Step 10c)
-- [ ] No-show rule: decide on 2 or 3 strikes as a team (the demo and the slides disagree)
+- [x] No-show rule (Step 10f): **still decide 2 or 3 as a team** and set `NO_SHOW_LIMIT`
+- [x] Sold out, pause, search all vendors, order again, QR page, 中文 / English (Step 10f)
+- [ ] Student login with the student ID (makes the no-show rule impossible to dodge)
 - [x] Orders-per-hour chart and real cooking times (`/stats`, Step 10e)
 - [ ] Shuimu menu
 - [ ] 中文 / English switch
@@ -260,4 +292,7 @@ off (Settings → Pages → Unpublish). For a link that works without your lapto
 | No *Notify me* button | `python -m pip install -r requirements.txt` (pywebpush), then restart. On the phone, use the https:// (ngrok) link |
 | Vendor page keeps asking for the PIN | The PIN is in `instance\vendor_pin` (also printed when the server starts) |
 | Transfer is greyed out for every vendor | No `instance\bank_accounts.json` yet, or it has no `"default"` (Step 10b) |
+| `/qr` says it needs the qrcode package | `python -m pip install -r requirements.txt`, then restart |
+| QR code shows a `192.168...` address, not https | Open `/qr` through the ngrok https link instead of on localhost |
+| Students say a dish is sold out but it isn't | The vendor ticked it under *Menu: mark dishes sold out*; untick it |
 | `git push` rejected | `git pull` first, fix any conflicts, run the tests, push again |

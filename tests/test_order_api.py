@@ -14,7 +14,7 @@ class TestPlaceOrder(AppTestCase):
         self.assertEqual(res.status_code, 201)
         data = res.get_json()
         self.assertEqual((data["ticket"], data["status"], data["total"], data["ahead"]), (1, "waiting", 140, 0))
-        self.assertEqual(data["lines"], [{"name": "Curry Rice", "price": 70, "qty": 2}])
+        self.assertEqual(data["lines"], [{"item_id": self.curry_rice.id, "name": "Curry Rice", "name_zh": "咖哩飯", "price": 70, "qty": 2}])
         self.assertFalse(data["unpriced"])
 
     def test_tickets_count_up_per_vendor(self):

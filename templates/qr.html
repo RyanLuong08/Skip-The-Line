@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>Scan to order · Skip the Line</title>
+</head>
+<body>
+  {% set active = "qr" %}
+  {% include "_topbar.html" %}
+
+  <main class="qr-page">
+    <h1 data-i18n="qr_title">Scan to order</h1>
+    {% if has_qr %}
+      <img class="qr" src="{{ url_for('screens_api.qr_image') }}" alt="QR code for {{ address }}">
+    {% else %}
+      <p class="message bad" data-i18n="qr_missing">QR codes need the qrcode package.</p>
+    {% endif %}
+    <p class="qr-address">{{ address }}</p>
+    {% if was_local %}<p class="muted" data-i18n="qr_local">Opened on this laptop, so this is its Wi-Fi address.</p>{% endif %}
+    {% if not https %}<p class="muted" data-i18n="qr_http">This is an http:// link: ordering works, but "Notify me" needs the https:// ngrok link.</p>{% endif %}
+  </main>
+</body>
+</html>

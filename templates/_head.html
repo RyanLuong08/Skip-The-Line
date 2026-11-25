@@ -5,3 +5,5 @@
 {# manifest: on iPhone, push only works after "Add to Home Screen" #}
 <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+{# 中文 / English: t(), pick() and applyI18n() for every page #}
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>

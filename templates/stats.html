@@ -18,7 +18,7 @@
       <div class="tile"><span class="tile-label">Orders</span><strong id="t-orders">–</strong></div>
       <div class="tile"><span class="tile-label">Avg minutes, order → ready</span><strong id="t-wait">–</strong></div>
       <div class="tile"><span class="tile-label">Order value</span><strong id="t-revenue">–</strong></div>
-      <div class="tile"><span class="tile-label">Cancelled</span><strong id="t-cancelled">–</strong></div>
+      <div class="tile"><span class="tile-label">Cancelled · not picked up</span><strong id="t-cancelled">–</strong></div>
     </section>
 
     <section class="card">
@@ -35,7 +35,7 @@
       <div class="table-wrap">
         <table class="table">
           <thead><tr>
-            <th>Vendor</th><th>Orders</th><th>Cancelled</th><th>Order value (NT$)</th>
+            <th>Vendor</th><th>Orders</th><th>Cancelled</th><th>No-shows</th><th>Order value (NT$)</th>
             <th>Avg min, order → ready</th><th>Avg min cooking</th><th>Prep min used / measured</th>
           </tr></thead>
           <tbody id="vendors"></tbody>
@@ -90,13 +90,13 @@
       $("t-orders").textContent = t.orders;
       $("t-wait").textContent = show(t.avg_wait_min);
       $("t-revenue").textContent = `NT$${t.revenue}`;
-      $("t-cancelled").textContent = t.cancelled;
+      $("t-cancelled").textContent = `${t.cancelled} · ${t.no_shows}`;
       drawHours(data.by_hour);
       $("vendors").replaceChildren(...(data.vendors.length ? data.vendors.map(v => el("tr", {},
-        el("td", {}, v.name), el("td", {}, String(v.orders)), el("td", {}, String(v.cancelled)),
+        el("td", {}, v.name), el("td", {}, String(v.orders)), el("td", {}, String(v.cancelled)), el("td", {}, String(v.no_shows)),
         el("td", {}, String(v.revenue)), el("td", {}, show(v.avg_wait_min)), el("td", {}, show(v.avg_cook_min)),
         el("td", {}, `${show(v.set_prep_min)} / ${show(v.measured_prep_min)}`)))
-        : [el("tr", {}, el("td", { colSpan: 7, className: "muted" }, "No orders on this day."))]));
+        : [el("tr", {}, el("td", { colSpan: 8, className: "muted" }, "No orders on this day."))]));
     }
 
     // Today in Taiwan time, as yyyy-mm-dd, for the date box.

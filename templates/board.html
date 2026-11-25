@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>Now serving · Skip the Line</title>
+</head>
+<body class="board-body">
+  {% set active = "board" %}
+  {% include "_topbar.html" %}
+
+  <nav id="halls" class="tabs" aria-label="Dining areas"></nav>
+
+  <main class="board-screen">
+    <div id="cards" class="board-grid"></div>
+    <aside class="board-qr">
+      <img src="{{ url_for('screens_api.qr_image') }}" alt="" onerror="this.remove()">
+      <p id="hint" data-address="{{ address }}"></p>
+    </aside>
+  </main>
+
+  <script>
+    // A "Now serving" screen for a TV at the counter: /board?hall=fengyun. Refreshes itself.
+    const $ = id => document.getElementById(id);
+    function el(tag, props = {}, ...children) {
+      const node = Object.assign(document.createElement(tag), props);
+      node.append(...children);
+      return node;
+    }
+    const params = new URLSearchParams(location.search);
+    let hall = params.get("hall") || "fengyun";
+
+    async function getJson(url) {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      return data;
+    }
+
+    async function loadHalls() {
+      const halls = await getJson("/api/halls");
+      $("halls").replaceChildren(...halls.filter(h => h.vendor_count).map(h => {
+        const b = el("button", { className: h.id === hall ? "active" : "" }, LANG === "zh" ? h.name_zh : h.name);
+        b.onclick = () => { hall = h.id; history.replaceState(null, "", `?hall=${hall}`); loadHalls(); load(); };
+        return b;
+      }));
+    }
+
+    const tickets = (list, cls) => el("div", { className: `tickets ${cls}` },
+      ...list.map(n => el("span", { className: "big-ticket" }, `#${n}`)));
+
+    async function load() {
+      const data = await getJson(`/api/board?hall=${hall}`);
+      const busy = data.vendors.filter(v => v.ready.length || v.cooking.length || v.waiting);
+      if (!busy.length) {
+        $("cards").replaceChildren(el("p", { className: "muted board-empty" }, t("board_empty")));
+        return;
+      }
+      $("cards").replaceChildren(...busy.map(v => {
+        const card = el("section", { className: "board-card" }, el("h2", {}, pick(v)));
+        if (v.ready.length) card.append(el("div", { className: "label ready" }, t("board_ready")), tickets(v.ready, "ready"));
+        if (v.cooking.length) card.append(el("div", { className: "label" }, t("board_cooking")), tickets(v.cooking, "cooking"));
+        if (v.waiting) card.append(el("div", { className: "muted" }, t("board_waiting", { n: v.waiting })));
+        return card;
+      }));
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      $("hint").textContent = t("board_hint", { address: $("hint").dataset.address });
+      loadHalls().catch(() => {});
+      load().catch(() => {});
+      setInterval(() => load().catch(() => {}), 5000);
+    });
+  </script>
+</body>
+</html>
