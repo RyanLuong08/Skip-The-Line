@@ -37,7 +37,8 @@ class TestPlaceOrder(AppTestCase):
 
     def test_the_browser_cannot_set_the_price(self):
         res = self.client.post("/api/orders", json={
-            "vendor": "fengyun-love-curry", "items": [{"id": self.curry_rice.id, "qty": 1, "price": 1}]})
+            "vendor": "fengyun-love-curry", "payment": "counter",
+            "items": [{"id": self.curry_rice.id, "qty": 1, "price": 1}]})
         self.assertEqual(res.get_json()["total"], 70)
 
     def test_dish_from_another_vendor_is_refused(self):

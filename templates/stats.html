@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>Stats · Skip the Line</title>
+</head>
+<body>
+  {% set active = "stats" %}
+  {% include "_topbar.html" %}
+
+  <div class="toolbar">
+    <label>Day <input id="day" type="date"></label>
+  </div>
+  <p id="message" class="message bad" role="status"></p>
+
+  <main class="stats">
+    <section class="tiles">
+      <div class="tile"><span class="tile-label">Orders</span><strong id="t-orders">–</strong></div>
+      <div class="tile"><span class="tile-label">Avg minutes, order → ready</span><strong id="t-wait">–</strong></div>
+      <div class="tile"><span class="tile-label">Order value</span><strong id="t-revenue">–</strong></div>
+      <div class="tile"><span class="tile-label">Cancelled</span><strong id="t-cancelled">–</strong></div>
+    </section>
+
+    <section class="card">
+      <h2>Orders per hour</h2>
+      <div id="hours" class="hours" role="img"></div>
+      <details>
+        <summary>Show as a table</summary>
+        <table class="table"><thead><tr><th>Hour</th><th>Orders</th></tr></thead><tbody id="hoursTable"></tbody></table>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>By vendor</h2>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th>Vendor</th><th>Orders</th><th>Cancelled</th><th>Order value (NT$)</th>
+            <th>Avg min, order → ready</th><th>Avg min cooking</th><th>Prep min used / measured</th>
+          </tr></thead>
+          <tbody id="vendors"></tbody>
+        </table>
+      </div>
+      <p class="muted">"Prep min used" is what the wait estimate assumes per order (<code>PREP_MIN</code> in
+        <code>menu_import.py</code>). "Measured" is the median real cooking time, shown once a vendor has
+        3 or more cooked orders. If they differ, update <code>PREP_MIN</code> and run <code>python import_menu.py</code>.</p>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    function el(tag, props = {}, ...children) {
+      const node = Object.assign(document.createElement(tag), props);
+      node.append(...children);
+      return node;
+    }
+    const show = v => v == null ? "–" : String(v);
+
+    function drawHours(byHour) {
+      if (!byHour.length) {
+        $("hours").replaceChildren(el("p", { className: "muted" }, "No orders on this day."));
+        $("hoursTable").replaceChildren();
+        return;
+      }
+      const max = Math.max(...byHour.map(h => h.orders));
+      const peak = byHour.find(h => h.orders === max);
+      $("hours").setAttribute("aria-label",
+        `Orders per hour. Busiest: ${peak.hour}:00 with ${max} orders.`);
+      $("hours").replaceChildren(...byHour.map(h => {
+        const label = `${h.hour}:00–${h.hour + 1}:00 · ${h.orders} order${h.orders === 1 ? "" : "s"}`;
+        const bar = el("div", { className: "bar", title: label });
+        bar.style.height = `${(h.orders / max) * 100}%`;
+        const col = el("div", { className: "hour", title: label, tabIndex: 0, ariaLabel: label },
+          el("span", { className: "hour-value" }, h === peak ? String(h.orders) : ""),
+          el("div", { className: "bar-track" }, bar),
+          el("span", { className: "hour-label" }, `${h.hour}:00`));
+        return col;
+      }));
+      $("hoursTable").replaceChildren(...byHour.map(h =>
+        el("tr", {}, el("td", {}, `${h.hour}:00`), el("td", {}, String(h.orders)))));
+    }
+
+    async function load() {
+      const day = $("day").value;
+      const res = await fetch(`/api/stats?day=${encodeURIComponent(day)}`);
+      const data = await res.json();
+      if (!res.ok) { $("message").textContent = data.error; return; }
+      $("message").textContent = "";
+      const t = data.totals;
+      $("t-orders").textContent = t.orders;
+      $("t-wait").textContent = show(t.avg_wait_min);
+      $("t-revenue").textContent = `NT$${t.revenue}`;
+      $("t-cancelled").textContent = t.cancelled;
+      drawHours(data.by_hour);
+      $("vendors").replaceChildren(...(data.vendors.length ? data.vendors.map(v => el("tr", {},
+        el("td", {}, v.name), el("td", {}, String(v.orders)), el("td", {}, String(v.cancelled)),
+        el("td", {}, String(v.revenue)), el("td", {}, show(v.avg_wait_min)), el("td", {}, show(v.avg_cook_min)),
+        el("td", {}, `${show(v.set_prep_min)} / ${show(v.measured_prep_min)}`)))
+        : [el("tr", {}, el("td", { colSpan: 7, className: "muted" }, "No orders on this day."))]));
+    }
+
+    // Today in Taiwan time, as yyyy-mm-dd, for the date box.
+    $("day").value = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+    $("day").onchange = () => load().catch(e => { $("message").textContent = e.message; });
+    load().catch(e => { $("message").textContent = e.message; });
+    setInterval(() => load().catch(() => {}), 30000);
+  </script>
+</body>
+</html>

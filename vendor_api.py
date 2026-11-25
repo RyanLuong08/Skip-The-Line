@@ -1,6 +1,7 @@
 """The vendor dashboard: see today's orders and move them along (owner: B).
 
 New -> Cooking -> Ready -> Picked up. The allowed moves live in queue_rules.py.
+Everything here needs the vendor PIN (staff_auth.py).
 """
 
 from flask import Blueprint, jsonify, render_template, request
@@ -8,17 +9,20 @@ from flask import Blueprint, jsonify, render_template, request
 from models import Order, Vendor, db
 from payment_rules import COUNTER, TRANSFER, can_start_cooking
 from push_api import notify_ready
-from queue_rules import CANCELLED, COOKING, DONE, READY, WAITING, can_move, today
+from queue_rules import CANCELLED, COOKING, DONE, READY, WAITING, can_move, now, today
+from staff_auth import staff_required
 
 vendor_api = Blueprint("vendor_api", __name__)
 
 
 @vendor_api.route("/vendor")
+@staff_required
 def vendor_page():
     return render_template("vendor.html")
 
 
 @vendor_api.route("/api/vendor-list")
+@staff_required
 def vendor_list():
     """Every vendor, for the dashboard's drop-down."""
     rows = db.session.execute(db.select(Vendor).order_by(Vendor.hall, Vendor.name)).scalars().all()
@@ -26,6 +30,7 @@ def vendor_list():
 
 
 @vendor_api.route("/api/vendors/<slug>/orders")
+@staff_required
 def vendor_orders(slug):
     """Today's orders that still need something from the vendor, by ticket number."""
     vendor = db.session.execute(db.select(Vendor).filter_by(slug=slug)).scalar_one_or_none()
@@ -41,6 +46,7 @@ def vendor_orders(slug):
 
 
 @vendor_api.route("/api/orders/<int:order_id>/status", methods=["POST"])
+@staff_required
 def set_status(order_id):
     """Move an order on. Send JSON: {"status": "cooking"}."""
     order = db.session.get(Order, order_id)
@@ -53,6 +59,10 @@ def set_status(order_id):
     if new == COOKING and not can_start_cooking(order.payment, order.paid):
         return jsonify(error=f"Ticket #{order.ticket} pays by transfer: confirm the money arrived first"), 409
     order.status = new
+    if new == COOKING:
+        order.cooking_at = now()
+    elif new == READY:
+        order.ready_at = now()  # stats.py uses these two times to measure real cooking time
     if new == DONE and order.payment == COUNTER:
         order.paid = True  # the student paid at the counter when they picked it up
     db.session.commit()
@@ -62,6 +72,7 @@ def set_status(order_id):
 
 
 @vendor_api.route("/api/orders/<int:order_id>/paid", methods=["POST"])
+@staff_required
 def confirm_paid(order_id):
     """The vendor found the transfer in their bank app (matching the last 5 digits)."""
     order = db.session.get(Order, order_id)

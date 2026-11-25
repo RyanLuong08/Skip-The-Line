@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>Vendor login · Skip the Line</title>
+</head>
+<body>
+  {% set active = "vendor" %}
+  {% include "_topbar.html" %}
+
+  <main class="login">
+    <form class="card" method="post" action="{{ url_for('staff_auth.login') }}">
+      <h2>Vendor login</h2>
+      <p class="muted">This page is for the stalls. Students order on the <a href="/">order page</a>.</p>
+      <label>PIN
+        <input name="pin" type="password" inputmode="numeric" autocomplete="current-password" autofocus required>
+      </label>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button class="primary" type="submit">Open dashboard</button>
+      {% if error %}<p class="message bad" role="alert">{{ error }}</p>{% endif %}
+    </form>
+  </main>
+</body>
+</html>

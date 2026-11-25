@@ -49,3 +49,30 @@ class TestTransfer(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestBankAccountsFile(unittest.TestCase):
+    ACCOUNT = {"bank": "822 CTBC", "account": "123456789012", "holder": "Team"}
+
+    def tearDown(self):
+        import payment_rules
+        payment_rules.use_bank_accounts(None, {})
+
+    def test_default_and_per_vendor(self):
+        from payment_rules import bank_account, parse_bank_accounts, use_bank_accounts
+        other = dict(self.ACCOUNT, account="999")
+        default, vendors = parse_bank_accounts({"default": self.ACCOUNT, "vendors": {"xcb-bistro": other}})
+        use_bank_accounts(default, vendors)
+        self.assertEqual(bank_account("xcb-bistro")["account"], "999")
+        self.assertEqual(bank_account("fengyun-love-curry")["account"], "123456789012")
+
+    def test_no_default_means_transfer_off(self):
+        from payment_rules import parse_bank_accounts
+        self.assertEqual(parse_bank_accounts({}), (None, {}))
+
+    def test_missing_fields(self):
+        from payment_rules import parse_bank_accounts
+        for bad in ([], {"default": {"bank": "x"}}, {"default": dict(self.ACCOUNT, holder=" ")},
+                    {"vendors": ["x"]}, {"vendors": {"a": "123"}}):
+            with self.assertRaises(ValueError):
+                parse_bank_accounts(bad)

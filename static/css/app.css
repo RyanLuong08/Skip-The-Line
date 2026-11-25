@@ -150,3 +150,34 @@ label select { margin-top: .25rem; }
   .sheet-backdrop.open { display: block; position: fixed; inset: 0; z-index: 25; background: rgba(0, 0, 0, .35); }
 }
 @keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+
+/* Vendor login, log out button */
+.topnav { align-items: center; }
+.topnav form.inline { margin: 0; }
+.topnav-button { background: none; border: none; color: #dfe8d0; font-size: .95rem; padding: 0; }
+.login { max-width: 380px; margin: 3rem auto; padding: 0 1.25rem; }
+.login input { width: 100%; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 8px; font: inherit; margin-top: .25rem; }
+
+/* Vendor dashboard: sound button and a highlight on new orders */
+.toolbar .sound { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: .4rem .9rem; }
+.toolbar .sound.on { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+.order.is-new { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-soft); }
+
+/* Stats page */
+.stats { padding: 1.25rem; display: grid; gap: 1rem; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: .75rem; }
+.tile { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem; display: flex; flex-direction: column; gap: .3rem; }
+.tile-label { color: var(--muted); font-size: .85rem; }
+.tile strong { font-size: 1.8rem; color: var(--ink); }
+.hours { display: flex; align-items: stretch; gap: 2px; height: 180px; padding-top: .25rem; border-bottom: 1px solid var(--line); }
+.hour { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 22px; max-width: 64px; outline-offset: 2px; }
+.hour-value { font-size: .8rem; color: var(--ink); height: 1.1rem; }
+.bar-track { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.bar { width: 70%; max-width: 28px; min-height: 2px; background: var(--green); border-radius: 4px 4px 0 0; }
+.hour:hover .bar, .hour:focus .bar { background: #3b5220; }
+.hour-label { font-size: .75rem; color: var(--muted); padding-top: .3rem; }
+.table-wrap { overflow-x: auto; }
+.table { border-collapse: collapse; width: 100%; font-size: .9rem; margin-top: .5rem; }
+.table th, .table td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.table th { color: var(--muted); font-weight: 600; }
+details summary { cursor: pointer; color: var(--muted); font-size: .9rem; margin-top: .75rem; }

@@ -25,6 +25,11 @@ class AppTestCase(unittest.TestCase):
         self.curry_rice, self.mystery = curry.items
         self.tea = tea.items[0]
         self.client = self.app.test_client()
+        self.login(self.client)  # this client is both a student and the vendor
+
+    def login(self, client, pin="1234"):
+        """Type the vendor PIN (tests always use 1234)."""
+        return client.post("/vendor/login", data={"pin": pin})
 
     def tearDown(self):
         db.session.remove()

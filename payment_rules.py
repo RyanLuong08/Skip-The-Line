@@ -17,13 +17,41 @@ METHODS = (TRANSFER, COUNTER)
 COUNTER_LIMIT = 200       # pay at the counter only if the total is UNDER this (NT$199 ok, NT$200 not)
 TRANSFER_REF_DIGITS = 5   # last 5 digits of the student's bank account
 
-# Where students send transfers. Key: vendor slug, e.g. "fengyun-love-curry".
-# A vendor that isn't listed uses DEFAULT_ACCOUNT. Leave DEFAULT_ACCOUNT as None until you have a
-# real account: then transfer is switched off (never put a made-up account number here, someone
-# might really send money to it). For the class demo you can use one teammate's account, e.g.
-#   DEFAULT_ACCOUNT = {"bank": "822 中國信託 CTBC", "account": "123456789012", "holder": "陶海峰"}
+# Where students send transfers. The real numbers do NOT go in this file (the repo is public):
+# put them in instance/bank_accounts.json, which git ignores. app.py reads it at startup:
+#   {
+#     "default": {"bank": "822 中國信託 CTBC", "account": "123456789012", "holder": "Your Name"},
+#     "vendors": {"fengyun-love-curry": {"bank": "...", "account": "...", "holder": "..."}}
+#   }
+# A vendor that isn't under "vendors" uses "default". No file (or no "default") = transfer is
+# switched off for those vendors. Never use a made-up account number: someone might really pay it.
 DEFAULT_ACCOUNT = None
 BANK_ACCOUNTS = {}
+ACCOUNT_FIELDS = ("bank", "account", "holder")
+
+
+def parse_bank_accounts(data):
+    """Check the contents of bank_accounts.json (already turned into Python by json.load).
+    Returns (default_account_or_None, {vendor_slug: account}). Raises ValueError if it's wrong."""
+    if not isinstance(data, dict):
+        raise ValueError("bank_accounts.json must be one { ... } object")
+
+    def account(value, where):
+        if not isinstance(value, dict) or any(not str(value.get(f, "")).strip() for f in ACCOUNT_FIELDS):
+            raise ValueError(f"{where} needs bank, account and holder")
+        return {f: str(value[f]).strip() for f in ACCOUNT_FIELDS}
+
+    default = account(data["default"], '"default"') if data.get("default") is not None else None
+    vendors = data.get("vendors") or {}
+    if not isinstance(vendors, dict):
+        raise ValueError('"vendors" must be { "vendor-slug": {...}, ... }')
+    return default, {slug: account(value, f'"vendors" -> "{slug}"') for slug, value in vendors.items()}
+
+
+def use_bank_accounts(default, vendors):
+    """Switch on transfers with these accounts (app.py calls this at startup)."""
+    global DEFAULT_ACCOUNT, BANK_ACCOUNTS
+    DEFAULT_ACCOUNT, BANK_ACCOUNTS = default, dict(vendors)
 
 
 def bank_account(vendor_slug):

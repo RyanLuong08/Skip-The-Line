@@ -59,7 +59,7 @@ Same as I2P: the packages live in a `venv` folder inside the project (git ignore
 ```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 Your prompt now starts with `(venv)`. **Run `.\venv\Scripts\Activate.ps1` every time you open a new terminal.**
 
@@ -74,12 +74,14 @@ Your prompt now starts with `(venv)`. **Run `.\venv\Scripts\Activate.ps1` every 
 python app.py
 ```
 - Student page: http://localhost:5000
-- Vendor page: http://localhost:5000/vendor
+- Vendor page: http://localhost:5000/vendor (asks for the **vendor PIN**, see Step 10e)
+- Stats page: http://localhost:5000/stats (same PIN)
 
-The first run creates `instance/skipline.db` and loads the 286 Fengyun dishes from `data/Fengyun.csv`.
+The first run creates `instance/skipline.db` and loads the menus from `data/` (Fengyun and XCB). It also prints
+`Vendor PIN: 123456` in the terminal.
 
-Try it: order two dishes at **Love Curry**, open `/vendor` in another tab, choose *fengyun · Love Curry*, and click
-**Start cooking** then **Mark ready**. Within 4 seconds the student tab says **Ready for pickup**.
+Try it: order two dishes at **Love Curry**, open `/vendor` in another tab, type the PIN, choose *fengyun · Love Curry*,
+and click **Start cooking** then **Mark ready**. Within 4 seconds the student tab says **Ready for pickup**.
 
 Stop the server with **Ctrl+C**.
 To wipe all orders, stop the server, delete `instance\skipline.db`, and start it again.
@@ -166,12 +168,21 @@ The rules are in `payment_rules.py`: pay at pickup only when the total is **unde
 otherwise bank transfer. For a transfer the student types the last 5 digits of their account (後五碼); the vendor
 finds the payment in their bank app, presses **Confirm paid**, and only then can press **Start cooking**.
 
-Transfer stays switched off until a vendor has a bank account in `BANK_ACCOUNTS` (or `DEFAULT_ACCOUNT` for all
-vendors). Never put a made-up account number there. For the demo, use one teammate's real account.
+Transfer stays switched off until there is a bank account to send money to. The account numbers **don't go in the
+code** (the repo is public). Put them in `instance\bank_accounts.json`, which git never uploads:
+```json
+{
+  "default": {"bank": "822 中國信託 CTBC", "account": "your real account number", "holder": "Your Name"},
+  "vendors": {}
+}
+```
+`default` is used by every vendor; a vendor slug under `vendors` (e.g. `"xcb-bistro": {...}`) gets its own account.
+Restart the server after changing it. Never use a made-up account number. For the demo, use one teammate's real
+account. Each laptop that runs the server needs its own copy of this file.
 
 The payment, opening hours and push notifications added new columns and a table. After you `git pull` these changes,
 **stop the server, delete `instance\skipline.db`, and start again** (otherwise you get `no such column: ...`).
-Also run `pip install -r requirements.txt` again (for `pywebpush`).
+Also run `python -m pip install -r requirements.txt` again (for `pywebpush`).
 
 ## Step 10c. Opening hours
 
@@ -195,6 +206,26 @@ when the vendor is closed.
   - The server's key is made on the first run and kept in `instance\vapid_private.pem`. If you delete it, every
     student has to tap *Notify me* again.
 
+## Step 10e. Vendor PIN and the stats page
+
+`/vendor` and `/stats` need a PIN, so a classmate who finds the link can't mark orders ready or see transfer digits.
+Students never need it: ordering, *My tickets* and cancelling their own order work without it.
+
+- The first `python app.py` makes a random 6-digit PIN, saves it in `instance\vendor_pin` and prints it.
+  To choose your own, edit that file (4+ characters) or start with `$env:VENDOR_PIN = "246810"; python app.py`.
+- Each vendor browser types it once; **Log out** is in the top bar.
+- On the dashboard, press **🔕 Sound off** once to turn the sound on (browsers only allow sound after a click). Then a
+  new order rings, its card is outlined in green, and the tab title shows `(1) New order`.
+
+`/stats` shows one day at a time: orders per hour, the average minutes from ordering to *Mark ready*, order value,
+cancellations, and per vendor the real cooking time (*Start cooking* → *Mark ready*). After a vendor has 3 or more
+cooked orders it shows a **measured** minutes-per-order next to the one the wait estimate uses: copy it into
+`PREP_MIN` in `menu_import.py` and run `python import_menu.py` (that's Step 10, done for you).
+These numbers (busiest hour, minutes saved) are good evidence for the presentation.
+
+This change added two columns (`cooking_at`, `ready_at`), so after pulling it: stop the server, delete
+`instance\skipline.db`, start again.
+
 ## Step 11. Putting it online (optional)
 
 GitHub only stores the code. **GitHub Pages can't run Python**, so if you turned Pages on for the old version, turn it
@@ -205,12 +236,13 @@ off (Settings → Pages → Unpublish). For a link that works without your lapto
 
 ## Ideas for after the basics work
 
-- [ ] Vendor PIN or login, so only the stall can change its orders (right now anyone who opens `/vendor` can)
-- [ ] Beep or vibrate on the vendor page when a new order arrives
+- [x] Vendor PIN, so only the stall can change its orders (Step 10e)
+- [x] Beep on the vendor page when a new order arrives (Step 10e)
 - [ ] A "Now serving" screen for a TV at each counter
-- [ ] Opening hours, so closed vendors are hidden
+- [x] Opening hours, so closed vendors are greyed out (Step 10c)
 - [ ] No-show rule: decide on 2 or 3 strikes as a team (the demo and the slides disagree)
-- [ ] Busiest-hours chart per vendor, built from past orders (good for the "Why" slides)
+- [x] Orders-per-hour chart and real cooking times (`/stats`, Step 10e)
+- [ ] Shuimu menu
 - [ ] 中文 / English switch
 
 ## Troubleshooting
@@ -218,11 +250,14 @@ off (Settings → Pages → Unpublish). For a link that works without your lapto
 | Problem | Fix |
 | --- | --- |
 | `ModuleNotFoundError: No module named 'flask'` | The venv isn't active: `.\venv\Scripts\Activate.ps1` |
+| `pip.exe ... blocked by an Application Control policy` | Windows blocks the small `pip.exe` in each new venv. Always use `python -m pip ...` instead |
 | `running scripts is disabled on this system` | `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (Step 3) |
 | `Address already in use` / port 5000 busy | Another `python app.py` is still running. Close that terminal or press Ctrl+C in it |
 | Menu is empty | Check `data/Fengyun.csv` exists, then delete `instance\skipline.db` and restart |
 | Changed `models.py` and now get `no such column` | `db.create_all()` never changes old tables. Delete `instance\skipline.db` and restart |
 | Chinese text shows as `ç¾...` | Save the CSV as **CSV UTF-8** |
 | Phone can't open the page | Same Wi-Fi? Firewall allowed? Try a phone hotspot (Step 8) |
-| No *Notify me* button | `pip install -r requirements.txt` (pywebpush), then restart. On the phone, use the https:// (ngrok) link |
+| No *Notify me* button | `python -m pip install -r requirements.txt` (pywebpush), then restart. On the phone, use the https:// (ngrok) link |
+| Vendor page keeps asking for the PIN | The PIN is in `instance\vendor_pin` (also printed when the server starts) |
+| Transfer is greyed out for every vendor | No `instance\bank_accounts.json` yet, or it has no `"default"` (Step 10b) |
 | `git push` rejected | `git pull` first, fix any conflicts, run the tests, push again |
