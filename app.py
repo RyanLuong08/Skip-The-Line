@@ -6,6 +6,7 @@ needs the vendor PIN that this prints when it starts).
 
 import json
 import os
+from datetime import timedelta
 
 from flask import Flask, render_template, send_from_directory
 
@@ -17,6 +18,7 @@ from push_api import push_api, setup_push
 from secret_key import KEY_FILE, choose_secret_key, new_key
 from staff_auth import setup_pin, staff_auth
 from stats_api import stats_api
+from screens_api import screens_api
 from vendor_api import vendor_api
 
 
@@ -65,8 +67,10 @@ def create_app(database_uri="sqlite:///skipline.db", load_menu=True, vendor_pin=
     app.register_blueprint(push_api)
     app.register_blueprint(staff_auth)
     app.register_blueprint(stats_api)
+    app.register_blueprint(screens_api)
     app.config["SECRET_KEY"] = _secret_key(app, database_uri)
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=60)  # "My tickets" and "Order again" last
     app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
     app.json.ensure_ascii = False  # send Chinese dish names as they are, not as \u codes
     db.init_app(app)

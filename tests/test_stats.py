@@ -19,13 +19,13 @@ VENDORS = {"curry": {"name": "Love Curry", "avg_prep_min": 3}, "tea": {"name": "
 class TestSummarize(unittest.TestCase):
     def test_no_orders(self):
         self.assertEqual(summarize([], VENDORS), {
-            "totals": {"orders": 0, "cancelled": 0, "revenue": 0, "transfer": 0, "avg_wait_min": None},
+            "totals": {"orders": 0, "cancelled": 0, "no_shows": 0, "revenue": 0, "transfer": 0, "avg_wait_min": None},
             "by_hour": [], "vendors": []})
 
     def test_totals_leave_out_cancelled_orders(self):
         data = summarize([order(total=70), order(total=200, payment="transfer"),
-                          order(total=999, status="cancelled")], VENDORS)
-        self.assertEqual(data["totals"], {"orders": 2, "cancelled": 1, "revenue": 270, "transfer": 1,
+                          order(total=999, status="cancelled"), order(total=0, status="no_show")], VENDORS)
+        self.assertEqual(data["totals"], {"orders": 3, "cancelled": 1, "no_shows": 1, "revenue": 270, "transfer": 1,
                                           "avg_wait_min": None})
 
     def test_by_hour_fills_quiet_hours_with_zero(self):

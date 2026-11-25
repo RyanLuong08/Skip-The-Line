@@ -9,23 +9,37 @@
   {% include "_topbar.html" %}
 
   <nav id="halls" class="tabs" aria-label="Dining areas"></nav>
-  <p id="peak" class="banner" hidden>It's peak hour. Order ahead and pick a pickup time to skip the queue.</p>
+  <p id="peak" class="banner" hidden data-i18n="peak">It's peak hour. Order ahead and pick a pickup time to skip the queue.</p>
 
   <main class="layout">
     <section>
-      <!-- Step 1: choose a vendor -->
+      <!-- Step 1: search everything, order again, or choose a vendor -->
       <div id="vendorView">
-        <h2>Vendors <small id="hallNote"></small></h2>
-        <p class="muted hint">Wait times count only orders placed in this app, not the line at the counter.</p>
-        <div id="vendors" class="grid"></div>
+        <input id="searchAll" type="search" data-i18n-placeholder="search_all" placeholder="Search every dish">
+        <div id="filtersAll" class="chips"></div>
+
+        <div id="resultsView" hidden>
+          <h2><span data-i18n="searching_all">Results from every dining hall</span> <small id="resultsNote"></small></h2>
+          <ul id="results" class="items"></ul>
+        </div>
+
+        <div id="browseView">
+          <div id="againBox" hidden>
+            <h2 data-i18n="order_again">Order again</h2>
+            <div id="again" class="again"></div>
+          </div>
+          <h2><span data-i18n="vendors">Vendors</span> <small id="hallNote"></small></h2>
+          <p class="muted hint" data-i18n="wait_hint">Wait times count only orders placed in this app, not the line at the counter.</p>
+          <div id="vendors" class="grid"></div>
+        </div>
       </div>
 
       <!-- Step 2: choose dishes -->
       <div id="menuView" hidden>
-        <button id="back" class="link">← All vendors</button>
+        <button id="back" class="link" data-i18n="back">← All vendors</button>
         <h2 id="vendorTitle"></h2>
         <p class="muted"><span id="vendorWait" class="wait"></span> <span id="vendorHours"></span></p>
-        <input id="search" type="search" placeholder="Search dishes 搜尋餐點">
+        <input id="search" type="search" data-i18n-placeholder="search_menu" placeholder="Search this menu">
         <div id="categories" class="chips"></div>
         <ul id="items" class="items"></ul>
       </div>
@@ -34,36 +48,37 @@
     <aside>
       <!-- Step 3: place the order -->
       <div id="orderCard" class="card">
-        <button id="closeCart" class="sheet-close" aria-label="Close">✕</button>
-        <h2>Your order</h2>
+        <button id="closeCart" class="sheet-close" data-i18n-label="close" aria-label="Close">✕</button>
+        <h2 data-i18n="your_order">Your order</h2>
         <ul id="cart" class="cart"></ul>
-        <p class="total">Total: <strong id="total">NT$0</strong></p>
-        <label>Pickup time <select id="pickup"></select></label>
+        <p class="total"><span data-i18n="total">Total:</span> <strong id="total">NT$0</strong></p>
+        <label><span data-i18n="pickup_time">Pickup time</span> <select id="pickup"></select></label>
 
         <!-- How to pay: shown once there is something in the order -->
         <fieldset id="payBox" class="pay" hidden>
-          <legend>Payment 付款方式</legend>
-          <label class="choice"><input type="radio" name="pay" value="transfer"> Bank transfer 轉帳</label>
+          <legend data-i18n="payment">Payment</legend>
+          <label class="choice"><input type="radio" name="pay" value="transfer"> <span data-i18n="pay_transfer">Bank transfer</span></label>
           <label class="choice"><input type="radio" name="pay" value="counter">
-            Pay at pickup 取餐付款 <small id="counterNote"></small></label>
+            <span data-i18n="pay_counter">Pay at pickup</span> <small id="counterNote"></small></label>
           <div id="transferBox" class="transfer" hidden>
-            <p>Transfer <strong id="transferAmount"></strong> to:<br><span id="bankInfo"></span></p>
-            <label>Last 5 digits of the account you pay from 帳號後五碼
+            <p><span id="transferTo"></span><br><span id="bankInfo"></span></p>
+            <label><span data-i18n="last5">Last 5 digits of the account you pay from</span>
               <input id="transferRef" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="12345"></label>
-            <p class="muted">The vendor starts cooking once they see your transfer.</p>
+            <p class="muted" data-i18n="transfer_wait">The vendor starts cooking once they see your transfer.</p>
           </div>
           <p id="payNote" class="muted"></p>
         </fieldset>
 
-        <button id="placeOrder" class="primary" disabled>Place order</button>
+        <button id="placeOrder" class="primary" disabled data-i18n="place_order">Place order</button>
         <p id="message" class="message" role="status"></p>
       </div>
 
       <!-- Step 4: follow your tickets -->
       <div class="card">
-        <h2>My tickets</h2>
-        <div id="tickets"><p class="muted">No orders yet today.</p></div>
-        <button id="pushButton" class="link" hidden>🔔 Notify me when my food is ready</button>
+        <h2 data-i18n="my_tickets">My tickets</h2>
+        <p id="noShowNote" class="message bad" hidden></p>
+        <div id="tickets"></div>
+        <button id="pushButton" class="link" hidden data-i18n="notify">🔔 Notify me when my food is ready</button>
         <p id="pushNote" class="muted small"></p>
       </div>
     </aside>
@@ -72,20 +87,22 @@
   <!-- Phones: the order is far below the menu, so keep a bar at the bottom of the screen -->
   <div id="sheetBackdrop" class="sheet-backdrop"></div>
   <button id="cartBar" class="cart-bar" hidden>
-    <span id="cartBarText"></span><strong>View order ↑</strong>
+    <span id="cartBarText"></span><strong data-i18n="view_order">View order ↑</strong>
   </button>
 
   <script>
-    // Python does the real work (prices, ticket numbers, wait times); this script only
-    // asks the /api/... addresses and draws the answers. It uses textContent (never
+    // Python does the real work (prices, ticket numbers, wait times, what is allowed); this
+    // script only asks the /api/... addresses and draws the answers. It uses textContent (never
     // innerHTML) for anything that comes from data, so a dish name can't break the page.
+    // Words on screen come from t(...) in static/js/i18n.js (中文 / English).
     const $ = id => document.getElementById(id);
-    const STATUS = { waiting: "In queue", cooking: "Cooking", ready: "Ready for pickup",
-                     done: "Picked up", cancelled: "Cancelled" };
+    const CHEAP = 100;  // the "Under NT$100" filter
     // state.vendor is the vendor of the current order (it stays set while the student looks
     // at the vendor list again); state.view says which list is on screen.
-    const state = { hall: "fengyun", vendor: null, view: "vendors", items: [], category: "all", search: "", cart: [],
-                    counterLimit: 200 };  // the real limit comes from /api/now (payment_rules.py)
+    const state = { hall: "fengyun", vendor: null, view: "vendors", items: [], category: "all", search: "",
+                    veg: false, cheap: false, searchAll: "", cart: [],
+                    counterLimit: 200,  // the real limit comes from /api/now (payment_rules.py)
+                    me: { no_shows: 0, no_show_limit: 3, counter_blocked: false } };
 
     // el("div", {className: "x"}, "text", child) -> a new element
     function el(tag, props = {}, ...children) {
@@ -93,11 +110,14 @@
       node.append(...children);
       return node;
     }
-    const money = n => n == null ? "Ask at counter" : `NT$${n}`;
+    const money = n => n == null ? t("ask_counter") : `NT$${n}`;
     // "~9 min · 3 app orders ahead": only orders from this app are counted, not the line at the counter.
-    const waitText = v => v.queue ? `~${v.wait_min} min · ${v.queue} app order${v.queue === 1 ? "" : "s"} ahead`
-                                  : "No app orders waiting";
-    const closedText = v => v.opens_at ? `Closed · opens at ${v.opens_at}` : "Closed for today";
+    const waitText = v => !v.queue ? t("wait_none")
+                        : t(v.queue === 1 ? "wait_one" : "wait_some", { min: v.wait_min, n: v.queue });
+    const closedText = v => v.opens_at ? t("closed_until", { time: v.opens_at }) : t("closed_today");
+    const available = v => v.open && !v.paused;
+    const statusText = v => v.paused ? t("paused") : v.open ? waitText(v) : closedText(v);
+    const statusClass = v => available(v) ? `wait ${v.wait_level}` : "wait closed";
 
     async function api(url, options) {
       const res = await fetch(url, options);
@@ -111,13 +131,34 @@
       $("message").className = "message bad";
     }
 
+    // A dish line: name in the chosen language, the other language and calories under it.
+    function dishInfo(i, extra = "") {
+      const info = el("div", {}, el("strong", {}, pick(i)));
+      if (i.vegetarian) info.append(" ", el("span", { className: "tag" }, t("veg")));
+      if (i.sold_out) info.append(" ", el("span", { className: "tag sold" }, t("sold_out")));
+      const second = [otherName(i), i.calories ? `${Math.round(i.calories)} kcal` : "", extra].filter(Boolean).join(" · ");
+      if (second) info.append(el("div", { className: "muted" }, second));
+      return info;
+    }
+
+    function filterChips(onChange) {
+      const chips = [["veg", t("f_veg")], ["cheap", t("f_cheap", { n: CHEAP })]];
+      return chips.map(([key, label]) => {
+        const chip = el("button", { className: state[key] ? "active" : "", type: "button" }, label);
+        chip.setAttribute("aria-pressed", String(state[key]));
+        chip.onclick = () => { state[key] = !state[key]; onChange(); };
+        return chip;
+      });
+    }
+    const passesFilters = i => (!state.veg || i.vegetarian) && (!state.cheap || (i.price != null && i.price <= CHEAP));
+
     // ---------- Step 1: halls and vendors ----------
 
     async function loadHalls() {
       const halls = await api("/api/halls");
       $("halls").replaceChildren(...halls.map(h => {
         const button = el("button", { className: h.id === state.hall ? "active" : "" },
-                          h.name + " ", el("small", {}, h.name_zh));
+                          (LANG === "zh" ? h.name_zh : h.name) + " ", el("small", {}, LANG === "zh" ? h.name : h.name_zh));
         button.onclick = () => { state.hall = h.id; loadHalls(); showVendors(); };
         return button;
       }));
@@ -127,30 +168,104 @@
       state.view = "vendors";
       $("vendorView").hidden = false;
       $("menuView").hidden = true;
+      $("filtersAll").replaceChildren(...filterChips(runSearch));
+      if (searching()) return runSearch();
+      $("resultsView").hidden = true;
+      $("browseView").hidden = false;
       const vendors = await api(`/api/vendors?hall=${state.hall}`);
-      $("hallNote").textContent = vendors.length ? `${vendors.length} vendors` : "";
+      $("hallNote").textContent = vendors.length ? t("vendors_n", { n: vendors.length }) : "";
       if (!vendors.length) {
-        $("vendors").replaceChildren(el("p", { className: "muted" }, "This dining hall's menu is still being collected."));
+        $("vendors").replaceChildren(el("p", { className: "muted" }, t("hall_empty")));
         return;
       }
-      // Open vendors first, closed ones at the end and greyed out.
-      vendors.sort((a, b) => b.open - a.open);
+      // Open vendors first; closed or paused ones at the end and greyed out.
+      vendors.sort((a, b) => available(b) - available(a));
       $("vendors").replaceChildren(...vendors.map(v => {
-        const card = el("button", { className: v.open ? "vendor" : "vendor closed" },
-          el("strong", {}, v.name),
-          el("span", { className: "muted" }, `${v.name_zh} · ${v.cuisine} · ${v.dish_count} dish${v.dish_count === 1 ? "" : "es"}`),
-          v.open ? el("span", { className: `wait ${v.wait_level}` }, waitText(v))
-                 : el("span", { className: "wait closed" }, closedText(v)));
+        const second = [otherName(v), v.cuisine,
+                        v.dish_count === 1 ? t("dish_1") : t("dishes_n", { n: v.dish_count })].filter(Boolean).join(" · ");
+        const card = el("button", { className: available(v) ? "vendor" : "vendor closed" },
+          el("strong", {}, pick(v)), el("span", { className: "muted" }, second),
+          el("span", { className: statusClass(v) }, statusText(v)));
         card.onclick = () => openVendor(v.slug);
         return card;
       }));
     }
 
+    // ---------- Step 1b: search every vendor ----------
+
+    const searching = () => state.searchAll || state.veg || state.cheap;
+    let searchTimer = null, searchRun = 0;
+
+    async function runSearch() {
+      $("filtersAll").replaceChildren(...filterChips(runSearch));
+      if (!searching()) { $("resultsView").hidden = true; $("browseView").hidden = false; return showVendors(); }
+      $("resultsView").hidden = false;
+      $("browseView").hidden = true;
+      const params = new URLSearchParams({ q: state.searchAll });
+      if (state.veg) params.set("veg", "1");
+      if (state.cheap) params.set("max_price", String(CHEAP));
+      const run = ++searchRun;
+      const dishes = await api(`/api/search?${params}`);
+      if (run !== searchRun) return;  // the student typed more in the meantime
+      $("resultsNote").textContent = dishes.length >= 40 ? t("results_more", { n: dishes.length })
+                                                         : t("results_n", { n: dishes.length });
+      if (!dishes.length) {
+        $("results").replaceChildren(el("li", { className: "muted" }, t("no_results")));
+        return;
+      }
+      $("results").replaceChildren(...dishes.map(d => {
+        const v = d.vendor;
+        const where = `${pick(v)} · ${LANG === "zh" ? v.hall_zh : v.hall}` +
+                      (available(v) ? "" : ` · ${v.paused ? t("paused") : t("closed_today")}`);
+        const add = el("button", { ariaLabel: t("add", { name: pick(d) }), disabled: !available(v) }, "+");
+        add.onclick = async () => { if (await openVendor(v.slug)) addToCart(d); };
+        return el("li", { className: available(v) ? "" : "unavailable" },
+                  dishInfo(d, where), el("div", { className: "price" }, money(d.price)), add);
+      }));
+    }
+
+    $("searchAll").oninput = e => {
+      state.searchAll = e.target.value.trim();
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => runSearch().catch(showError), 250);
+    };
+
+    // ---------- Step 1c: order again ----------
+
+    async function loadAgain() {
+      const recent = await api("/api/my-orders/recent");
+      $("againBox").hidden = !recent.length;
+      $("again").replaceChildren(...recent.map(o => {
+        const lines = o.lines.map(l => `${l.qty} × ${pick(l)}`).join(", ");
+        const button = el("button", { className: "link" }, t("order_again_btn"));
+        button.onclick = () => orderAgain(o);
+        return el("div", { className: "again-card" },
+          el("strong", {}, pick(o.vendor)), el("div", { className: "muted" }, lines), button);
+      }));
+    }
+
+    async function orderAgain(o) {
+      if (!await openVendor(o.vendor.slug)) return;
+      // Only dishes that are still on the menu and not sold out today.
+      const menu = new Map(state.items.map(i => [i.id, i]));
+      let skipped = 0;
+      state.cart = [];
+      for (const line of o.lines) {
+        const item = menu.get(line.item_id);
+        if (!item || item.sold_out) { skipped++; continue; }
+        state.cart.push({ id: item.id, name: item.name, name_zh: item.name_zh, price: item.price, qty: line.qty });
+      }
+      drawCart();
+      $("message").className = skipped ? "message bad" : "message";
+      $("message").textContent = !state.cart.length ? t("order_again_none") : skipped ? t("order_again_gone") : "";
+      if (state.cart.length && matchMedia("(max-width: 800px)").matches) openSheet(true);
+    }
+
     // ---------- Step 2: one vendor's menu ----------
 
+    // Returns true if the vendor's menu is now on screen.
     async function openVendor(slug) {
-      if (state.cart.length && state.vendor?.slug !== slug &&
-          !confirm("One order is for one vendor. Clear your current order?")) return;
+      if (state.cart.length && state.vendor?.slug !== slug && !confirm(t("one_vendor"))) return false;
       if (state.vendor?.slug !== slug) state.cart = [];
       const data = await api(`/api/vendors/${slug}/menu`);
       Object.assign(state, { vendor: data.vendor, items: data.items, category: "all", search: "" });
@@ -158,39 +273,41 @@
       $("vendorView").hidden = true;
       $("menuView").hidden = false;
       state.view = "menu";
-      $("vendorTitle").textContent = `${data.vendor.name} ${data.vendor.name_zh}`;
       const v = data.vendor;
-      $("vendorWait").textContent = v.open ? waitText(v) : closedText(v);
-      $("vendorWait").className = v.open ? `wait ${v.wait_level}` : "wait closed";
-      $("vendorHours").textContent = v.hours ? `· Hours ${v.hours}` : "";
+      $("vendorTitle").textContent = [pick(v), otherName(v)].filter(Boolean).join(" ");
+      $("vendorWait").textContent = statusText(v);
+      $("vendorWait").className = statusClass(v);
+      $("vendorHours").textContent = v.hours ? `· ${t("hours", { hours: v.hours })}` : "";
       drawMenu();
       drawCart();
       loadNow().catch(showError);  // this vendor's pickup times
+      window.scrollTo({ top: 0 });
+      return true;
     }
 
     function drawMenu() {
       const categories = ["all", ...new Set(state.items.map(i => i.category))];
       $("categories").replaceChildren(...categories.map(c => {
-        const chip = el("button", { className: c === state.category ? "active" : "" }, c);
+        const chip = el("button", { className: c === state.category ? "active" : "" }, c === "all" ? t("all") : category(c));
         chip.onclick = () => { state.category = c; drawMenu(); };
         return chip;
-      }));
+      }), ...filterChips(drawMenu));
 
       const q = state.search.toLowerCase();
       const shown = state.items.filter(i =>
-        (state.category === "all" || i.category === state.category) &&
+        (state.category === "all" || i.category === state.category) && passesFilters(i) &&
         (!q || i.name.toLowerCase().includes(q) || i.name_zh.includes(state.search)));
       if (!shown.length) {
-        $("items").replaceChildren(el("li", { className: "muted" }, "No dishes match."));
+        $("items").replaceChildren(el("li", { className: "muted" }, t("no_results")));
         return;
       }
+      // Sold-out dishes stay on the list (greyed out) so nobody wonders where they went.
+      shown.sort((a, b) => a.sold_out - b.sold_out);
       $("items").replaceChildren(...shown.map(i => {
-        const info = el("div", {}, el("strong", {}, i.name));
-        if (i.vegetarian) info.append(" ", el("span", { className: "tag" }, "veg"));
-        info.append(el("div", { className: "muted" }, i.name_zh + (i.calories ? ` · ${Math.round(i.calories)} kcal` : "")));
-        const add = el("button", { ariaLabel: `Add ${i.name}` }, "+");
+        const add = el("button", { ariaLabel: t("add", { name: pick(i) }), disabled: i.sold_out || !available(state.vendor) }, "+");
         add.onclick = () => addToCart(i);
-        return el("li", {}, info, el("div", { className: "price" }, money(i.price)), add);
+        return el("li", { className: i.sold_out ? "unavailable" : "" },
+                  dishInfo(i), el("div", { className: "price" }, money(i.price)), add);
       }));
     }
 
@@ -199,7 +316,7 @@
     function addToCart(item) {
       const line = state.cart.find(c => c.id === item.id);
       if (line) line.qty++;
-      else state.cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
+      else state.cart.push({ id: item.id, name: item.name, name_zh: item.name_zh, price: item.price, qty: 1 });
       drawCart();
     }
 
@@ -212,23 +329,24 @@
 
     function drawCart() {
       if (!state.cart.length) {
-        $("cart").replaceChildren(el("li", { className: "muted" }, "Pick a vendor and add dishes."));
+        $("cart").replaceChildren(el("li", { className: "muted" }, t("empty_cart")));
       } else {
         $("cart").replaceChildren(...state.cart.map(c => {
-          const minus = el("button", { ariaLabel: "Remove one" }, "−");
+          const minus = el("button", { ariaLabel: t("remove_one") }, "−");
           minus.onclick = () => removeFromCart(c.id);
-          return el("li", {}, el("span", {}, `${c.qty} × ${c.name}`),
+          return el("li", {}, el("span", {}, `${c.qty} × ${pick(c)}`),
                     el("span", {}, money(c.price == null ? null : c.price * c.qty)), minus);
         }));
       }
       const total = state.cart.reduce((sum, c) => sum + (c.price ?? 0) * c.qty, 0);
       const unpriced = state.cart.some(c => c.price == null);
-      $("total").textContent = `NT$${total}` + (unpriced ? " + dishes priced at the counter" : "");
+      $("total").textContent = `NT$${total}` + (unpriced ? t("plus_counter") : "");
       drawPayment(total, unpriced);
     }
 
     // ---------- Step 3b: how to pay ----------
-    // These checks only help the student; Python checks the same rules again (payment_rules.py).
+    // These checks only help the student; Python checks the same rules again
+    // (payment_rules.py, noshow_rules.py).
 
     const payChoice = value => document.querySelector(`input[name=pay][value=${value}]`);
     const chosenPayment = () => document.querySelector("input[name=pay]:checked")?.value;
@@ -236,7 +354,7 @@
     function drawPayment(total, unpriced) {
       $("payBox").hidden = !state.cart.length;
       const bank = state.vendor?.bank;
-      const counterOk = total < state.counterLimit;
+      const counterOk = total < state.counterLimit && !state.me.counter_blocked;
       const transferOk = Boolean(bank) && !unpriced;
       payChoice("counter").disabled = !counterOk;
       payChoice("transfer").disabled = !transferOk;
@@ -246,22 +364,24 @@
       // Only one way is possible? Pick it for them.
       if (state.cart.length && !chosenPayment() && counterOk !== transferOk) payChoice(counterOk ? "counter" : "transfer").checked = true;
 
-      $("counterNote").textContent = `(under NT$${state.counterLimit})`;
+      $("counterNote").textContent = t("under", { n: state.counterLimit });
       const notes = [];
-      if (!counterOk) notes.push(`Orders of NT$${state.counterLimit} or more must be paid by transfer.`);
-      if (!bank) notes.push("This vendor doesn't take transfers yet.");
-      else if (unpriced) notes.push("Some dishes have no price yet, so they can only be paid at pickup.");
-      if (!counterOk && !transferOk) notes.push("Remove some dishes to place this order.");
+      if (state.me.counter_blocked) notes.push(t("noshow_blocked", { n: state.me.no_shows }));
+      else if (total >= state.counterLimit) notes.push(t("must_transfer", { n: state.counterLimit }));
+      if (!bank) notes.push(t("no_bank"));
+      else if (unpriced) notes.push(t("unpriced_counter"));
+      if (!counterOk && !transferOk) notes.push(t("remove_some"));
       $("payNote").textContent = notes.join(" ");
 
       const transfer = chosenPayment() === "transfer";
       $("transferBox").hidden = !transfer;
       if (transfer) {
-        $("transferAmount").textContent = `NT$${total}`;
+        $("transferTo").textContent = t("transfer_to", { amount: `NT$${total}` });
         $("bankInfo").textContent = `${bank.bank} · ${bank.account}` + (bank.holder ? ` · ${bank.holder}` : "");
       }
       const refOk = /^\d{5}$/.test($("transferRef").value.trim());
-      $("placeOrder").disabled = !state.cart.length || !chosenPayment() || (transfer && !refOk) || !$("pickup").value;
+      const vendorOk = state.vendor && available(state.vendor);
+      $("placeOrder").disabled = !state.cart.length || !vendorOk || !chosenPayment() || (transfer && !refOk) || !$("pickup").value;
       drawCartBar(total, unpriced);
     }
 
@@ -270,7 +390,7 @@
     function drawCartBar(total, unpriced) {
       const count = state.cart.reduce((sum, c) => sum + c.qty, 0);
       $("cartBar").hidden = !count || $("orderCard").classList.contains("open");
-      $("cartBarText").textContent = `🛒 ${count} item${count === 1 ? "" : "s"} · NT$${total}${unpriced ? "+" : ""}`;
+      $("cartBarText").textContent = `🛒 ${count === 1 ? t("item_1") : t("items_n", { n: count })} · NT$${total}${unpriced ? "+" : ""}`;
       document.body.classList.toggle("has-cart", count > 0);
     }
 
@@ -293,7 +413,16 @@
       const chosen = $("pickup").value;
       $("pickup").replaceChildren(...(now.pickup_slots.length
         ? now.pickup_slots.map(s => el("option", { selected: s === chosen }, s))
-        : [el("option", { value: "" }, "Closed: no pickup times left today")]));
+        : [el("option", { value: "" }, t("no_pickup"))]));
+      drawCart();
+    }
+
+    async function loadMe() {
+      state.me = await api("/api/me");
+      $("noShowNote").hidden = !state.me.no_shows;
+      $("noShowNote").textContent = state.me.counter_blocked
+        ? t("noshow_blocked", { n: state.me.no_shows })
+        : t("noshow_warn", { n: state.me.no_shows, limit: state.me.no_show_limit });
       drawCart();
     }
 
@@ -312,14 +441,17 @@
         for (const input of document.querySelectorAll("input[name=pay]")) input.checked = false;
         $("transferRef").value = "";
         drawCart();
-        $("message").textContent = `Ordered! Your ticket is #${order.ticket}. ` +
-          (order.payment === "counter" ? `Pay NT$${order.total} at the counter when you pick it up.`
-                                       : "The vendor will start once they see your transfer.");
+        $("message").textContent = t("ordered", { ticket: order.ticket }) + " " +
+          (order.payment === "counter" ? t("ordered_counter", { total: order.total }) : t("ordered_transfer"));
         $("message").className = "message";
         loadTickets();
+        loadAgain().catch(() => {});
       } catch (error) {
         showError(error);
-        drawCart();
+        // e.g. a dish just sold out: show the menu as it is now
+        if (state.vendor) api(`/api/vendors/${state.vendor.slug}/menu`).then(d => {
+          state.items = d.items; state.vendor = d.vendor; if (state.view === "menu") drawMenu(); drawCart();
+        }).catch(() => {});
       }
     };
 
@@ -336,12 +468,12 @@
       if (nowReady.length) navigator.vibrate?.(VIBRATE);
       for (const o of orders) lastStatus[o.id] = o.status;
       const ready = orders.filter(o => o.status === "ready").map(o => `#${o.ticket}`);
-      document.title = ready.length ? `✅ ${ready.join(", ")} READY · Skip the Line` : PAGE_TITLE;
+      document.title = ready.length ? `${t("ready_title", { tickets: ready.join(", ") })} · Skip the Line` : PAGE_TITLE;
     }
 
     async function cancelOrder(o) {
-      const note = o.payment === "transfer" ? " If you already sent the money, ask the vendor to send it back." : "";
-      if (!confirm(`Cancel ticket #${o.ticket} at ${o.vendor.name}?${note}`)) return;
+      const note = o.payment === "transfer" ? t("cancel_refund") : "";
+      if (!confirm(t("cancel_q", { ticket: o.ticket, vendor: pick(o.vendor) }) + note)) return;
       try {
         await api(`/api/my-orders/${o.id}/cancel`, { method: "POST" });
       } catch (error) {
@@ -350,29 +482,34 @@
       loadTickets();
     }
 
+    function aheadText(n) {
+      return n === 0 ? t("ahead_none") : n === 1 ? t("ahead_one") : t("ahead_some", { n });
+    }
+
     async function loadTickets() {
       const orders = await api("/api/my-orders");
       noticeReady(orders);
+      if (orders.some(o => o.status === "no_show")) loadMe().catch(() => {});
       if (!orders.length) {
-        $("tickets").replaceChildren(el("p", { className: "muted" }, "No orders yet today."));
+        $("tickets").replaceChildren(el("p", { className: "muted" }, t("no_tickets")));
         return;
       }
       $("tickets").replaceChildren(...orders.map(o => {
         const waitingForTransfer = o.status === "waiting" && o.payment === "transfer" && !o.paid;
-        const detail = waitingForTransfer ? "Waiting for the vendor to see your transfer"
-                     : o.status === "waiting" ? `${o.ahead} order${o.ahead === 1 ? "" : "s"} ahead of you`
-                     : o.status === "ready" ? "Show this number at the counter" : "";
-        const amount = `NT$${o.total}` + (o.unpriced ? " + counter-priced dishes" : "");
-        const pay = o.paid ? "Paid ✓"
-                  : o.payment === "transfer" ? `Transfer ${amount} · from account …${o.transfer_ref}`
-                  : `Pay ${amount} at pickup`;
-        const info = el("div", {}, el("strong", {}, o.vendor.name),
-          el("div", {}, `${STATUS[o.status]} · pickup ${o.pickup}`),
+        const detail = waitingForTransfer ? t("wait_transfer")
+                     : o.status === "waiting" ? aheadText(o.ahead)
+                     : o.status === "ready" ? t("show_number") : "";
+        const amount = `NT$${o.total}` + (o.unpriced ? t("plus_counter_short") : "");
+        const pay = o.paid ? t("paid")
+                  : o.payment === "transfer" ? t("pay_transfer_line", { amount, ref: o.transfer_ref })
+                  : t("pay_counter_line", { amount });
+        const info = el("div", {}, el("strong", {}, pick(o.vendor)),
+          el("div", {}, `${t("st_" + o.status)} · ${t("pickup_at", { time: o.pickup })}`),
           el("div", { className: "muted" }, detail),
           el("div", { className: `paid-line ${o.paid ? "is-paid" : ""}` }, pay));
         // Students can cancel only before the vendor starts cooking (and not after a confirmed transfer).
         if (o.status === "waiting" && !o.paid) {
-          const cancel = el("button", { className: "link cancel" }, "Cancel order");
+          const cancel = el("button", { className: "link cancel" }, t("cancel_order"));
           cancel.onclick = () => cancelOrder(o);
           info.append(cancel);
         }
@@ -392,7 +529,7 @@
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subscription),
       });
       $("pushButton").hidden = true;
-      $("pushNote").textContent = "🔔 Your phone will buzz when your food is ready, even with this page closed.";
+      $("pushNote").textContent = t("notify_on");
     }
 
     async function setupPush() {
@@ -400,13 +537,11 @@
       if (!key) return;  // push is switched off on this server
       const iPhone = /iPhone|iPad|iPod/.test(navigator.userAgent);
       if (!window.isSecureContext) {
-        $("pushNote").textContent = "Notifications need the https:// link of this site. This page still vibrates when your food is ready, as long as it stays open.";
+        $("pushNote").textContent = t("notify_https");
         return;
       }
       if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        $("pushNote").textContent = iPhone
-          ? "For notifications on iPhone: tap Share → Add to Home Screen, then open Skip the Line from your home screen."
-          : "This browser can't show notifications. Keep this page open: it vibrates when your food is ready.";
+        $("pushNote").textContent = iPhone ? t("notify_iphone") : t("notify_none");
         return;
       }
       const registration = await navigator.serviceWorker.register("/sw.js");
@@ -416,14 +551,14 @@
       $("pushButton").onclick = async () => {
         try {
           if (await Notification.requestPermission() !== "granted") {
-            $("pushNote").textContent = "Notifications are blocked. Allow them in your browser's site settings.";
+            $("pushNote").textContent = t("notify_blocked");
             return;
           }
           const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true, applicationServerKey: keyBytes(key) });
           await saveSubscription(subscription);
         } catch (error) {
-          $("pushNote").textContent = `Couldn't turn on notifications: ${error.message}`;
+          $("pushNote").textContent = t("notify_failed", { error: error.message });
         }
       };
     }
@@ -432,14 +567,16 @@
     $("search").oninput = e => { state.search = e.target.value.trim(); drawMenu(); };
 
     // ---------- Start, then refresh every few seconds ----------
-    Promise.all([loadHalls(), showVendors(), loadNow(), loadTickets()]).catch(showError);
-    setupPush().catch(() => {});  // optional: the page works the same without it
-    drawCart();
-    setInterval(() => {
-      loadTickets().catch(() => {});
-      if (state.view === "vendors") showVendors().catch(() => {});
-    }, 4000);
-    setInterval(() => loadNow().catch(() => {}), 60000);
+    document.addEventListener("DOMContentLoaded", () => {
+      Promise.all([loadHalls(), showVendors(), loadNow(), loadTickets(), loadMe(), loadAgain()]).catch(showError);
+      setupPush().catch(() => {});  // optional: the page works the same without it
+      drawCart();
+      setInterval(() => {
+        loadTickets().catch(() => {});
+        if (state.view === "vendors" && !searching()) showVendors().catch(() => {});
+      }, 4000);
+      setInterval(() => loadNow().catch(() => {}), 60000);
+    });
   </script>
 </body>
 </html>

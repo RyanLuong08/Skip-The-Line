@@ -9,7 +9,7 @@ from sqlalchemy import func
 
 from menu_import import read_all_csv
 from payment_rules import COUNTER
-from queue_rules import ACTIVE, WAITING, now
+from queue_rules import ACTIVE, WAITING, now, today
 
 db = SQLAlchemy()
 
@@ -27,12 +27,14 @@ class Vendor(db.Model):
     cuisine = db.Column(db.String(50), nullable=False, default="")
     avg_prep_min = db.Column(db.Integer, nullable=False, default=3)  # minutes to make one order
     hours = db.Column(db.String(80), nullable=False, default="")  # "10:30-14:00, 16:30-19:30"; "" = unknown
+    paused_day = db.Column(db.String(10), nullable=False, default="")  # = today: not taking app orders today
 
     items = db.relationship("MenuItem", back_populates="vendor", order_by="MenuItem.id",
                             cascade="all, delete-orphan")
 
     def to_dict(self):
         return {"slug": self.slug, "hall": self.hall, "name": self.name, "name_zh": self.name_zh,
+                "paused": self.paused_day == today(),
                 "cuisine": self.cuisine, "avg_prep_min": self.avg_prep_min, "hours": self.hours}
 
 
@@ -49,12 +51,19 @@ class MenuItem(db.Model):
     calories = db.Column(db.Float, nullable=True)
     category = db.Column(db.String(30), nullable=False, default="other")
     vegetarian = db.Column(db.Boolean, nullable=False, default=False)
+    sold_out_day = db.Column(db.String(10), nullable=False, default="")  # = today: sold out today
 
     vendor = db.relationship("Vendor", back_populates="items")
 
+    @property
+    def sold_out(self):
+        """Sold out only for the day the vendor said so: tomorrow it is back automatically."""
+        return self.sold_out_day == today()
+
     def to_dict(self):
         return {"id": self.id, "name": self.name, "name_zh": self.name_zh, "price": self.price,
-                "calories": self.calories, "category": self.category, "vegetarian": self.vegetarian}
+                "calories": self.calories, "category": self.category, "vegetarian": self.vegetarian,
+                "sold_out": self.sold_out}
 
 
 class Order(db.Model):
@@ -78,6 +87,7 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=now)
     cooking_at = db.Column(db.DateTime, nullable=True)  # when the vendor pressed "Start cooking"
     ready_at = db.Column(db.DateTime, nullable=True)  # when the vendor pressed "Mark ready"
+    device = db.Column(db.String(32), nullable=False, default="", index=True)  # which browser ordered (no-shows)
 
     vendor = db.relationship("Vendor")
     lines = db.relationship("OrderLine", back_populates="order", order_by="OrderLine.id",
@@ -86,9 +96,10 @@ class Order(db.Model):
     def to_dict(self, ahead=None):
         data = {
             "id": self.id, "ticket": self.ticket, "status": self.status, "pickup": self.pickup,
-            "total": self.total, "created_at": self.created_at.strftime("%H:%M"),
+            "total": self.total, "created_at": self.created_at.strftime("%H:%M"), "day": self.day,
+            "ready_at": self.ready_at.strftime("%H:%M") if self.ready_at else None,
             "payment": self.payment, "transfer_ref": self.transfer_ref, "paid": self.paid,
-            "vendor": {"slug": self.vendor.slug, "name": self.vendor.name},
+            "vendor": {"slug": self.vendor.slug, "name": self.vendor.name, "name_zh": self.vendor.name_zh},
             "lines": [line.to_dict() for line in self.lines],
             "unpriced": any(line.price is None for line in self.lines),
         }
@@ -107,13 +118,15 @@ class OrderLine(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey("orders.id"), nullable=False, index=True)
     menu_item_id = db.Column(db.Integer, nullable=True)  # no ForeignKey: menu items can be re-imported
     name = db.Column(db.String(150), nullable=False)
+    name_zh = db.Column(db.String(150), nullable=False, default="")
     price = db.Column(db.Integer, nullable=True)
     qty = db.Column(db.Integer, nullable=False, default=1)
 
     order = db.relationship("Order", back_populates="lines")
 
     def to_dict(self):
-        return {"name": self.name, "price": self.price, "qty": self.qty}
+        return {"item_id": self.menu_item_id, "name": self.name, "name_zh": self.name_zh,
+                "price": self.price, "qty": self.qty}
 
 
 class PushSubscription(db.Model):

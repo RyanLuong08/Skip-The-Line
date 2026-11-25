@@ -1,13 +1,16 @@
 {# Shared top bar. A page picks its highlighted link with: {% set active = "student" %}
-   Staff pages (vendor, stats) also show Stats and Log out. #}
+   Staff pages (vendor, stats) also show Stats, Board, QR and Log out. #}
 <header class="top">
   <a class="brand" href="/">Skip the Line <small>NTHU campus dining</small></a>
   <nav class="topnav">
-    <a href="/" class="{{ 'is-active' if active == 'student' }}">Order</a>
-    <a href="/vendor" class="{{ 'is-active' if active == 'vendor' }}">Vendor</a>
+    <a href="/" class="{{ 'is-active' if active == 'student' }}" data-i18n="nav_order">Order</a>
+    <a href="/vendor" class="{{ 'is-active' if active == 'vendor' }}" data-i18n="nav_vendor">Vendor</a>
     {% if session.get("staff") %}
-      <a href="/stats" class="{{ 'is-active' if active == 'stats' }}">Stats</a>
-      <form method="post" action="/vendor/logout" class="inline"><button class="topnav-button">Log out</button></form>
+      <a href="/stats" class="{{ 'is-active' if active == 'stats' }}" data-i18n="nav_stats">Stats</a>
+      <a href="/board" class="{{ 'is-active' if active == 'board' }}" data-i18n="nav_board">Board</a>
+      <a href="/qr" class="{{ 'is-active' if active == 'qr' }}" data-i18n="nav_qr">QR</a>
+      <form method="post" action="/vendor/logout" class="inline"><button class="topnav-button" data-i18n="log_out">Log out</button></form>
     {% endif %}
+    <button id="langToggle" class="lang-toggle" type="button">中文</button>
   </nav>
 </header>

@@ -9,7 +9,7 @@ Each order dict has: vendor (slug), status, total, payment, created_at, cooking_
 
 from statistics import median
 
-from queue_rules import CANCELLED
+from queue_rules import CANCELLED, NO_SHOW
 
 MIN_SAMPLES = 3  # don't suggest a new avg_prep_min from fewer cooked orders than this
 
@@ -26,7 +26,7 @@ def summarize(orders, vendors):
     """orders: list of order dicts (see above). vendors: {slug: {"name", "avg_prep_min"}}.
 
     Returns a dict with:
-      totals:  orders, cancelled, revenue (NT$), transfer (number paid by transfer), avg_wait_min
+      totals:  orders, cancelled, no_shows, revenue (NT$), transfer (number paid by transfer), avg_wait_min
       by_hour: [{"hour": 11, "orders": 7}, ...] from the first to the last busy hour, gaps as 0
       vendors: one row per vendor that had orders, busiest first, with avg_wait_min
                (ordered -> ready), avg_cook_min (cooking -> ready), set_prep_min (what the wait
@@ -38,6 +38,7 @@ def summarize(orders, vendors):
     totals = {
         "orders": len(kept),
         "cancelled": len(orders) - len(kept),
+        "no_shows": sum(1 for o in kept if o["status"] == NO_SHOW),
         "revenue": sum(o["total"] for o in kept),
         "transfer": sum(1 for o in kept if o["payment"] == "transfer"),
         "avg_wait_min": _average(waits),
@@ -60,6 +61,7 @@ def summarize(orders, vendors):
             "name": info["name"],
             "orders": len(done),
             "cancelled": len(mine) - len(done),
+            "no_shows": sum(1 for o in done if o["status"] == NO_SHOW),
             "revenue": sum(o["total"] for o in done),
             "avg_wait_min": _average([_minutes(o["created_at"], o["ready_at"]) for o in done if o.get("ready_at")]),
             "avg_cook_min": _average(cooked),
