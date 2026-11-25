@@ -1,0 +1,8 @@
+{
+  "name": "Skip the Line · NTHU",
+  "short_name": "Skip the Line",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8f4",
+  "theme_color": "#4f6b2b"
+}

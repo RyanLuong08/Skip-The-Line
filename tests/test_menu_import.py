@@ -1,6 +1,8 @@
 import io
 import unittest
+from unittest import mock
 
+import menu_import
 from menu_import import DATA_DIR, find_hall, read_all_csv, read_menu_csv, slug, to_number
 
 HEADER = ("id,store_name,store_name_english,location,location_english,dish_name,price,calories,"
@@ -56,6 +58,31 @@ class TestReadMenu(unittest.TestCase):
         self.assertEqual(len(fengyun), 10)
         self.assertEqual(sum(len(v["items"]) for v in fengyun), 286)
         self.assertEqual(skipped, 0)
+
+
+class TestOpeningHours(unittest.TestCase):
+    ROW = "1,喜番咖哩,Love Curry,風雲樓,Fengyun Building,咖哩飯,70,,,,,FALSE,TRUE,Japanese,FALSE,rice,Curry Rice,咖哩飯"
+
+    def hours_csv(self, *hours):
+        header = HEADER.rstrip("\n") + ",opening_hours\n"
+        return io.StringIO(header + "".join(f'{self.ROW},"{h}"\n' for h in hours))
+
+    def test_no_hours_column(self):
+        vendors, _ = read_menu_csv(csv_text(self.ROW))
+        self.assertEqual(vendors[0]["hours"], "")
+
+    def test_hours_on_any_row(self):
+        vendors, _ = read_menu_csv(self.hours_csv("", "10:30-14:00, 16:30-19:30"))
+        self.assertEqual(vendors[0]["hours"], "10:30-14:00, 16:30-19:30")
+
+    def test_opening_hours_in_the_code_win(self):
+        with mock.patch.dict(menu_import.OPENING_HOURS, {"Love Curry": "11:00-13:00"}):
+            vendors, _ = read_menu_csv(self.hours_csv("10:30-14:00"))
+        self.assertEqual(vendors[0]["hours"], "11:00-13:00")
+
+    def test_bad_hours_name_the_vendor(self):
+        with self.assertRaisesRegex(ValueError, "Love Curry"):
+            read_menu_csv(self.hours_csv("lunchtime"))
 
 
 if __name__ == "__main__":

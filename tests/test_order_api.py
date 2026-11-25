@@ -1,7 +1,11 @@
 import unittest
+from unittest import mock
 
+import payment_rules
 from models import Order, db
 from tests.helpers import AppTestCase
+
+BANK = {"bank": "822 CTBC", "account": "000000000000", "holder": "Test"}
 
 
 class TestPlaceOrder(AppTestCase):
@@ -47,6 +51,83 @@ class TestPlaceOrder(AppTestCase):
         self.assertEqual(self.order([(self.curry_rice, 99)]).status_code, 400)
         self.assertEqual(self.order([(self.curry_rice, 1)], pickup="yesterday").status_code, 400)
         self.assertEqual(self.client.post("/api/orders", data="hello").status_code, 400)
+
+
+class TestPayment(AppTestCase):
+    def test_pay_at_pickup_under_200(self):
+        data = self.order([(self.curry_rice, 2)]).get_json()  # NT$140
+        self.assertEqual((data["payment"], data["paid"], data["transfer_ref"]), ("counter", False, ""))
+
+    def test_pay_at_pickup_refused_from_200(self):
+        res = self.order([(self.curry_rice, 3)])  # NT$210
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("200", res.get_json()["error"])
+
+    def test_payment_must_be_chosen(self):
+        self.assertEqual(self.order([(self.curry_rice, 1)], payment=None).status_code, 400)
+        self.assertEqual(self.order([(self.curry_rice, 1)], payment="cash").status_code, 400)
+
+    def test_transfer_needs_the_vendor_to_have_an_account(self):
+        res = self.order([(self.curry_rice, 3)], payment="transfer", transfer_ref="12345")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(self.client.get("/api/vendors/fengyun-love-curry/menu").get_json()["vendor"]["bank"], None)
+
+    def test_transfer(self):
+        with mock.patch.dict(payment_rules.BANK_ACCOUNTS, {"fengyun-love-curry": BANK}):
+            self.assertEqual(self.client.get("/api/vendors/fengyun-love-curry/menu").get_json()["vendor"]["bank"], BANK)
+            data = self.order([(self.curry_rice, 3)], payment="transfer", transfer_ref="01234").get_json()
+            self.assertEqual((data["total"], data["payment"], data["transfer_ref"], data["paid"]),
+                             (210, "transfer", "01234", False))
+            # the last 5 digits are required, and the amount must be known
+            self.assertEqual(self.order([(self.curry_rice, 3)], payment="transfer").status_code, 400)
+            res = self.order([(self.mystery, 1)], payment="transfer", transfer_ref="12345")
+            self.assertEqual(res.status_code, 400)
+
+    def test_limit_is_on_the_page(self):
+        self.assertEqual(self.client.get("/api/now").get_json()["counter_limit"], payment_rules.COUNTER_LIMIT)
+
+
+class TestOpeningHours(AppTestCase):
+    def close_curry(self, hours):
+        self.curry_rice.vendor.hours = hours
+        db.session.commit()
+
+    def test_closed_vendor_refuses_asap(self):
+        # closed all day except one minute in the middle of the night
+        self.close_curry("03:00-03:01")
+        res = self.order([(self.curry_rice, 1)])
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("closed", res.get_json()["error"])
+
+    def test_unknown_hours_are_open(self):
+        self.close_curry("")
+        self.assertEqual(self.order([(self.curry_rice, 1)]).status_code, 201)
+
+
+class TestCancelMyOrder(AppTestCase):
+    def cancel(self, order_id, client=None):
+        return (client or self.client).post(f"/api/my-orders/{order_id}/cancel")
+
+    def test_cancel_before_cooking(self):
+        order_id = self.order([(self.curry_rice, 1)]).get_json()["id"]
+        res = self.cancel(order_id)
+        self.assertEqual((res.status_code, res.get_json()["status"]), (200, "cancelled"))
+
+    def test_not_once_cooking(self):
+        order_id = self.order([(self.curry_rice, 1)]).get_json()["id"]
+        self.move(order_id, "cooking")
+        self.assertEqual(self.cancel(order_id).status_code, 409)
+
+    def test_not_after_a_confirmed_transfer(self):
+        with mock.patch.dict(payment_rules.BANK_ACCOUNTS, {"fengyun-love-curry": BANK}):
+            order_id = self.order([(self.curry_rice, 1)], payment="transfer", transfer_ref="12345").get_json()["id"]
+        self.client.post(f"/api/orders/{order_id}/paid")
+        self.assertEqual(self.cancel(order_id).status_code, 409)
+
+    def test_only_your_own_orders(self):
+        order_id = self.order([(self.curry_rice, 1)]).get_json()["id"]
+        self.assertEqual(self.cancel(order_id, client=self.app.test_client()).status_code, 404)
+        self.assertEqual(self.cancel(9999).status_code, 404)
 
 
 class TestMyOrders(AppTestCase):

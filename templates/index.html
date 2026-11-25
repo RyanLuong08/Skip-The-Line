@@ -16,6 +16,7 @@
       <!-- Step 1: choose a vendor -->
       <div id="vendorView">
         <h2>Vendors <small id="hallNote"></small></h2>
+        <p class="muted hint">Wait times count only orders placed in this app, not the line at the counter.</p>
         <div id="vendors" class="grid"></div>
       </div>
 
@@ -23,7 +24,7 @@
       <div id="menuView" hidden>
         <button id="back" class="link">← All vendors</button>
         <h2 id="vendorTitle"></h2>
-        <p class="muted">Current wait: <span id="vendorWait" class="wait"></span></p>
+        <p class="muted"><span id="vendorWait" class="wait"></span> <span id="vendorHours"></span></p>
         <input id="search" type="search" placeholder="Search dishes 搜尋餐點">
         <div id="categories" class="chips"></div>
         <ul id="items" class="items"></ul>
@@ -32,11 +33,28 @@
 
     <aside>
       <!-- Step 3: place the order -->
-      <div class="card">
+      <div id="orderCard" class="card">
+        <button id="closeCart" class="sheet-close" aria-label="Close">✕</button>
         <h2>Your order</h2>
         <ul id="cart" class="cart"></ul>
         <p class="total">Total: <strong id="total">NT$0</strong></p>
         <label>Pickup time <select id="pickup"></select></label>
+
+        <!-- How to pay: shown once there is something in the order -->
+        <fieldset id="payBox" class="pay" hidden>
+          <legend>Payment 付款方式</legend>
+          <label class="choice"><input type="radio" name="pay" value="transfer"> Bank transfer 轉帳</label>
+          <label class="choice"><input type="radio" name="pay" value="counter">
+            Pay at pickup 取餐付款 <small id="counterNote"></small></label>
+          <div id="transferBox" class="transfer" hidden>
+            <p>Transfer <strong id="transferAmount"></strong> to:<br><span id="bankInfo"></span></p>
+            <label>Last 5 digits of the account you pay from 帳號後五碼
+              <input id="transferRef" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="12345"></label>
+            <p class="muted">The vendor starts cooking once they see your transfer.</p>
+          </div>
+          <p id="payNote" class="muted"></p>
+        </fieldset>
+
         <button id="placeOrder" class="primary" disabled>Place order</button>
         <p id="message" class="message" role="status"></p>
       </div>
@@ -45,9 +63,17 @@
       <div class="card">
         <h2>My tickets</h2>
         <div id="tickets"><p class="muted">No orders yet today.</p></div>
+        <button id="pushButton" class="link" hidden>🔔 Notify me when my food is ready</button>
+        <p id="pushNote" class="muted small"></p>
       </div>
     </aside>
   </main>
+
+  <!-- Phones: the order is far below the menu, so keep a bar at the bottom of the screen -->
+  <div id="sheetBackdrop" class="sheet-backdrop"></div>
+  <button id="cartBar" class="cart-bar" hidden>
+    <span id="cartBarText"></span><strong>View order ↑</strong>
+  </button>
 
   <script>
     // Python does the real work (prices, ticket numbers, wait times); this script only
@@ -56,7 +82,10 @@
     const $ = id => document.getElementById(id);
     const STATUS = { waiting: "In queue", cooking: "Cooking", ready: "Ready for pickup",
                      done: "Picked up", cancelled: "Cancelled" };
-    const state = { hall: "fengyun", vendor: null, items: [], category: "all", search: "", cart: [] };
+    // state.vendor is the vendor of the current order (it stays set while the student looks
+    // at the vendor list again); state.view says which list is on screen.
+    const state = { hall: "fengyun", vendor: null, view: "vendors", items: [], category: "all", search: "", cart: [],
+                    counterLimit: 200 };  // the real limit comes from /api/now (payment_rules.py)
 
     // el("div", {className: "x"}, "text", child) -> a new element
     function el(tag, props = {}, ...children) {
@@ -65,6 +94,10 @@
       return node;
     }
     const money = n => n == null ? "Ask at counter" : `NT$${n}`;
+    // "~9 min · 3 app orders ahead": only orders from this app are counted, not the line at the counter.
+    const waitText = v => v.queue ? `~${v.wait_min} min · ${v.queue} app order${v.queue === 1 ? "" : "s"} ahead`
+                                  : "No app orders waiting";
+    const closedText = v => v.opens_at ? `Closed · opens at ${v.opens_at}` : "Closed for today";
 
     async function api(url, options) {
       const res = await fetch(url, options);
@@ -85,12 +118,13 @@
       $("halls").replaceChildren(...halls.map(h => {
         const button = el("button", { className: h.id === state.hall ? "active" : "" },
                           h.name + " ", el("small", {}, h.name_zh));
-        button.onclick = () => { state.hall = h.id; state.vendor = null; loadHalls(); showVendors(); };
+        button.onclick = () => { state.hall = h.id; loadHalls(); showVendors(); };
         return button;
       }));
     }
 
     async function showVendors() {
+      state.view = "vendors";
       $("vendorView").hidden = false;
       $("menuView").hidden = true;
       const vendors = await api(`/api/vendors?hall=${state.hall}`);
@@ -99,11 +133,14 @@
         $("vendors").replaceChildren(el("p", { className: "muted" }, "This dining hall's menu is still being collected."));
         return;
       }
+      // Open vendors first, closed ones at the end and greyed out.
+      vendors.sort((a, b) => b.open - a.open);
       $("vendors").replaceChildren(...vendors.map(v => {
-        const card = el("button", { className: "vendor" },
+        const card = el("button", { className: v.open ? "vendor" : "vendor closed" },
           el("strong", {}, v.name),
-          el("span", { className: "muted" }, `${v.name_zh} · ${v.cuisine} · ${v.dish_count} dishes`),
-          el("span", { className: `wait ${v.wait_level}` }, `~${v.wait_min} min · ${v.queue} in queue`));
+          el("span", { className: "muted" }, `${v.name_zh} · ${v.cuisine} · ${v.dish_count} dish${v.dish_count === 1 ? "" : "es"}`),
+          v.open ? el("span", { className: `wait ${v.wait_level}` }, waitText(v))
+                 : el("span", { className: "wait closed" }, closedText(v)));
         card.onclick = () => openVendor(v.slug);
         return card;
       }));
@@ -120,11 +157,15 @@
       $("search").value = "";
       $("vendorView").hidden = true;
       $("menuView").hidden = false;
+      state.view = "menu";
       $("vendorTitle").textContent = `${data.vendor.name} ${data.vendor.name_zh}`;
-      $("vendorWait").textContent = `~${data.vendor.wait_min} min`;
-      $("vendorWait").className = `wait ${data.vendor.wait_level}`;
+      const v = data.vendor;
+      $("vendorWait").textContent = v.open ? waitText(v) : closedText(v);
+      $("vendorWait").className = v.open ? `wait ${v.wait_level}` : "wait closed";
+      $("vendorHours").textContent = v.hours ? `· Hours ${v.hours}` : "";
       drawMenu();
       drawCart();
+      loadNow().catch(showError);  // this vendor's pickup times
     }
 
     function drawMenu() {
@@ -183,14 +224,77 @@
       const total = state.cart.reduce((sum, c) => sum + (c.price ?? 0) * c.qty, 0);
       const unpriced = state.cart.some(c => c.price == null);
       $("total").textContent = `NT$${total}` + (unpriced ? " + dishes priced at the counter" : "");
-      $("placeOrder").disabled = !state.cart.length;
+      drawPayment(total, unpriced);
     }
 
+    // ---------- Step 3b: how to pay ----------
+    // These checks only help the student; Python checks the same rules again (payment_rules.py).
+
+    const payChoice = value => document.querySelector(`input[name=pay][value=${value}]`);
+    const chosenPayment = () => document.querySelector("input[name=pay]:checked")?.value;
+
+    function drawPayment(total, unpriced) {
+      $("payBox").hidden = !state.cart.length;
+      const bank = state.vendor?.bank;
+      const counterOk = total < state.counterLimit;
+      const transferOk = Boolean(bank) && !unpriced;
+      payChoice("counter").disabled = !counterOk;
+      payChoice("transfer").disabled = !transferOk;
+      for (const input of document.querySelectorAll("input[name=pay]")) {
+        if (input.disabled) input.checked = false;
+      }
+      // Only one way is possible? Pick it for them.
+      if (state.cart.length && !chosenPayment() && counterOk !== transferOk) payChoice(counterOk ? "counter" : "transfer").checked = true;
+
+      $("counterNote").textContent = `(under NT$${state.counterLimit})`;
+      const notes = [];
+      if (!counterOk) notes.push(`Orders of NT$${state.counterLimit} or more must be paid by transfer.`);
+      if (!bank) notes.push("This vendor doesn't take transfers yet.");
+      else if (unpriced) notes.push("Some dishes have no price yet, so they can only be paid at pickup.");
+      if (!counterOk && !transferOk) notes.push("Remove some dishes to place this order.");
+      $("payNote").textContent = notes.join(" ");
+
+      const transfer = chosenPayment() === "transfer";
+      $("transferBox").hidden = !transfer;
+      if (transfer) {
+        $("transferAmount").textContent = `NT$${total}`;
+        $("bankInfo").textContent = `${bank.bank} · ${bank.account}` + (bank.holder ? ` · ${bank.holder}` : "");
+      }
+      const refOk = /^\d{5}$/.test($("transferRef").value.trim());
+      $("placeOrder").disabled = !state.cart.length || !chosenPayment() || (transfer && !refOk) || !$("pickup").value;
+      drawCartBar(total, unpriced);
+    }
+
+    // ---------- Phones: the bar at the bottom and the order sheet ----------
+
+    function drawCartBar(total, unpriced) {
+      const count = state.cart.reduce((sum, c) => sum + c.qty, 0);
+      $("cartBar").hidden = !count || $("orderCard").classList.contains("open");
+      $("cartBarText").textContent = `🛒 ${count} item${count === 1 ? "" : "s"} · NT$${total}${unpriced ? "+" : ""}`;
+      document.body.classList.toggle("has-cart", count > 0);
+    }
+
+    function openSheet(open) {
+      $("orderCard").classList.toggle("open", open);
+      $("sheetBackdrop").classList.toggle("open", open);
+      drawCart();
+    }
+    $("cartBar").onclick = () => openSheet(true);
+    $("closeCart").onclick = () => openSheet(false);
+    $("sheetBackdrop").onclick = () => openSheet(false);
+
+    for (const input of document.querySelectorAll("input[name=pay]")) input.onchange = drawCart;
+    $("transferRef").oninput = drawCart;
+
     async function loadNow() {
-      const now = await api("/api/now");
+      const now = await api(state.vendor ? `/api/now?vendor=${state.vendor.slug}` : "/api/now");
       $("peak").hidden = !now.peak;
+      state.counterLimit = now.counter_limit;
       const chosen = $("pickup").value;
-      $("pickup").replaceChildren(...now.pickup_slots.map(s => el("option", { selected: s === chosen }, s)));
+      $("pickup").replaceChildren(...(now.pickup_slots.length
+        ? now.pickup_slots.map(s => el("option", { selected: s === chosen }, s))
+        : [el("option", { value: "" }, "Closed: no pickup times left today")]));
+      drawCart();
     }
 
     $("placeOrder").onclick = async () => {
@@ -201,11 +305,16 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ vendor: state.vendor.slug, pickup: $("pickup").value,
-                                 items: state.cart.map(c => ({ id: c.id, qty: c.qty })) }),
+                                 items: state.cart.map(c => ({ id: c.id, qty: c.qty })),
+                                 payment: chosenPayment(), transfer_ref: $("transferRef").value.trim() }),
         });
         state.cart = [];
+        for (const input of document.querySelectorAll("input[name=pay]")) input.checked = false;
+        $("transferRef").value = "";
         drawCart();
-        $("message").textContent = `Ordered! Your ticket is #${order.ticket}.`;
+        $("message").textContent = `Ordered! Your ticket is #${order.ticket}. ` +
+          (order.payment === "counter" ? `Pay NT$${order.total} at the counter when you pick it up.`
+                                       : "The vendor will start once they see your transfer.");
         $("message").className = "message";
         loadTickets();
       } catch (error) {
@@ -216,32 +325,119 @@
 
     // ---------- Step 4: my tickets ----------
 
+    const PAGE_TITLE = document.title;
+    const VIBRATE = [300, 120, 300, 120, 300];
+    const lastStatus = {};  // order id -> status at the last refresh
+
+    // Vibrate (no sound) and put the ticket in the tab title when an order becomes ready
+    // while this page is open. With the page closed, the push notification does it (sw.js).
+    function noticeReady(orders) {
+      const nowReady = orders.filter(o => o.status === "ready" && lastStatus[o.id] && lastStatus[o.id] !== "ready");
+      if (nowReady.length) navigator.vibrate?.(VIBRATE);
+      for (const o of orders) lastStatus[o.id] = o.status;
+      const ready = orders.filter(o => o.status === "ready").map(o => `#${o.ticket}`);
+      document.title = ready.length ? `✅ ${ready.join(", ")} READY · Skip the Line` : PAGE_TITLE;
+    }
+
+    async function cancelOrder(o) {
+      const note = o.payment === "transfer" ? " If you already sent the money, ask the vendor to send it back." : "";
+      if (!confirm(`Cancel ticket #${o.ticket} at ${o.vendor.name}?${note}`)) return;
+      try {
+        await api(`/api/my-orders/${o.id}/cancel`, { method: "POST" });
+      } catch (error) {
+        showError(error);
+      }
+      loadTickets();
+    }
+
     async function loadTickets() {
       const orders = await api("/api/my-orders");
+      noticeReady(orders);
       if (!orders.length) {
         $("tickets").replaceChildren(el("p", { className: "muted" }, "No orders yet today."));
         return;
       }
       $("tickets").replaceChildren(...orders.map(o => {
-        const detail = o.status === "waiting" ? `${o.ahead} order${o.ahead === 1 ? "" : "s"} ahead of you`
+        const waitingForTransfer = o.status === "waiting" && o.payment === "transfer" && !o.paid;
+        const detail = waitingForTransfer ? "Waiting for the vendor to see your transfer"
+                     : o.status === "waiting" ? `${o.ahead} order${o.ahead === 1 ? "" : "s"} ahead of you`
                      : o.status === "ready" ? "Show this number at the counter" : "";
-        return el("div", { className: `ticket ${o.status}` },
-          el("div", { className: "num" }, `#${o.ticket}`),
-          el("div", {}, el("strong", {}, o.vendor.name),
-             el("div", {}, `${STATUS[o.status]} · pickup ${o.pickup}`),
-             el("div", { className: "muted" }, detail)));
+        const amount = `NT$${o.total}` + (o.unpriced ? " + counter-priced dishes" : "");
+        const pay = o.paid ? "Paid ✓"
+                  : o.payment === "transfer" ? `Transfer ${amount} · from account …${o.transfer_ref}`
+                  : `Pay ${amount} at pickup`;
+        const info = el("div", {}, el("strong", {}, o.vendor.name),
+          el("div", {}, `${STATUS[o.status]} · pickup ${o.pickup}`),
+          el("div", { className: "muted" }, detail),
+          el("div", { className: `paid-line ${o.paid ? "is-paid" : ""}` }, pay));
+        // Students can cancel only before the vendor starts cooking (and not after a confirmed transfer).
+        if (o.status === "waiting" && !o.paid) {
+          const cancel = el("button", { className: "link cancel" }, "Cancel order");
+          cancel.onclick = () => cancelOrder(o);
+          info.append(cancel);
+        }
+        return el("div", { className: `ticket ${o.status}` }, el("div", { className: "num" }, `#${o.ticket}`), info);
       }));
     }
 
-    $("back").onclick = () => { state.vendor = null; showVendors(); };
+    // ---------- Push notifications (push_api.py, static/sw.js) ----------
+
+    function keyBytes(base64url) {  // the server's key, in the form pushManager.subscribe() wants
+      const base64 = (base64url + "=".repeat((4 - base64url.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/");
+      return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    }
+
+    async function saveSubscription(subscription) {
+      await api("/api/push/subscribe", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subscription),
+      });
+      $("pushButton").hidden = true;
+      $("pushNote").textContent = "🔔 Your phone will buzz when your food is ready, even with this page closed.";
+    }
+
+    async function setupPush() {
+      const { key } = await api("/api/push/key");
+      if (!key) return;  // push is switched off on this server
+      const iPhone = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      if (!window.isSecureContext) {
+        $("pushNote").textContent = "Notifications need the https:// link of this site. This page still vibrates when your food is ready, as long as it stays open.";
+        return;
+      }
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        $("pushNote").textContent = iPhone
+          ? "For notifications on iPhone: tap Share → Add to Home Screen, then open Skip the Line from your home screen."
+          : "This browser can't show notifications. Keep this page open: it vibrates when your food is ready.";
+        return;
+      }
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      const existing = await registration.pushManager.getSubscription();
+      if (existing && Notification.permission === "granted") return saveSubscription(existing);
+      $("pushButton").hidden = false;
+      $("pushButton").onclick = async () => {
+        try {
+          if (await Notification.requestPermission() !== "granted") {
+            $("pushNote").textContent = "Notifications are blocked. Allow them in your browser's site settings.";
+            return;
+          }
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true, applicationServerKey: keyBytes(key) });
+          await saveSubscription(subscription);
+        } catch (error) {
+          $("pushNote").textContent = `Couldn't turn on notifications: ${error.message}`;
+        }
+      };
+    }
+
+    $("back").onclick = () => showVendors();
     $("search").oninput = e => { state.search = e.target.value.trim(); drawMenu(); };
 
     // ---------- Start, then refresh every few seconds ----------
     Promise.all([loadHalls(), showVendors(), loadNow(), loadTickets()]).catch(showError);
+    setupPush().catch(() => {});  // optional: the page works the same without it
     drawCart();
     setInterval(() => {
       loadTickets().catch(() => {});
-      if (!state.vendor) showVendors().catch(() => {});
+      if (state.view === "vendors") showVendors().catch(() => {});
     }, 4000);
     setInterval(() => loadNow().catch(() => {}), 60000);
   </script>

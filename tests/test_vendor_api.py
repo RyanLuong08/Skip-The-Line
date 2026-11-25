@@ -1,5 +1,7 @@
 import unittest
+from unittest import mock
 
+import payment_rules
 from tests.helpers import AppTestCase
 
 
@@ -35,6 +37,23 @@ class TestVendorApi(AppTestCase):
         self.assertEqual(self.move(order_id, "banana").status_code, 409)
         self.assertEqual(self.client.post(f"/api/orders/{order_id}/status", data="x").status_code, 409)
         self.assertEqual(self.move(9999, "cooking").status_code, 404)
+
+    def test_counter_order_is_paid_when_picked_up(self):
+        order_id = self.order([(self.curry_rice, 1)]).get_json()["id"]
+        self.assertEqual(self.client.post(f"/api/orders/{order_id}/paid").status_code, 409)
+        for status in ("cooking", "ready"):
+            self.assertFalse(self.move(order_id, status).get_json()["paid"])
+        self.assertTrue(self.move(order_id, "done").get_json()["paid"])
+
+    def test_transfer_order_is_cooked_only_once_paid(self):
+        bank = {"bank": "822 CTBC", "account": "000000000000"}
+        with mock.patch.dict(payment_rules.BANK_ACCOUNTS, {"fengyun-love-curry": bank}):
+            order_id = self.order([(self.curry_rice, 1)], payment="transfer", transfer_ref="12345").get_json()["id"]
+        self.assertEqual(self.move(order_id, "cooking").status_code, 409)
+        res = self.client.post(f"/api/orders/{order_id}/paid")
+        self.assertEqual((res.status_code, res.get_json()["paid"]), (200, True))
+        self.assertEqual(self.move(order_id, "cooking").status_code, 200)
+        self.assertEqual(self.client.post("/api/orders/9999/paid").status_code, 404)
 
     def test_unknown_vendor(self):
         self.assertEqual(self.client.get("/api/vendors/nope/orders").status_code, 404)
